@@ -64,13 +64,6 @@ export default function AdminPage() {
       color: 'bg-green-50 text-green-600',
     },
     {
-      title: 'Mensagens',
-      description: 'Visualize mensagens enviadas pelos convidados',
-      icon: <FaComments className="w-8 h-8" />,
-      href: '/admin/mensagens',
-      color: 'bg-purple-50 text-purple-600',
-    },
-    {
       title: 'Galeria',
       description: 'Gerencie as fotos exibidas na galeria',
       icon: <FaImages className="w-8 h-8" />,

@@ -5,6 +5,7 @@ import Link from 'next/link'
 import CountdownTimer from '@/components/CountdownTimer'
 import { FaCalendarAlt, FaMapMarkerAlt, FaClock } from 'react-icons/fa'
 import { MdChecklist } from 'react-icons/md'
+import { routes } from '@/lib/routes'
 
 export default function Home() {
   // Definindo a data do casamento (12 de setembro de 2025)
@@ -31,7 +32,7 @@ export default function Home() {
           </h1>
           <p className="text-lg md:text-2xl mb-8">Vamos nos casar em 12 de Setembro de 2025</p>
           <Link
-            href="/confirmacao"
+            href={routes.frontend.confirmacao}
             className="inline-block bg-wedding-accent text-white px-6 py-3 rounded-md font-medium hover:bg-wedding-accent/90 transition-colors">
             Confirmar Presença
           </Link>
@@ -90,7 +91,7 @@ export default function Home() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <Link
-              href="/confirmacao"
+              href={routes.frontend.confirmacao}
               className="block bg-wedding-secondary p-8 rounded-lg hover:bg-wedding-secondary/90 transition-colors">
               <div className="flex items-center mb-3">
                 <div className="w-12 h-12 bg-wedding-primary/20 rounded-full flex items-center justify-center mr-4">
@@ -104,7 +105,7 @@ export default function Home() {
             </Link>
 
             <Link
-              href="/presentes"
+              href={routes.frontend.presentes}
               className="block bg-wedding-secondary p-8 rounded-lg hover:bg-wedding-secondary/90 transition-colors">
               <div className="flex items-center mb-3">
                 <div className="w-12 h-12 bg-wedding-primary/20 rounded-full flex items-center justify-center mr-4">
@@ -118,7 +119,7 @@ export default function Home() {
             </Link>
 
             <Link
-              href="/localizacao"
+              href={routes.frontend.localizacao}
               className="block bg-wedding-secondary p-8 rounded-lg hover:bg-wedding-secondary/90 transition-colors">
               <div className="flex items-center mb-3">
                 <div className="w-12 h-12 bg-wedding-primary/20 rounded-full flex items-center justify-center mr-4">
@@ -127,21 +128,7 @@ export default function Home() {
                 <h3 className="text-xl font-medium text-wedding-primary">Como Chegar</h3>
               </div>
               <p className="text-wedding-accent">
-                Encontre facilmente o local da cerimônia e recepção com nosso mapa interativo.
-              </p>
-            </Link>
-
-            <Link
-              href="/nossa-historia"
-              className="block bg-wedding-secondary p-8 rounded-lg hover:bg-wedding-secondary/90 transition-colors">
-              <div className="flex items-center mb-3">
-                <div className="w-12 h-12 bg-wedding-primary/20 rounded-full flex items-center justify-center mr-4">
-                  <FaCalendarAlt className="text-2xl text-wedding-primary" />
-                </div>
-                <h3 className="text-xl font-medium text-wedding-primary">Nossa História</h3>
-              </div>
-              <p className="text-wedding-accent">
-                Conheça um pouco mais sobre nossa história de amor e a jornada até este momento especial.
+                Encontre facilmente o local da cerimônia.
               </p>
             </Link>
           </div>

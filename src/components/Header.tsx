@@ -13,7 +13,6 @@ const Header = () => {
 
   const navItems = [
     { name: 'Início', path: '/' },
-    { name: 'Nossa História', path: '/nossa-historia' },
     { name: 'Localização', path: '/localizacao' },
     { name: 'Presentes', path: '/presentes' },
     { name: 'Galeria', path: '/galeria' },
@@ -50,15 +49,14 @@ const Header = () => {
                   </Link>
                 </li>
               ))}
-              {session && (
-                <li>
-                  <Link
-                    href="/admin"
-                    className="text-sm text-wedding-dark bg-wedding-accent/20 px-3 py-1 rounded-full hover:bg-wedding-accent/30 transition-colors">
-                    Admin
-                  </Link>
-                </li>
-              )}
+
+              <li>
+                <Link
+                  href="/admin"
+                  className="text-sm text-wedding-dark bg-wedding-accent/20 px-3 py-1 rounded-full hover:bg-wedding-accent/30 transition-colors">
+                  Admin
+                </Link>
+              </li>
             </ul>
           </nav>
 

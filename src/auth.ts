@@ -3,6 +3,7 @@ import { compare } from 'bcryptjs'
 import NextAuth from 'next-auth'
 import CredentialsProvider from 'next-auth/providers/credentials'
 import { prisma } from './lib/prisma'
+import { routes } from './lib/routes'
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   adapter: PrismaAdapter(prisma),
@@ -11,7 +12,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     strategy: 'jwt',
   },
   pages: {
-    signIn: '/login',
+    signIn: routes.frontend.auth.login,
   },
   providers: [
     CredentialsProvider({

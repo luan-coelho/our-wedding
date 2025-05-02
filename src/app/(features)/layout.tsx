@@ -1,8 +1,10 @@
-import AuthProvider from '@/components/AuthProvider'
 import type { Metadata } from 'next'
 import { Geist, Geist_Mono } from 'next/font/google'
-import './globals.css'
-import Providers from './Providers'
+import '@/app/globals.css'
+import Header from '@/components/Header'
+import Footer from '@/components/Footer'
+import AuthProvider from '@/components/AuthProvider'
+import Providers from '@/app/Providers'
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -19,16 +21,20 @@ export const metadata: Metadata = {
   description: 'Site do casamento de Ester e Luan - Venha celebrar conosco!',
 }
 
-export default function RootLayout({
+export default function AppLayout({
   children,
 }: Readonly<{
   children: React.ReactNode
 }>) {
   return (
     <html lang="pt-BR">
-      <body className={`${geistSans.variable} ${geistMono.variable}`}>
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen flex flex-col`}>
         <Providers>
-          <AuthProvider>{children}</AuthProvider>
+          <AuthProvider>
+            <Header />
+            <main className="flex-grow bg-gradient-to-b from-slate-50 to-white p-10">{children}</main>
+            <Footer />
+          </AuthProvider>
         </Providers>
       </body>
     </html>

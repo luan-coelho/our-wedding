@@ -1,6 +1,7 @@
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import { ReactNode, useEffect } from 'react'
+import { routes } from '@/lib/routes'
 
 export default function AdminProtected({ children }: { children: ReactNode }) {
   const { data: session, status } = useSession()
@@ -10,9 +11,9 @@ export default function AdminProtected({ children }: { children: ReactNode }) {
     if (status === 'loading') return
 
     if (!session) {
-      router.push('/login')
+      router.push(routes.frontend.auth.login)
     } else if (session.user.role !== 'admin') {
-      router.push('/')
+      router.push(routes.frontend.home)
     }
   }, [session, status, router])
 

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getToken } from 'next-auth/jwt'
-
+import { routes } from './lib/routes'
 export async function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname
 
@@ -13,7 +13,7 @@ export async function middleware(request: NextRequest) {
 
     // Se não estiver autenticado, redireciona para a página de login
     if (!token) {
-      const url = new URL('/login', request.url)
+      const url = new URL(routes.frontend.auth.login, request.url)
       url.searchParams.set('callbackUrl', encodeURI(request.url))
       return NextResponse.redirect(url)
     }
