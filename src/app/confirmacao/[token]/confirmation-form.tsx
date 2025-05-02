@@ -51,7 +51,7 @@ export default function ConfirmationForm({ guest }: ConfirmationFormProps) {
     <form onSubmit={handleSubmit} className="space-y-6">
       <div className="space-y-4">
         <h2 className="text-lg font-medium">Você vai comparecer ao nosso casamento?</h2>
-        <div className="flex space-x-4">
+        <div className="flex space-x-4 justify-around items-center ">
           <label className="flex items-center cursor-pointer">
             <input
               type="radio"
@@ -60,7 +60,7 @@ export default function ConfirmationForm({ guest }: ConfirmationFormProps) {
               onChange={() => setIsConfirmed(true)}
               className="w-4 h-4 mr-2"
             />
-            <span>Sim, vou comparecer</span>
+            <span>Sim</span>
           </label>
           <label className="flex items-center cursor-pointer">
             <input
@@ -70,7 +70,7 @@ export default function ConfirmationForm({ guest }: ConfirmationFormProps) {
               onChange={() => setIsConfirmed(false)}
               className="w-4 h-4 mr-2"
             />
-            <span>Não poderei comparecer</span>
+            <span>Não</span>
           </label>
         </div>
 

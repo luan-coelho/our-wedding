@@ -1,8 +1,19 @@
 'use client'
 
 import AdminProtected from '@/components/AdminProtected'
-import { useEffect, useState } from 'react'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useRouter } from 'next/navigation'
+import { toast } from 'sonner'
 
 interface Gift {
   id: number
@@ -14,51 +25,50 @@ interface Gift {
 }
 
 export default function AdminGiftsPage() {
-  const [gifts, setGifts] = useState<Gift[]>([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState('')
   const router = useRouter()
+  const queryClient = useQueryClient()
 
-  const fetchGifts = async () => {
-    try {
-      setLoading(true)
-      const response = await fetch('/api/gifts')
-      if (!response.ok) {
-        throw new Error('Falha ao buscar presentes')
-      }
-      const data = await response.json()
-      setGifts(data)
-    } catch (error) {
-      setError('Erro ao carregar presentes')
-      console.error(error)
-    } finally {
-      setLoading(false)
+  // Função para buscar presentes
+  const fetchGifts = async (): Promise<Gift[]> => {
+    const response = await fetch('/api/gifts')
+    if (!response.ok) {
+      throw new Error('Falha ao buscar presentes')
     }
+    return response.json()
   }
 
-  useEffect(() => {
-    fetchGifts()
-  }, [])
+  // Query para buscar presentes
+  const { data: gifts = [], isLoading, error } = useQuery({
+    queryKey: ['gifts'],
+    queryFn: fetchGifts,
+  })
+
+  // Mutation para excluir presentes
+  const deleteMutation = useMutation({
+    mutationFn: async (id: number) => {
+      const response = await fetch(`/api/gifts/${id}`, {
+        method: 'DELETE',
+      })
+      if (!response.ok) {
+        throw new Error('Falha ao excluir presente')
+      }
+      return id
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['gifts'] })
+      toast.success('Presente excluído com sucesso')
+    },
+    onError: (error) => {
+      console.error('Erro ao excluir presente:', error)
+      toast.error('Erro ao excluir presente')
+    }
+  })
 
   const handleDelete = async (id: number) => {
     if (!confirm('Tem certeza que deseja excluir este presente?')) {
       return
     }
-
-    try {
-      const response = await fetch(`/api/gifts/${id}`, {
-        method: 'DELETE',
-      })
-
-      if (!response.ok) {
-        throw new Error('Falha ao excluir presente')
-      }
-
-      await fetchGifts()
-    } catch (error) {
-      console.error('Erro ao excluir presente:', error)
-      setError('Erro ao excluir presente')
-    }
+    deleteMutation.mutate(id)
   }
 
   const handleEdit = (id: number) => {
@@ -71,55 +81,65 @@ export default function AdminGiftsPage() {
 
   return (
     <AdminProtected>
-      <div className="container mx-auto p-4">
-        <div className="flex justify-between items-center mb-6">
-          <h1 className="text-2xl font-bold">Gerenciar Presentes</h1>
-          <button onClick={handleAdd} className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">
-            Adicionar Presente
-          </button>
-        </div>
+      <div className="container mx-auto px-4 mt-10">
+        <Card className="rounded-lg">
+          <CardHeader className="flex flex-row items-center justify-between pb-2">
+            <CardTitle className="text-2xl font-bold">Presentes</CardTitle>
+            <Button onClick={handleAdd} variant="default">
+              Adicionar Presente
+            </Button>
+          </CardHeader>
+          
+          <CardContent>
+            {error instanceof Error && (
+              <div className="bg-red-100 text-red-700 p-3 rounded mb-4">{error.message}</div>
+            )}
 
-        {error && <div className="bg-red-100 text-red-700 p-3 rounded mb-4">{error}</div>}
-
-        {loading ? (
-          <div className="text-center py-4">Carregando...</div>
-        ) : gifts.length === 0 ? (
-          <div className="text-center py-4">Nenhum presente encontrado</div>
-        ) : (
-          <div className="overflow-x-auto">
-            <table className="min-w-full bg-white border border-gray-200">
-              <thead>
-                <tr>
-                  <th className="py-2 px-4 border-b text-left">Nome</th>
-                  <th className="py-2 px-4 border-b text-left">Descrição</th>
-                  <th className="py-2 px-4 border-b text-left">Preço</th>
-                  <th className="py-2 px-4 border-b text-center">Ações</th>
-                </tr>
-              </thead>
-              <tbody>
-                {gifts.map(gift => (
-                  <tr key={gift.id} className="hover:bg-gray-50">
-                    <td className="py-2 px-4 border-b">{gift.name}</td>
-                    <td className="py-2 px-4 border-b">{gift.description}</td>
-                    <td className="py-2 px-4 border-b">{gift.price ? `R$ ${gift.price.toFixed(2)}` : '-'}</td>
-                    <td className="py-2 px-4 border-b text-center">
-                      <button
-                        onClick={() => handleEdit(gift.id)}
-                        className="bg-blue-500 text-white px-3 py-1 rounded mr-2 hover:bg-blue-600">
-                        Editar
-                      </button>
-                      <button
-                        onClick={() => handleDelete(gift.id)}
-                        className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600">
-                        Excluir
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
+            {isLoading ? (
+              <div className="text-center py-4">Carregando...</div>
+            ) : gifts.length === 0 ? (
+              <div className="text-center py-4">Nenhum presente encontrado</div>
+            ) : (
+              <div className="overflow-x-auto">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Nome</TableHead>
+                      <TableHead>Descrição</TableHead>
+                      <TableHead>Preço</TableHead>
+                      <TableHead className="text-center">Ações</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {gifts.map(gift => (
+                      <TableRow key={gift.id}>
+                        <TableCell>{gift.name}</TableCell>
+                        <TableCell>{gift.description}</TableCell>
+                        <TableCell>{gift.price ? `R$ ${gift.price.toFixed(2)}` : '-'}</TableCell>
+                        <TableCell className="text-center">
+                          <div className="flex justify-center gap-2">
+                            <Button
+                              onClick={() => handleEdit(gift.id)}
+                              variant="outline"
+                              size="sm">
+                              Editar
+                            </Button>
+                            <Button
+                              onClick={() => handleDelete(gift.id)}
+                              variant="destructive"
+                              size="sm">
+                              Excluir
+                            </Button>
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+            )}
+          </CardContent>
+        </Card>
       </div>
     </AdminProtected>
   )

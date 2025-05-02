@@ -1,8 +1,16 @@
 'use client'
 
-import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { toast } from 'sonner'
 import Link from 'next/link'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
+import { Input } from '@/components/ui/input'
+import { GuestFormData, guestSchema } from './schema'
 
 interface GuestFormProps {
   guest?: {
@@ -14,27 +22,19 @@ interface GuestFormProps {
 
 export default function GuestForm({ guest }: GuestFormProps) {
   const router = useRouter()
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const [error, setError] = useState<string | null>(null)
-
-  const [name, setName] = useState(guest?.name || '')
-
+  const queryClient = useQueryClient()
   const isEditing = !!guest
 
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault()
-    setIsSubmitting(true)
-    setError(null)
+  const form = useForm<GuestFormData>({
+    resolver: zodResolver(guestSchema),
+    defaultValues: {
+      name: guest?.name || '',
+    },
+  })
 
-    if (!name.trim()) {
-      setError('O nome é obrigatório')
-      setIsSubmitting(false)
-      return
-    }
-
-    try {
+  const saveMutation = useMutation({
+    mutationFn: async (data: GuestFormData) => {
       const url = isEditing ? `/api/guests/${guest.id}` : '/api/guests'
-
       const method = isEditing ? 'PUT' : 'POST'
 
       const response = await fetch(url, {
@@ -42,59 +42,64 @@ export default function GuestForm({ guest }: GuestFormProps) {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          name,
-        }),
+        body: JSON.stringify(data),
       })
 
       if (!response.ok) {
-        const data = await response.json()
-        throw new Error(data.error || 'Ocorreu um erro ao salvar o convidado')
+        const errorData = await response.json()
+        throw new Error(errorData.error || 'Ocorreu um erro ao salvar o convidado')
       }
 
+      return response.json()
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['guests'] })
+      toast.success(isEditing ? 'Convidado atualizado com sucesso' : 'Convidado adicionado com sucesso')
       router.push('/admin/convidados')
       router.refresh()
-    } catch (err) {
-      console.error('Erro ao salvar convidado:', err)
-      setError(err instanceof Error ? err.message : 'Ocorreu um erro inesperado')
-    } finally {
-      setIsSubmitting(false)
-    }
+    },
+    onError: error => {
+      toast.error(error instanceof Error ? error.message : 'Ocorreu um erro inesperado')
+    },
+  })
+
+  const onSubmit = (data: GuestFormData) => {
+    saveMutation.mutate(data)
   }
 
   return (
-    <form onSubmit={handleSubmit} className="bg-white p-6 rounded-lg shadow-md">
-      {error && <div className="mb-4 p-3 bg-red-50 text-red-800 rounded-md">{error}</div>}
+    <Card>
+      <CardHeader>
+        <CardTitle>Formulário</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Nome *</FormLabel>
+                  <FormControl>
+                    <Input {...field} placeholder="Nome do convidado" />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-      <div className="mb-4">
-        <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
-          Nome*
-        </label>
-        <input
-          id="name"
-          type="text"
-          value={name}
-          onChange={e => setName(e.target.value)}
-          className="w-full p-2 border rounded focus:ring-blue-500 focus:border-blue-500"
-          placeholder="Nome do convidado"
-          required
-        />
-      </div>
-
-      <div className="flex justify-between">
-        <Link
-          href="/admin/convidados"
-          className="py-2 px-4 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50">
-          Cancelar
-        </Link>
-        <button
-          type="submit"
-          disabled={isSubmitting}
-          className="py-2 px-4 bg-blue-600 text-white rounded-md hover:bg-blue-700 
-                    disabled:opacity-50 disabled:pointer-events-none">
-          {isSubmitting ? 'Salvando...' : isEditing ? 'Atualizar Convidado' : 'Adicionar Convidado'}
-        </button>
-      </div>
-    </form>
+            <div className="flex justify-between pt-4">
+              <Button asChild variant="outline">
+                <Link href="/admin/convidados">Cancelar</Link>
+              </Button>
+              <Button type="submit" disabled={saveMutation.isPending}>
+                {saveMutation.isPending ? 'Salvando...' : isEditing ? 'Atualizar' : 'Adicionar'}
+              </Button>
+            </div>
+          </form>
+        </Form>
+      </CardContent>
+    </Card>
   )
 }

@@ -18,12 +18,14 @@ export default async function ConfirmacaoTokenPage({params}: {params: Promise<{ 
   }
 
   return (
-    <div className="container max-w-md mx-auto py-10">
-      <h1 className="text-3xl font-bold text-center mb-6">Confirmação de Presença</h1>
-      <div className="bg-white p-6 rounded-lg shadow-md">
-        <p className="text-xl mb-4 text-center">Olá, {guest.name}!</p>
-        <p className="text-gray-600 mb-6 text-center">Gostaríamos de confirmar sua presença em nosso casamento.</p>
-        <ConfirmationForm guest={guest} />
+    <div className="flex items-center justify-center bg-gradient-to-b from-amber-50 to-amber-100 py-10 px-4">
+      <div className="w-full max-w-md bg-white rounded-2xl shadow-xl overflow-hidden">
+        <div className="p-8">
+          <h1 className="text-3xl font-bold text-center mb-6 text-amber-800">Confirmação de Presença</h1>
+          <p className="text-xl mb-4 text-center font-medium">Olá, {guest.name}!</p>
+          <p className="text-gray-600 mb-8 text-center">Gostaríamos de confirmar sua presença em nosso casamento.</p>
+          <ConfirmationForm guest={guest} />
+        </div>
       </div>
     </div>
   )

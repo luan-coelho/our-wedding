@@ -1,34 +1,22 @@
 'use client'
 
 import AdminProtected from '@/components/AdminProtected'
-import { useState } from 'react'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
+import { Input } from '@/components/ui/input'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import * as z from 'zod'
-
-// Esquema de validação Zod
-const giftSchema = z.object({
-  name: z.string().min(1, 'Nome é obrigatório'),
-  description: z.string().optional(),
-  price: z.string().optional(),
-  pixKey: z.string().optional(),
-  imageUrl: z.string().min(1, 'URL da imagem é obrigatória'),
-})
-
-type GiftFormData = z.infer<typeof giftSchema>
+import { GiftFormData, giftSchema } from '../schema'
+import { Textarea } from '@/components/ui/textarea'
 
 export default function AddGiftPage() {
   const router = useRouter()
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState('')
+  const queryClient = useQueryClient()
 
-  const {
-    register,
-    handleSubmit,
-    setValue,
-    formState: { errors },
-  } = useForm<GiftFormData>({
+  const form = useForm<GiftFormData>({
     resolver: zodResolver(giftSchema),
     defaultValues: {
       name: '',
@@ -36,6 +24,35 @@ export default function AddGiftPage() {
       price: '',
       pixKey: '',
       imageUrl: '',
+    },
+  })
+
+  // Mutação para criar um novo presente
+  const createGiftMutation = useMutation({
+    mutationFn: async (data: any) => {
+      const response = await fetch('/api/gifts', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      })
+
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.error || 'Erro ao criar presente')
+      }
+
+      return response.json()
+    },
+    onSuccess: () => {
+      // Invalidar queries para forçar recarregamento de dados
+      queryClient.invalidateQueries({ queryKey: ['gifts'] })
+      // Redirecionar para a página de gerenciamento após sucesso
+      router.push('/admin/presentes')
+    },
+    onError: error => {
+      console.error('Erro ao criar presente:', error)
     },
   })
 
@@ -55,48 +72,15 @@ export default function AddGiftPage() {
     return ''
   }
 
-  // Manipulador para o campo de preço
-  const handlePriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const formattedValue = formatAsCurrency(e.target.value)
-    setValue('price', formattedValue)
-  }
-
+  // Handler para submissão do formulário
   const onSubmit = (formData: GiftFormData) => {
-    setLoading(true)
-    setError('')
-
     // Converter preço para número
     const processedData = {
       ...formData,
       price: formData.price ? parseFloat(formData.price.replace(/\./g, '').replace(',', '.')) : null,
     }
 
-    saveGift(processedData)
-  }
-
-  const saveGift = async (data: any) => {
-    try {
-      const response = await fetch('/api/gifts', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
-      })
-
-      if (!response.ok) {
-        const errorData = await response.json()
-        throw new Error(errorData.error || 'Erro ao criar presente')
-      }
-
-      // Redirecionar para a página de gerenciamento após sucesso
-      router.push('/admin/presentes')
-    } catch (error) {
-      console.error('Erro ao criar presente:', error)
-      setError(error instanceof Error ? error.message : 'Ocorreu um erro ao criar o presente')
-    } finally {
-      setLoading(false)
-    }
+    createGiftMutation.mutate(processedData)
   }
 
   return (
@@ -104,88 +88,111 @@ export default function AddGiftPage() {
       <div className="container mx-auto p-4">
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-2xl font-bold">Adicionar Novo Presente</h1>
-          <button
-            onClick={() => router.push('/admin/presentes')}
-            className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600">
+          <Button variant="secondary" onClick={() => router.push('/admin/presentes')}>
             Voltar
-          </button>
+          </Button>
         </div>
 
-        {error && <div className="bg-red-100 text-red-700 p-3 rounded mb-4">{error}</div>}
+        <Card className="rounded-lg">
+          <CardHeader>
+            <CardTitle>Informações do Presente</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <Form {...form}>
+              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+                <FormField
+                  control={form.control}
+                  name="name"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Nome *</FormLabel>
+                      <FormControl>
+                        <Input {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-        <form onSubmit={handleSubmit(onSubmit)} className="bg-white p-6 rounded-lg shadow-md">
-          <div className="mb-4">
-            <label htmlFor="name" className="block text-gray-700 font-bold mb-2">
-              Nome *
-            </label>
-            <input
-              id="name"
-              {...register('name')}
-              className={`w-full px-3 py-2 border rounded-md ${errors.name ? 'border-red-500' : ''}`}
-            />
-            {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name.message}</p>}
-          </div>
+                <FormField
+                  control={form.control}
+                  name="description"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Descrição</FormLabel>
+                      <FormControl>
+                        <Textarea {...field} rows={3} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-          <div className="mb-4">
-            <label htmlFor="description" className="block text-gray-700 font-bold mb-2">
-              Descrição
-            </label>
-            <textarea
-              id="description"
-              {...register('description')}
-              className="w-full px-3 py-2 border rounded-md"
-              rows={3}
-            />
-            {errors.description && <p className="text-red-500 text-sm mt-1">{errors.description.message}</p>}
-          </div>
+                <FormField
+                  control={form.control}
+                  name="price"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Preço (R$)</FormLabel>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          placeholder="0,00"
+                          onChange={e => {
+                            const formattedValue = formatAsCurrency(e.target.value)
+                            field.onChange(formattedValue)
+                          }}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-          <div className="mb-4">
-            <label htmlFor="price" className="block text-gray-700 font-bold mb-2">
-              Preço (R$)
-            </label>
-            <input
-              type="text"
-              id="price"
-              {...register('price')}
-              onChange={handlePriceChange}
-              className={`w-full px-3 py-2 border rounded-md ${errors.price ? 'border-red-500' : ''}`}
-              placeholder="0,00"
-            />
-            {errors.price && <p className="text-red-500 text-sm mt-1">{errors.price.message}</p>}
-          </div>
+                <FormField
+                  control={form.control}
+                  name="pixKey"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Chave PIX</FormLabel>
+                      <FormControl>
+                        <Input {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-          <div className="mb-4">
-            <label htmlFor="pixKey" className="block text-gray-700 font-bold mb-2">
-              Chave PIX
-            </label>
-            <input type="text" id="pixKey" {...register('pixKey')} className="w-full px-3 py-2 border rounded-md" />
-            {errors.pixKey && <p className="text-red-500 text-sm mt-1">{errors.pixKey.message}</p>}
-          </div>
+                <FormField
+                  control={form.control}
+                  name="imageUrl"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>URL da Imagem</FormLabel>
+                      <FormControl>
+                        <Input {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-          <div className="mb-4">
-            <label htmlFor="imageUrl" className="block text-gray-700 font-bold mb-2">
-              URL da Imagem
-            </label>
-            <input type="text" id="imageUrl" {...register('imageUrl')} className="w-full px-3 py-2 border rounded-md" />
-            {errors.imageUrl && <p className="text-red-500 text-sm mt-1">{errors.imageUrl.message}</p>}
-          </div>
-
-          <div className="flex justify-end mt-6">
-            <button
-              type="button"
-              onClick={() => router.push('/admin/presentes')}
-              className="bg-gray-500 text-white px-4 py-2 rounded mr-2 hover:bg-gray-600"
-              disabled={loading}>
-              Cancelar
-            </button>
-            <button
-              type="submit"
-              className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
-              disabled={loading}>
-              {loading ? 'Salvando...' : 'Salvar'}
-            </button>
-          </div>
-        </form>
+                <div className="flex justify-end gap-2">
+                  <Button
+                    type="button"
+                    variant="secondary"
+                    onClick={() => router.push('/admin/presentes')}
+                    disabled={createGiftMutation.isPending}>
+                    Cancelar
+                  </Button>
+                  <Button type="submit" disabled={createGiftMutation.isPending}>
+                    {createGiftMutation.isPending ? 'Salvando...' : 'Salvar'}
+                  </Button>
+                </div>
+              </form>
+            </Form>
+          </CardContent>
+        </Card>
       </div>
     </AdminProtected>
   )
