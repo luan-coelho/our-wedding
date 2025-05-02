@@ -1,5 +1,5 @@
 import { PrismaAdapter } from '@auth/prisma-adapter'
-import { compare } from 'bcrypt'
+import { compare } from 'bcryptjs'
 import NextAuth from 'next-auth'
 import CredentialsProvider from 'next-auth/providers/credentials'
 import { prisma } from './lib/prisma'
@@ -24,16 +24,15 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         if (!credentials?.email || !credentials?.password) {
           return null
         }
-
         const existingUser = await prisma.user.findUnique({
-          where: { email: credentials.email },
+          where: { email: credentials.email as string },
         })
 
         if (!existingUser || !existingUser.password) {
           return null
         }
 
-        const passwordMatch = await compare(credentials.password, existingUser.password)
+        const passwordMatch = await compare(credentials?.password as string, existingUser.password)
 
         if (!passwordMatch) {
           return null

@@ -1,44 +1,41 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 
+// Garante que as rotas da API sejam processadas dinamicamente
+export const dynamic = 'force-dynamic'
+
 export async function GET() {
   try {
     const guests = await prisma.guest.findMany({
       orderBy: {
-        createdAt: 'desc',
+        name: 'asc',
       },
     })
 
-    return NextResponse.json(guests, { status: 200 })
+    return NextResponse.json(guests)
   } catch (error) {
-    console.error('Erro ao buscar convidados:', error)
-    return NextResponse.json({ error: 'Erro ao buscar convidados' }, { status: 500 })
+    console.error('Erro ao listar convidados:', error)
+    return NextResponse.json({ error: 'Erro ao listar convidados' }, { status: 500 })
   }
 }
 
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json()
+    const { name } = await request.json()
 
-    const { nome, email, telefone, acompanhantes, presenca, mensagem } = body
-
-    // Validação básica
-    if (!nome) {
-      return NextResponse.json({ error: 'Nome é obrigatório' }, { status: 400 })
+    if (!name || name.trim() === '') {
+      return NextResponse.json({ error: 'O nome é obrigatório' }, { status: 400 })
     }
 
-    const guest = await prisma.guest.create({
+    const newGuest = await prisma.guest.create({
       data: {
-        name: nome,
-        email: email || null,
-        companions: acompanhantes || 0,
-        isConfirmed: presenca === 'sim',
+        name,
       },
     })
 
-    return NextResponse.json(guest, { status: 201 })
+    return NextResponse.json(newGuest, { status: 201 })
   } catch (error) {
     console.error('Erro ao criar convidado:', error)
-    return NextResponse.json({ error: 'Erro ao registrar presença' }, { status: 500 })
+    return NextResponse.json({ error: 'Erro ao criar convidado' }, { status: 500 })
   }
 }

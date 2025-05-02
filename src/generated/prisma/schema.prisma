@@ -63,39 +63,37 @@ model VerificationToken {
 }
 
 model Guest {
-  id          Int      @id @default(autoincrement())
+  id          Int       @id @default(autoincrement())
   name        String
-  email       String?
-  companions  Int      @default(0)
-  isConfirmed Boolean  @default(false)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  isConfirmed Boolean   @default(false)
+  token       String    @unique @default(uuid())
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime? @updatedAt
 }
 
 model Message {
-  id        Int      @id @default(autoincrement())
+  id        Int       @id @default(autoincrement())
   name      String
-  email     String?
   content   String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime  @default(now())
+  updatedAt DateTime? @updatedAt
 }
 
 model Gift {
-  id          Int      @id @default(autoincrement())
+  id          Int       @id @default(autoincrement())
   name        String
   description String
   price       Float?
   pixKey      String?
   imageUrl    String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime? @updatedAt
 }
 
 model Photo {
-  id          Int      @id @default(autoincrement())
+  id          Int       @id @default(autoincrement())
   url         String
   description String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime? @updatedAt
 }

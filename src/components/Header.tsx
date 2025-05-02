@@ -1,78 +1,95 @@
 'use client'
 
 import Link from 'next/link'
+import { useState, useEffect } from 'react'
 import { usePathname } from 'next/navigation'
-import { useState } from 'react'
 import { IoMenuOutline, IoCloseOutline } from 'react-icons/io5'
+import { useSession } from 'next-auth/react'
 
 const Header = () => {
   const pathname = usePathname()
   const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const { data: session } = useSession()
 
   const navItems = [
-    { name: 'Home', path: '/' },
+    { name: 'Início', path: '/' },
     { name: 'Nossa História', path: '/nossa-historia' },
-    { name: 'Confirmação', path: '/confirmacao' },
-    { name: 'Presentes', path: '/presentes' },
     { name: 'Localização', path: '/localizacao' },
+    { name: 'Presentes', path: '/presentes' },
     { name: 'Galeria', path: '/galeria' },
     { name: 'Mensagens', path: '/mensagens' },
   ]
+
+  useEffect(() => {
+    setIsMenuOpen(false)
+  }, [pathname])
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen)
   }
 
   return (
-    <header className="bg-wedding-secondary shadow-md sticky top-0 z-50">
-      <div className="wedding-container py-4 px-4 md:px-6">
-        <div className="flex justify-between items-center">
-          <Link href="/" className="font-bold text-2xl text-wedding-primary">
-            João & Maria
+    <header className="sticky top-0 z-50 bg-white shadow-md">
+      <div className="container mx-auto px-4">
+        <div className="flex items-center justify-between py-4">
+          <Link href="/" className="text-2xl font-bold">
+            Ester & Luan
           </Link>
 
-          {/* Mobile menu button */}
-          <button
-            className="md:hidden text-wedding-primary"
-            onClick={toggleMenu}
-            aria-label={isMenuOpen ? 'Fechar menu' : 'Abrir menu'}>
-            {isMenuOpen ? <IoCloseOutline size={28} /> : <IoMenuOutline size={28} />}
-          </button>
-
-          {/* Desktop navigation */}
+          {/* Desktop nav */}
           <nav className="hidden md:block">
-            <ul className="flex space-x-6">
+            <ul className="flex items-center space-x-8">
               {navItems.map(item => (
                 <li key={item.path}>
                   <Link
                     href={item.path}
-                    className={`text-sm font-medium hover:text-wedding-accent transition-colors ${
-                      pathname === item.path ? 'text-wedding-accent' : 'text-wedding-primary'
-                    }`}>
+                    className={`text-sm ${
+                      pathname === item.path ? 'text-wedding-accent font-medium' : 'text-gray-600'
+                    } hover:text-wedding-accent transition-colors`}>
                     {item.name}
                   </Link>
                 </li>
               ))}
+              {session && (
+                <li>
+                  <Link
+                    href="/admin"
+                    className="text-sm text-wedding-dark bg-wedding-accent/20 px-3 py-1 rounded-full hover:bg-wedding-accent/30 transition-colors">
+                    Admin
+                  </Link>
+                </li>
+              )}
             </ul>
           </nav>
+
+          {/* Mobile nav toggle */}
+          <button onClick={toggleMenu} className="md:hidden">
+            {isMenuOpen ? <IoCloseOutline size={24} /> : <IoMenuOutline size={24} />}
+          </button>
         </div>
 
-        {/* Mobile navigation */}
+        {/* Mobile nav */}
         {isMenuOpen && (
-          <nav className="md:hidden mt-4 pb-2">
-            <ul className="flex flex-col space-y-3">
+          <nav className="pb-6 md:hidden">
+            <ul className="space-y-4">
               {navItems.map(item => (
                 <li key={item.path}>
                   <Link
                     href={item.path}
-                    className={`block text-sm font-medium hover:text-wedding-accent transition-colors ${
-                      pathname === item.path ? 'text-wedding-accent' : 'text-wedding-primary'
-                    }`}
-                    onClick={() => setIsMenuOpen(false)}>
+                    className={`block py-2 ${
+                      pathname === item.path ? 'text-wedding-accent font-medium' : 'text-gray-600'
+                    } hover:text-wedding-accent transition-colors`}>
                     {item.name}
                   </Link>
                 </li>
               ))}
+              {session && (
+                <li>
+                  <Link href="/admin" className="block py-2 text-wedding-dark font-medium">
+                    Área Administrativa
+                  </Link>
+                </li>
+              )}
             </ul>
           </nav>
         )}

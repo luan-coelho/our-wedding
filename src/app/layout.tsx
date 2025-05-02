@@ -16,8 +16,8 @@ const geistMono = Geist_Mono({
 })
 
 export const metadata: Metadata = {
-  title: 'João & Maria - Nosso Casamento',
-  description: 'Site do casamento de João e Maria - Venha celebrar conosco!',
+  title: 'Ester & Luan - Nosso Casamento',
+  description: 'Site do casamento de Ester e Luan - Venha celebrar conosco!',
 }
 
 export default function RootLayout({

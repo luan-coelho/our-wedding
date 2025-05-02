@@ -18,7 +18,7 @@ export default function Home() {
         <div className="absolute inset-0">
           <Image
             src="/images/hero-wedding.jpg"
-            alt="João e Maria"
+            alt="Ester e Luan"
             fill
             priority
             style={{ objectFit: 'cover' }}
@@ -27,7 +27,7 @@ export default function Home() {
         </div>
         <div className="z-20 text-center text-white px-4 md:px-0">
           <h1 className="text-4xl md:text-6xl mb-4 font-light">
-            João <span className="font-serif">&</span> Maria
+            Ester <span className="font-serif">&</span> Luan
           </h1>
           <p className="text-lg md:text-2xl mb-8">Vamos nos casar em 12 de Setembro de 2025</p>
           <Link
@@ -84,7 +84,9 @@ export default function Home() {
       {/* Quick Links Section */}
       <section className="py-16">
         <div className="wedding-container">
-          <h2 className="text-3xl md:text-4xl text-center mb-12 font-light text-wedding-primary">Informações Importantes</h2>
+          <h2 className="text-3xl md:text-4xl text-center mb-12 font-light text-wedding-primary">
+            Informações Importantes
+          </h2>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <Link

@@ -11,7 +11,7 @@ const Footer = () => {
       <div className="wedding-container">
         <div className="flex flex-col md:flex-row justify-between items-center">
           <div className="mb-6 md:mb-0">
-            <h3 className="text-wedding-light text-lg font-semibold mb-2">João & Maria</h3>
+            <h3 className="text-wedding-light text-lg font-semibold mb-2">Ester & Luan</h3>
             <p className="text-sm opacity-80">Celebrando nosso amor em {currentYear}</p>
           </div>
 
@@ -52,7 +52,7 @@ const Footer = () => {
           <p className="flex items-center justify-center">
             Feito com <FaHeart className="mx-1 text-wedding-accent" /> para nosso grande dia
           </p>
-          <p className="mt-1">&copy; {currentYear} João & Maria. Todos os direitos reservados.</p>
+          <p className="mt-1">&copy; {currentYear} Ester & Luan. Todos os direitos reservados.</p>
         </div>
       </div>
     </footer>

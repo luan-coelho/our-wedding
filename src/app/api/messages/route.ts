@@ -20,7 +20,7 @@ export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
 
-    const { name, email, message } = body
+    const { name, message } = body
 
     // Validação básica
     if (!name || !message) {
@@ -30,7 +30,6 @@ export async function POST(request: NextRequest) {
     const newMessage = await prisma.message.create({
       data: {
         name,
-        email: email || null,
         content: message,
       },
     })

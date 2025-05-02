@@ -102,7 +102,7 @@ export default function MensagensPage() {
     <div className="py-16 px-4 wedding-container">
       <h1 className="text-3xl md:text-4xl text-center mb-4 font-light">Mensagens para os Noivos</h1>
       <p className="text-center text-wedding-accent mb-12 max-w-2xl mx-auto">
-        Deixe uma mensagem especial para João e Maria. Seu carinho será muito importante nesse momento!
+        Deixe uma mensagem especial para Ester e Luan. Seu carinho será muito importante nesse momento!
       </p>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
@@ -124,21 +124,6 @@ export default function MensagensPage() {
                   required
                   className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-wedding-primary/50"
                   placeholder="Como gostaria de ser identificado"
-                />
-              </div>
-
-              <div className="mb-4">
-                <label htmlFor="email" className="block text-sm font-medium text-wedding-dark mb-2">
-                  Seu e-mail
-                </label>
-                <input
-                  type="email"
-                  id="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-wedding-primary/50"
-                  placeholder="seu@email.com (opcional)"
                 />
               </div>
 

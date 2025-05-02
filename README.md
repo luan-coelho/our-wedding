@@ -1,4 +1,4 @@
-# Site de Casamento - João & Maria
+# Site de Casamento - Ester & Luan
 
 Este é um site para casamento desenvolvido com Next.js, React, TailwindCSS, Prisma e PostgreSQL. O site inclui várias páginas essenciais para um site de casamento, como: página inicial, confirmação de presença, lista de presentes, localização, galeria de fotos, mensagens para os noivos e a história do casal.
 
@@ -21,6 +21,7 @@ Este é um site para casamento desenvolvido com Next.js, React, TailwindCSS, Pri
 - **Mensagens para os Noivos**: Formulário para envio de mensagens
 - **História do Casal**: Timeline com a história de amor do casal
 - **Área de Administração**: Gerenciamento de presentes, mensagens e fotos (protegido por autenticação)
+- **Funcionalidade de Convite com Link**: Permite enviar um link único para cada convidado, que pode ser usado para confirmar presença no casamento sem necessidade de login ou cadastro
 
 ## Pré-requisitos
 
@@ -67,13 +68,7 @@ npm install
 npx prisma migrate dev
 ```
 
-6. Popule o banco de dados com dados iniciais:
-
-```bash
-npm run seed
-```
-
-7. Crie o usuário administrador:
+6. Crie o usuário administrador:
 
 ```bash
 npm run create-admin
@@ -108,6 +103,7 @@ npm start
 A área de administração está disponível em:
 
 - `/admin/presentes`: Gerenciamento de presentes
+- `/admin/convidados`: Gerenciamento de convidados
 
 Para acessar, use o email e senha definidos nas variáveis de ambiente `ADMIN_EMAIL` e `ADMIN_PASSWORD` ou os valores padrão:
 
@@ -134,3 +130,100 @@ Para acessar, use o email e senha definidos nas variáveis de ambiente `ADMIN_EM
 ## Licença
 
 Este projeto está licenciado sob a licença MIT.
+
+## Funcionalidade de Convite com Link
+
+### Visão Geral
+
+A funcionalidade de convite com link permite enviar um link único para cada convidado, que pode ser usado para confirmar presença no casamento sem necessidade de login ou cadastro.
+
+### Como Usar
+
+1. Acesse a página administrativa de convidados em `/admin/convidados`
+2. Adicione um novo convidado ou visualize a lista de convidados existentes
+3. Para cada convidado, um link único é gerado automaticamente
+4. Copie o link e envie para o convidado via e-mail, WhatsApp ou outro meio
+5. Quando o convidado acessa o link, ele pode confirmar ou recusar o convite
+6. O convidado pode mudar sua resposta a qualquer momento acessando o mesmo link
+
+### Estrutura da Funcionalidade
+
+- O modelo `Guest` no banco de dados foi atualizado para incluir um campo `token` único
+- Uma página em `/confirmacao/[token]` permite ao convidado confirmar presença
+- Uma API em `/api/guests/[token]/confirm` processa a confirmação
+- A página de administração em `/admin/convidados` permite gerenciar convidados e ver o status de confirmação
+
+## Executando com Docker (Recomendado)
+
+A maneira mais fácil de executar a aplicação é usando Docker e Docker Compose:
+
+1. Certifique-se de ter o Docker e o Docker Compose instalados no seu sistema
+2. Clone este repositório e navegue até o diretório do projeto
+3. Execute o script de inicialização:
+
+```bash
+./docker-init.sh
+```
+
+Este script irá:
+- Criar um arquivo .env se não existir
+- Construir e iniciar os containers Docker
+- Executar as migrações do banco de dados
+- Popular o banco de dados com dados iniciais
+- Criar um usuário administrador
+
+Após a execução, a aplicação estará disponível em: http://localhost:3000
+
+Para acessar a área administrativa, use:
+- URL: http://localhost:3000/admin
+- Email: admin@example.com (ou o que você definiu em .env)
+- Senha: senha_admin_segura (ou a que você definiu em .env)
+
+## Executando Manualmente
+
+Se preferir executar a aplicação manualmente sem Docker:
+
+### Pré-requisitos
+- Node.js 20 ou superior
+- pnpm instalado globalmente
+- PostgreSQL
+
+### Instalação
+
+1. Clone este repositório
+2. Instale as dependências:
+
+```bash
+pnpm install
+```
+
+3. Crie um arquivo `.env` com base no exemplo e configure as variáveis:
+
+```bash
+cp .env.example .env
+```
+
+4. Execute as migrações do banco de dados:
+
+```bash
+npx prisma migrate deploy
+```
+
+5. Crie um usuário administrador:
+
+```bash
+pnpm create-admin
+```
+
+6. Inicie a aplicação:
+
+```bash
+pnpm dev
+```
+
+## Estrutura do Projeto
+
+- `/src/app` - Rotas e páginas da aplicação
+- `/src/components` - Componentes React reutilizáveis
+- `/src/lib` - Utilitários e configurações
+- `/prisma` - Schema e migrações do banco de dados

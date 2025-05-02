@@ -29,19 +29,19 @@ model User {
 }
 
 model Account {
-  id                 String   @id @default(cuid())
-  userId             String
-  type               String
-  provider           String
-  providerAccountId  String
-  refresh_token      String?  @db.Text
-  access_token       String?  @db.Text
-  expires_at         Int?
-  token_type         String?
-  scope              String?
-  id_token           String?  @db.Text
-  session_state      String?
-  user               User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
 }
@@ -63,39 +63,37 @@ model VerificationToken {
 }
 
 model Guest {
-  id           Int       @id @default(autoincrement())
-  name         String
-  email        String?
-  companions   Int       @default(0)
-  isConfirmed  Boolean   @default(false)
-  createdAt    DateTime  @default(now())
-  updatedAt    DateTime  @updatedAt
+  id          Int       @id @default(autoincrement())
+  name        String
+  isConfirmed Boolean   @default(false)
+  token       String    @unique @default(uuid())
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime? @updatedAt
 }
 
 model Message {
-  id           Int       @id @default(autoincrement())
-  name         String
-  email        String?
-  content      String
-  createdAt    DateTime  @default(now())
-  updatedAt    DateTime  @updatedAt
+  id        Int       @id @default(autoincrement())
+  name      String
+  content   String
+  createdAt DateTime  @default(now())
+  updatedAt DateTime? @updatedAt
 }
 
 model Gift {
-  id           Int       @id @default(autoincrement())
-  name         String
-  description  String
-  price        Float?
-  pixKey       String?
-  imageUrl     String?
-  createdAt    DateTime  @default(now())
-  updatedAt    DateTime  @updatedAt
+  id          Int       @id @default(autoincrement())
+  name        String
+  description String
+  price       Float?
+  pixKey      String?
+  imageUrl    String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime? @updatedAt
 }
 
 model Photo {
-  id           Int       @id @default(autoincrement())
-  url          String
-  description  String?
-  createdAt    DateTime  @default(now())
-  updatedAt    DateTime  @updatedAt
+  id          Int       @id @default(autoincrement())
+  url         String
+  description String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime? @updatedAt
 }

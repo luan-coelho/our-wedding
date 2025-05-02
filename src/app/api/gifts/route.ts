@@ -2,6 +2,9 @@ import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { auth } from '@/auth'
 
+// Garante que as rotas da API sejam processadas dinamicamente
+export const dynamic = 'force-dynamic'
+
 export async function GET() {
   try {
     const gifts = await prisma.gift.findMany({
@@ -22,22 +25,22 @@ export async function POST(request: Request) {
 
   try {
     // Verificar autorização
-    if (!session?.user || session.user.role !== "admin") {
+    if (!session?.user || session.user.role !== 'admin') {
       return NextResponse.json({ error: 'Não autorizado' }, { status: 403 })
     }
 
     const body = await request.json()
-    
+
     const newGift = await prisma.gift.create({
       data: {
         name: body.name,
         description: body.description,
         price: body.price,
         pixKey: body.pixKey,
-        imageUrl: body.imageUrl
-      }
+        imageUrl: body.imageUrl,
+      },
     })
-    
+
     return NextResponse.json(newGift, { status: 201 })
   } catch (error) {
     console.error('Erro ao criar presente:', error)
@@ -50,25 +53,25 @@ export async function PUT(request: Request) {
 
   try {
     // Verificar autorização
-    if (!session?.user || session.user.role !== "admin") {
+    if (!session?.user || session.user.role !== 'admin') {
       return NextResponse.json({ error: 'Não autorizado' }, { status: 403 })
     }
 
     const body = await request.json()
-    
+
     const updatedGift = await prisma.gift.update({
       where: {
-        id: body.id
+        id: body.id,
       },
       data: {
         name: body.name,
         description: body.description,
         price: body.price,
         pixKey: body.pixKey,
-        imageUrl: body.imageUrl
-      }
+        imageUrl: body.imageUrl,
+      },
     })
-    
+
     return NextResponse.json(updatedGift, { status: 200 })
   } catch (error) {
     console.error('Erro ao atualizar presente:', error)
@@ -81,23 +84,23 @@ export async function DELETE(request: Request) {
 
   try {
     // Verificar autorização
-    if (!session?.user || session.user.role !== "admin") {
+    if (!session?.user || session.user.role !== 'admin') {
       return NextResponse.json({ error: 'Não autorizado' }, { status: 403 })
     }
 
     const { searchParams } = new URL(request.url)
     const id = searchParams.get('id')
-    
+
     if (!id) {
       return NextResponse.json({ error: 'ID não fornecido' }, { status: 400 })
     }
-    
+
     await prisma.gift.delete({
       where: {
-        id: parseInt(id)
-      }
+        id: parseInt(id),
+      },
     })
-    
+
     return NextResponse.json({ success: true }, { status: 200 })
   } catch (error) {
     console.error('Erro ao excluir presente:', error)

@@ -1,117 +1,111 @@
-"use client";
+'use client'
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { signIn } from "@/auth";
-import Image from "next/image";
+import { signIn } from 'next-auth/react'
+import { useRouter, useSearchParams } from 'next/navigation'
+import { useState, Suspense } from 'react'
 
-export default function LoginPage() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
-  const router = useRouter();
+function LoginForm() {
+  const router = useRouter()
+  const searchParams = useSearchParams()
+  const callbackUrl = searchParams.get('callbackUrl') || '/admin'
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!email || !password) {
-      setError("Por favor, preencha todos os campos");
-      return;
-    }
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [error, setError] = useState('')
+  const [isLoading, setIsLoading] = useState(false)
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault()
+    setIsLoading(true)
+    setError('')
 
     try {
-      setLoading(true);
-      setError("");
-
-      const result = await signIn("credentials", {
+      const result = await signIn('credentials', {
+        redirect: false,
         email,
         password,
-        redirect: false,
-      });
+      })
 
-      if (!result || result.error) {
-        setError("Credenciais inválidas");
-        return;
+      if (result?.error) {
+        setError('Credenciais inválidas. Por favor, verifique seu email e senha.')
+      } else {
+        router.push(callbackUrl)
       }
-
-      router.push("/admin/presentes");
-      router.refresh();
     } catch (error) {
-      setError("Ocorreu um erro ao fazer login");
+      setError('Ocorreu um erro ao fazer login. Por favor, tente novamente.')
     } finally {
-      setLoading(false);
+      setIsLoading(false)
     }
-  };
+  }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-50 to-pink-50">
-      <div className="bg-white p-8 rounded-xl shadow-lg w-full max-w-md border border-gray-100">
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-800 mb-2">Login de Administrador</h1>
-          <p className="text-gray-600">Acesse a área administrativa do site de casamento</p>
+    <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
+      <div className="rounded-md shadow-sm -space-y-px">
+        <div>
+          <label htmlFor="email" className="sr-only">
+            Email
+          </label>
+          <input
+            id="email"
+            name="email"
+            type="email"
+            required
+            className="appearance-none rounded-none relative block w-full px-3 py-2 border 
+                      border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md 
+                      focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10"
+            placeholder="Email"
+            value={email}
+            onChange={e => setEmail(e.target.value)}
+          />
         </div>
+        <div>
+          <label htmlFor="password" className="sr-only">
+            Senha
+          </label>
+          <input
+            id="password"
+            name="password"
+            type="password"
+            required
+            className="appearance-none rounded-none relative block w-full px-3 py-2 border 
+                      border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md 
+                      focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10"
+            placeholder="Senha"
+            value={password}
+            onChange={e => setPassword(e.target.value)}
+          />
+        </div>
+      </div>
 
-        {error && (
-          <div className="mb-6 p-3 bg-red-50 border border-red-200 text-red-700 rounded-lg">
-            <p className="flex items-center">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
-                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
-              </svg>
-              {error}
-            </p>
-          </div>
-        )}
+      {error && <div className="bg-red-50 text-red-800 p-3 rounded-md text-sm">{error}</div>}
 
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <div>
-            <label htmlFor="email" className="block text-gray-700 mb-2 font-medium">
-              Email
-            </label>
-            <input
-              type="email"
-              id="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
-              required
-              placeholder="admin@exemplo.com"
-            />
-          </div>
+      <div>
+        <button
+          type="submit"
+          disabled={isLoading}
+          className="group relative w-full flex justify-center py-2 px-4 border border-transparent 
+                    text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 
+                    focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 
+                    disabled:opacity-50 disabled:cursor-not-allowed">
+          {isLoading ? 'Entrando...' : 'Entrar'}
+        </button>
+      </div>
+    </form>
+  )
+}
 
-          <div>
-            <label htmlFor="password" className="block text-gray-700 mb-2 font-medium">
-              Senha
-            </label>
-            <input
-              type="password"
-              id="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
-              required
-              placeholder="••••••••"
-            />
-          </div>
-
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full bg-indigo-600 text-white py-3 px-4 rounded-lg hover:bg-indigo-700 disabled:bg-indigo-300 transition-colors font-medium"
-          >
-            {loading ? (
-              <span className="flex items-center justify-center">
-                <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                </svg>
-                Entrando...
-              </span>
-            ) : (
-              "Entrar"
-            )}
-          </button>
-        </form>
+export default function LoginPage() {
+  return (
+    <div className="flex items-center justify-center min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-md w-full space-y-8">
+        <div>
+          <h1 className="text-center text-3xl font-extrabold text-gray-900">Área Administrativa</h1>
+          <p className="mt-2 text-center text-sm text-gray-600">Acesse para gerenciar seu casamento</p>
+        </div>
+        <Suspense fallback={<div className="text-center">Carregando...</div>}>
+          <LoginForm />
+        </Suspense>
       </div>
     </div>
-  );
-} 
+  )
+}
