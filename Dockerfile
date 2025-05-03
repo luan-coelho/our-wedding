@@ -1,75 +1,61 @@
+# Stage 1: Base
 FROM node:20-alpine AS base
 
-# Instalar dependências necessárias para o Prisma e outras bibliotecas
-RUN apk add --no-cache libc6-compat openssl
+# Alpine já inclui o libc6-compat necessário para o Prisma
+RUN apk add --no-cache libc6-compat
+RUN corepack enable && corepack prepare pnpm@latest --activate
 
-# Configurar o diretório de trabalho
+# Stage 2: Dependencies
+FROM base AS dependencies
 WORKDIR /app
-
-# Instalar pnpm globalmente
-RUN npm install -g pnpm
-
-# Camada de dependências
-FROM base AS deps
-WORKDIR /app
-
-# Copiar arquivos de configuração de dependências
-COPY package.json pnpm-lock.yaml* ./
-COPY prisma ./prisma/
-
-# Instalar dependências
+COPY package.json pnpm-lock.yaml ./
 RUN pnpm install --frozen-lockfile
-RUN npx prisma generate
 
-# Camada de build
+# Stage 3: Builder
 FROM base AS builder
 WORKDIR /app
-
-# Copiar dependências da camada anterior
-COPY --from=deps /app/node_modules ./node_modules
-COPY --from=deps /app/src/generated ./src/generated
-
-# Copiar o código fonte
+COPY --from=dependencies /app/node_modules ./node_modules
 COPY . .
 
-# Variáveis de ambiente para o build
-ENV NEXT_TELEMETRY_DISABLED 1
-ENV NODE_ENV production
+# Configurar ambiente
+ENV NODE_ENV=production
+ENV NEXT_TELEMETRY_DISABLED=1
 
-# Build da aplicação
-RUN pnpm build --no-lint
+# Gerar o cliente Prisma
+RUN npx prisma generate
+RUN pnpm build
 
-# Camada de produção
+# Stage 4: Runner
 FROM base AS runner
 WORKDIR /app
 
-ENV NODE_ENV production
-ENV NEXT_TELEMETRY_DISABLED 1
+ENV NODE_ENV=production
+ENV NEXT_TELEMETRY_DISABLED=1
 
-# Criar usuário não-root para segurança
+# Criar usuário para executar a aplicação
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
-# Copiar apenas os arquivos necessários para execução
+# Copiar os arquivos necessários
+COPY --from=builder /app/next.config.ts ./
 COPY --from=builder /app/public ./public
-COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
-COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
+COPY --from=builder /app/.next/standalone ./
+COPY --from=builder /app/.next/static ./.next/static
 COPY --from=builder /app/prisma ./prisma
-COPY --from=builder /app/package.json ./package.json
+COPY --from=builder /app/src ./src
+COPY --from=builder /app/package.json ./
+COPY --from=builder /app/node_modules ./node_modules
+COPY docker-entrypoint.sh /app/docker-entrypoint.sh
 
-# Instalar apenas as dependências de produção necessárias
-RUN pnpm install --prod --ignore-scripts
-RUN npx prisma generate
+# Instalar cliente PostgreSQL para verificação de disponibilidade
+RUN apk add --no-cache postgresql-client
 
-# Definir usuário para execução
+RUN chmod +x /app/docker-entrypoint.sh
+
 USER nextjs
 
-# Expor a porta que a aplicação usa
 EXPOSE 3000
 
-# Definir variáveis de ambiente para a aplicação
-ENV PORT 3000
-ENV HOSTNAME "0.0.0.0"
+ENV PORT=3000
 
-# Comando para iniciar a aplicação
-CMD ["node", "server.js"] 
+CMD ["/app/docker-entrypoint.sh"] 

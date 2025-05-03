@@ -14,6 +14,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   pages: {
     signIn: routes.frontend.auth.login,
   },
+  trustHost: true,
   providers: [
     CredentialsProvider({
       name: 'Credentials',

@@ -227,3 +227,86 @@ pnpm dev
 - `/src/components` - Componentes React reutilizáveis
 - `/src/lib` - Utilitários e configurações
 - `/prisma` - Schema e migrações do banco de dados
+
+# Our Wedding
+
+Aplicação de site de casamento com recursos para gerenciamento de convidados, presentes, confirmações e galeria.
+
+## Executando em Produção com Docker
+
+### Pré-requisitos
+
+- Docker
+- Docker Compose
+
+### Passos para execução
+
+1. Clone o repositório:
+
+```bash
+git clone [URL_DO_REPOSITÓRIO]
+cd our-wedding
+```
+
+2. Configure as variáveis de ambiente:
+
+Edite o arquivo `docker-compose.yml` e ajuste as variáveis de ambiente conforme necessário, especialmente:
+- `NEXTAUTH_SECRET`: Defina um valor secreto forte
+- `NEXTAUTH_URL`: Configure para a URL onde sua aplicação será acessada
+
+3. Construa e inicie os containers:
+
+```bash
+docker-compose up -d
+```
+
+4. Acesse a aplicação:
+
+A aplicação estará disponível em `http://localhost:3000`
+
+### Conta de Administrador
+
+Um usuário administrador será criado automaticamente durante a inicialização através de um script Node.js:
+
+- Email: admin@gmail.com
+- Senha: admin
+
+**Importante**: Altere esta senha imediatamente após o primeiro login!
+
+Para criar manualmente o usuário administrador em ambiente de desenvolvimento, execute:
+
+```bash
+pnpm create-admin
+```
+
+### Interrompendo a aplicação
+
+```bash
+docker compose down
+```
+
+Para remover os volumes de dados (banco de dados):
+
+```bash
+docker compose down -v
+```
+
+## Desenvolvimento
+
+Para executar o projeto em ambiente de desenvolvimento:
+
+```bash
+pnpm install
+pnpm prisma generate
+pnpm prisma migrate dev
+pnpm dev
+```
+
+## Tecnologias
+
+- Next.js 15
+- React 19
+- Prisma
+- PostgreSQL
+- TailwindCSS 4
+- Shadcn UI

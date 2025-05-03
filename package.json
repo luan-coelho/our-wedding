@@ -8,7 +8,7 @@
     "start": "next start",
     "lint": "next lint",
     "fix": "prettier --write . && eslint --fix .",
-    "create-admin": "dotenv -e .env -- tsx scripts/create-admin.ts"
+    "create-admin": "tsx src/scripts/create-admin.ts"
   },
   "dependencies": {
     "@auth/prisma-adapter": "2.7.2",
