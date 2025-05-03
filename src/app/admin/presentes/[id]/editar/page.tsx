@@ -12,8 +12,9 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
-import { useEffect } from 'react'
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
+import { useEffect, useState } from 'react'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Eye, X } from 'lucide-react'
 
 interface Gift {
   id: number
@@ -36,6 +37,7 @@ export default function EditGiftPage() {
   const params = useParams<{ id: string }>()
   const router = useRouter()
   const queryClient = useQueryClient()
+  const [imagePreview, setImagePreview] = useState<string | null>(null)
   
   const id = parseInt(params.id as string)
 
@@ -52,7 +54,7 @@ export default function EditGiftPage() {
   })
 
   const watchUseCustomPixKey = form.watch('pixKey')
-
+  
   // Consulta para buscar os dados do presente
   const { data: gift, isLoading, error } = useQuery({
     queryKey: ['gift', id],
@@ -97,6 +99,11 @@ export default function EditGiftPage() {
         selectedPixKeyId: gift.pixKeyId || undefined,
         imageUrl: gift.imageUrl || '',
       })
+      
+      // Mostra a prévia da imagem se houver uma URL
+      if (gift.imageUrl) {
+        setImagePreview(gift.imageUrl)
+      }
     }
   }, [gift, form])
 
@@ -164,6 +171,30 @@ export default function EditGiftPage() {
     }
 
     updateMutation.mutate(processedData)
+  }
+
+  // Função para exibir a prévia da imagem
+  const handleShowImagePreview = () => {
+    const imageUrl = form.getValues('imageUrl')
+    if (imageUrl) {
+      setImagePreview(imageUrl)
+    } else {
+      toast.error('Por favor, insira uma URL de imagem para visualizar')
+      setImagePreview(null)
+    }
+  }
+
+  // Função para limpar a prévia da imagem
+  const handleClearImagePreview = () => {
+    setImagePreview(null)
+  }
+
+  // Função para lidar com erros de carregamento de imagem
+  const handleImageError = () => {
+    if (imagePreview) {
+      toast.error('Não foi possível carregar a imagem a partir da URL fornecida')
+      setImagePreview(null)
+    }
   }
 
   if (isLoading) {
@@ -281,22 +312,21 @@ export default function EditGiftPage() {
                           render={({ field }) => (
                             <FormItem>
                               <FormControl>
-                                <RadioGroup
+                                <Select
                                   onValueChange={(value) => field.onChange(parseInt(value))}
                                   value={field.value?.toString()}
-                                  className="space-y-2"
                                 >
-                                  {pixKeys.map((pixKey) => (
-                                    <FormItem key={pixKey.id} className="flex items-center space-x-3 space-y-0">
-                                      <FormControl>
-                                        <RadioGroupItem value={pixKey.id.toString()} />
-                                      </FormControl>
-                                      <FormLabel className="font-normal cursor-pointer">
+                                  <SelectTrigger className="w-full">
+                                    <SelectValue placeholder="Selecione uma chave PIX" />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    {pixKeys.map((pixKey) => (
+                                      <SelectItem key={pixKey.id} value={pixKey.id.toString()}>
                                         {pixKey.name} ({pixKey.key})
-                                      </FormLabel>
-                                    </FormItem>
-                                  ))}
-                                </RadioGroup>
+                                      </SelectItem>
+                                    ))}
+                                  </SelectContent>
+                                </Select>
                               </FormControl>
                               <FormMessage />
                             </FormItem>
@@ -313,10 +343,42 @@ export default function EditGiftPage() {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>URL da Imagem</FormLabel>
-                      <FormControl>
-                        <Input {...field} />
-                      </FormControl>
+                      <div className="flex gap-2">
+                        <FormControl>
+                          <Input {...field} />
+                        </FormControl>
+                        <Button 
+                          type="button" 
+                          variant="outline" 
+                          size="icon" 
+                          onClick={handleShowImagePreview}
+                          title="Visualizar imagem"
+                        >
+                          <Eye className="h-4 w-4" />
+                        </Button>
+                      </div>
                       <FormMessage />
+                      {imagePreview && (
+                        <div className="mt-2 border rounded-md p-2 relative">
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="icon"
+                            className="absolute top-1 right-1 z-10"
+                            onClick={handleClearImagePreview}
+                          >
+                            <X className="h-4 w-4" />
+                          </Button>
+                          <div className="relative w-full h-48">
+                            <img
+                              src={imagePreview}
+                              alt="Prévia da imagem"
+                              className="rounded-md object-contain w-full h-full"
+                              onError={handleImageError}
+                            />
+                          </div>
+                        </div>
+                      )}
                     </FormItem>
                   )}
                 />

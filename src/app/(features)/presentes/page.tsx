@@ -16,6 +16,13 @@ interface Gift {
   price: number | null
   pixKey: string | null
   imageUrl: string | null
+  pixKeyId: number | null
+  selectedPixKey?: {
+    id: number
+    name: string
+    key: string
+    type: string
+  } | null
 }
 
 export default function PresentesPage() {
@@ -51,8 +58,23 @@ export default function PresentesPage() {
     }).format(price)
   }
 
+  // Função para obter a chave PIX efetiva (chave personalizada ou chave selecionada)
+  const getEffectivePixKey = (gift: Gift): string | null => {
+    // Usar a chave personalizada se estiver definida
+    if (gift.pixKey) {
+      return gift.pixKey
+    }
+    // Caso contrário, usar a chave selecionada se disponível
+    if (gift.selectedPixKey) {
+      return gift.selectedPixKey.key
+    }
+    // Se nenhuma chave estiver disponível, retornar null
+    return null
+  }
+
   // Função para copiar a chave PIX para o clipboard
-  const copyToClipboard = (pixKey: string | null, id: number) => {
+  const copyToClipboard = (gift: Gift, id: number) => {
+    const pixKey = getEffectivePixKey(gift)
     if (!pixKey) return
 
     navigator.clipboard.writeText(pixKey).then(() => {
@@ -62,7 +84,8 @@ export default function PresentesPage() {
   }
 
   // Função para gerar um QR Code (simulado)
-  const getQRCodeUrl = (pixKey: string | null) => {
+  const getQRCodeUrl = (gift: Gift) => {
+    const pixKey = getEffectivePixKey(gift)
     if (!pixKey) return ''
 
     // Em um caso real, você usaria uma API para gerar o QR Code
@@ -140,9 +163,9 @@ export default function PresentesPage() {
                   <CardFooter className="flex gap-3">
                     <Button 
                       variant="outline" 
-                      onClick={() => copyToClipboard(gift.pixKey, gift.id)} 
+                      onClick={() => copyToClipboard(gift, gift.id)} 
                       className="flex-1"
-                      disabled={!gift.pixKey}
+                      disabled={!getEffectivePixKey(gift)}
                     >
                       {copiedId === gift.id ? (
                         <>
@@ -160,7 +183,7 @@ export default function PresentesPage() {
                     <Button 
                       variant="secondary" 
                       onClick={() => setShowQRCode(gift.id)}
-                      disabled={!gift.pixKey}
+                      disabled={!getEffectivePixKey(gift)}
                     >
                       <FaQrcode className="mr-2 h-4 w-4" />
                       QR Code
@@ -181,16 +204,23 @@ export default function PresentesPage() {
               </DialogDescription>
             </DialogHeader>
             
-            {selectedGift && selectedGift.pixKey && (
+            {selectedGift && getEffectivePixKey(selectedGift) && (
               <div className="flex flex-col items-center p-4">
                 <div className="bg-white p-4 rounded-lg shadow-sm mb-4 border">
-                  <Image src={getQRCodeUrl(selectedGift.pixKey)} alt="QR Code PIX" width={200} height={200} />
+                  <Image src={getQRCodeUrl(selectedGift)} alt="QR Code PIX" width={200} height={200} />
                 </div>
 
-                <p className="text-sm text-gray-500 mb-4 text-center">Chave PIX: {selectedGift.pixKey}</p>
+                <p className="text-sm text-gray-500 mb-4 text-center">
+                  Chave PIX: {getEffectivePixKey(selectedGift)}
+                  {selectedGift.selectedPixKey && (
+                    <span className="block mt-1 text-xs">
+                      {selectedGift.selectedPixKey.name} ({selectedGift.selectedPixKey.type})
+                    </span>
+                  )}
+                </p>
 
                 <Button 
-                  onClick={() => copyToClipboard(selectedGift.pixKey, selectedGift.id)}
+                  onClick={() => copyToClipboard(selectedGift, selectedGift.id)}
                   className="w-full"
                 >
                   {copiedId === selectedGift.id ? (

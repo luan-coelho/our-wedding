@@ -70,20 +70,20 @@ const data = {
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
-    <Sidebar collapsible="offcanvas" {...props}>
-      <SidebarHeader>
+    <Sidebar className='bg-zinc-800' collapsible="offcanvas" {...props}>
+      <SidebarHeader className='bg-zinc-800'>
         <SidebarMenu>
-          <SidebarMenuItem>
-            <SidebarMenuButton asChild className="data-[slot=sidebar-menu-button]:!p-1.5">
+          <SidebarMenuItem className='bg-zinc-800'>
+            <SidebarMenuButton asChild className="data-[slot=sidebar-menu-button]:!p-1.5 text-white">
               <a href="#">
                 <IconInnerShadowTop className="!size-5" />
-                <span className="text-base font-semibold">Ester & Luan</span>
+                <span className="font-semibold">Ester & Luan</span>
               </a>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarHeader>
-      <SidebarContent>
+      <SidebarContent className='bg-zinc-800'>
         <NavMain items={data.navMain} />
       </SidebarContent>
       <SidebarFooter>
