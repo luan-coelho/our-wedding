@@ -153,31 +153,58 @@ A funcionalidade de convite com link permite enviar um link único para cada con
 - Uma API em `/api/guests/[token]/confirm` processa a confirmação
 - A página de administração em `/admin/convidados` permite gerenciar convidados e ver o status de confirmação
 
-## Executando com Docker (Recomendado)
+## Executando com Docker
 
-A maneira mais fácil de executar a aplicação é usando Docker e Docker Compose:
+Este projeto pode ser executado com Docker e Docker Compose, o que facilita a configuração do ambiente de desenvolvimento ou produção.
 
-1. Certifique-se de ter o Docker e o Docker Compose instalados no seu sistema
-2. Clone este repositório e navegue até o diretório do projeto
-3. Execute o script de inicialização:
+### Pré-requisitos
 
+- Docker
+- Docker Compose
+
+### Executando a aplicação
+
+1. Clone o repositório:
+   ```bash
+   git clone [URL_DO_REPOSITORIO]
+   cd our-wedding
+   ```
+
+2. Crie um arquivo `.env.prod` na raiz do projeto com as seguintes variáveis:
+   ```
+   NODE_ENV=production
+   DATABASE_URL="postgresql://postgres:prisma@postgres_db:5432/postgres?schema=public"
+   NEXTAUTH_URL=http://localhost:3000
+   NEXTAUTH_SECRET=meusegredomuitoseguro
+   ```
+   Certifique-se de substituir `meusegredomuitoseguro` por uma string segura aleatória em ambiente de produção.
+
+3. Execute a aplicação com Docker Compose:
+   ```bash
+   docker compose up --build -d
+   ```
+
+4. A aplicação estará disponível nos seguintes endereços:
+   - Aplicação web: http://localhost:3000
+   - Prisma Studio (gerenciamento de banco de dados): http://localhost:5555
+
+### Notas Técnicas
+
+- A aplicação usa pnpm como gerenciador de pacotes dentro dos containers Docker
+- O Prisma é configurado para gerar o cliente em ./src/generated/prisma
+- As migrações são executadas automaticamente na inicialização do container
+
+### Parando a aplicação
+
+Para parar a aplicação:
 ```bash
-./docker-init.sh
+docker compose down
 ```
 
-Este script irá:
-- Criar um arquivo .env se não existir
-- Construir e iniciar os containers Docker
-- Executar as migrações do banco de dados
-- Popular o banco de dados com dados iniciais
-- Criar um usuário administrador
-
-Após a execução, a aplicação estará disponível em: http://localhost:3000
-
-Para acessar a área administrativa, use:
-- URL: http://localhost:3000/admin
-- Email: admin@example.com (ou o que você definiu em .env)
-- Senha: senha_admin_segura (ou a que você definiu em .env)
+Para parar a aplicação e remover os volumes (isso excluirá os dados do banco):
+```bash
+docker compose down -v
+```
 
 ## Executando Manualmente
 

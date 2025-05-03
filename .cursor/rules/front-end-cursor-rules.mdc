@@ -43,6 +43,7 @@ Follow these rules when you write code:
 ### technology-versions
 
 Always use the following library versions:
+- Nodejs: 22
 - React: 19
 - Next.js: 15
 - TypeScript: 5

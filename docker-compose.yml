@@ -1,68 +1,65 @@
 services:
-  db:
-    image: postgres:16-alpine
+  postgres_db:
+    image: postgres:16
     hostname: postgres_db
     container_name: postgres_db
     restart: always
     environment:
+      POSTGRES_DB: wedding
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: wedding
     ports:
-      - "5432:5432"
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - '5432:5432'
+    networks:
+      - prisma-network
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres -d wedding"]
       interval: 5s
-      timeout: 5s
-      retries: 5
-      start_period: 10s
-    networks:
-      - prisma-network
+      timeout: 2s
+      retries: 20
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    command: postgres -c listen_addresses='*'
 
   app:
-    build:
-      context: .
+    build: 
+      context: .  
       dockerfile: Dockerfile
-    restart: always
-    depends_on:
-      db:
-        condition: service_healthy
     ports:
-      - "3000:3000"
-    environment:
-      DATABASE_URL: postgresql://postgres:postgres@db:5432/wedding
-      DATABASE_HOST: db
-      DATABASE_PORT: 5432
-      DATABASE_USER: postgres
-      DATABASE_PASSWORD: postgres
-      DATABASE_NAME: wedding
-      NEXTAUTH_URL: http://localhost:3000
-      NEXTAUTH_SECRET: seu_segredo_aqui_altere_em_producao
-      NODE_ENV: production
+      - '3000:3000'
+    stdin_open: true
+    tty: true
+    depends_on:
+      postgres_db:
+        condition: service_healthy
+    env_file:
+      - .env.prod
     networks:
       - prisma-network
 
   prisma-studio:
-    image: node:20-alpine
-    environment:
-      DATABASE_URL: postgresql://postgres:postgres@db:5432/wedding
+    image: node:lts-alpine3.17
+    working_dir: /app
     volumes:
       - .:/app
-    working_dir: /app
-    command: npx prisma studio --port 5555 --browser none
+    command: >
+      sh -c "npm install -g pnpm && 
+             pnpm exec prisma studio --port 5555 --browser none"
     ports:
       - "5555:5555"
+    env_file:
+      - .env.prod
     networks:
       - prisma-network
     depends_on:
-      db:
+      postgres_db:
         condition: service_healthy
-
-volumes:
-  postgres_data:
+      app:
+        condition: service_started
 
 networks:
   prisma-network:
-    name: prisma-network 
+    name: prisma-network
+
+volumes:
+  postgres_data: 

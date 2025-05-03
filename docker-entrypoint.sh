@@ -1,19 +1,24 @@
 #!/bin/sh
 
-# Esperar pelo PostgreSQL
-echo "Esperando pelo PostgreSQL..."
-while ! pg_isready -h $DATABASE_HOST -p $DATABASE_PORT -U $DATABASE_USER; do
-  sleep 1
-done
+# Aguarda alguns segundos para garantir que o PostgreSQL esteja pronto
+echo "Waiting for PostgreSQL to be fully ready..."
+sleep 5
 
-# Executar migrações do Prisma
-echo "Executando migrações do Prisma..."
-cd /app && npx prisma migrate deploy
+# Executa as migrações do Prisma
+echo "Running migrations..."
+npx prisma migrate deploy
 
-# Criar usuário administrador usando o script Node.js
-echo "Criando usuário administrador..."
-cd /app && npx tsx src/scripts/create-admin.ts
+# Regenera o cliente do Prisma
+echo "Generating Prisma client..."
+npx prisma generate
 
-# Iniciar aplicação Next.js
-echo "Iniciando aplicação..."
-exec node server.js 
+# Inicia a aplicação
+echo "Starting application..."
+# Verifica se estamos usando a configuração standalone e inicia de acordo
+if [ -f ".next/standalone/server.js" ]; then
+  echo "Using standalone server..."
+  node .next/standalone/server.js
+else
+  echo "Using pnpm start..."
+  pnpm start
+fi 
