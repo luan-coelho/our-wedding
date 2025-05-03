@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { FaUsers, FaGift, FaComments, FaImages } from 'react-icons/fa'
+import { FaUsers, FaGift, FaComments, FaImages, FaKey } from 'react-icons/fa'
 
 export default function AdminPage() {
   const [_, setStats] = useState({
@@ -62,6 +62,13 @@ export default function AdminPage() {
       icon: <FaGift className="w-8 h-8" />,
       href: '/admin/presentes',
       color: 'bg-green-50 text-green-600',
+    },
+    {
+      title: 'Chaves PIX',
+      description: 'Gerencie as chaves PIX para recebimento de presentes',
+      icon: <FaKey className="w-8 h-8" />,
+      href: '/admin/chaves-pix',
+      color: 'bg-purple-50 text-purple-600',
     },
     {
       title: 'Galeria',

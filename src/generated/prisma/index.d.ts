@@ -44,6 +44,11 @@ export type Guest = $Result.DefaultSelection<Prisma.$GuestPayload>
  */
 export type Message = $Result.DefaultSelection<Prisma.$MessagePayload>
 /**
+ * Model PixKey
+ * 
+ */
+export type PixKey = $Result.DefaultSelection<Prisma.$PixKeyPayload>
+/**
  * Model Gift
  * 
  */
@@ -238,6 +243,16 @@ export class PrismaClient<
     * ```
     */
   get message(): Prisma.MessageDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.pixKey`: Exposes CRUD operations for the **PixKey** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more PixKeys
+    * const pixKeys = await prisma.pixKey.findMany()
+    * ```
+    */
+  get pixKey(): Prisma.PixKeyDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.gift`: Exposes CRUD operations for the **Gift** model.
@@ -704,6 +719,7 @@ export namespace Prisma {
     VerificationToken: 'VerificationToken',
     Guest: 'Guest',
     Message: 'Message',
+    PixKey: 'PixKey',
     Gift: 'Gift',
     Photo: 'Photo'
   };
@@ -724,7 +740,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "account" | "session" | "verificationToken" | "guest" | "message" | "gift" | "photo"
+      modelProps: "user" | "account" | "session" | "verificationToken" | "guest" | "message" | "pixKey" | "gift" | "photo"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1172,6 +1188,80 @@ export namespace Prisma {
           }
         }
       }
+      PixKey: {
+        payload: Prisma.$PixKeyPayload<ExtArgs>
+        fields: Prisma.PixKeyFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.PixKeyFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PixKeyPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.PixKeyFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PixKeyPayload>
+          }
+          findFirst: {
+            args: Prisma.PixKeyFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PixKeyPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.PixKeyFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PixKeyPayload>
+          }
+          findMany: {
+            args: Prisma.PixKeyFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PixKeyPayload>[]
+          }
+          create: {
+            args: Prisma.PixKeyCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PixKeyPayload>
+          }
+          createMany: {
+            args: Prisma.PixKeyCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.PixKeyCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PixKeyPayload>[]
+          }
+          delete: {
+            args: Prisma.PixKeyDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PixKeyPayload>
+          }
+          update: {
+            args: Prisma.PixKeyUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PixKeyPayload>
+          }
+          deleteMany: {
+            args: Prisma.PixKeyDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.PixKeyUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.PixKeyUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PixKeyPayload>[]
+          }
+          upsert: {
+            args: Prisma.PixKeyUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PixKeyPayload>
+          }
+          aggregate: {
+            args: Prisma.PixKeyAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregatePixKey>
+          }
+          groupBy: {
+            args: Prisma.PixKeyGroupByArgs<ExtArgs>
+            result: $Utils.Optional<PixKeyGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.PixKeyCountArgs<ExtArgs>
+            result: $Utils.Optional<PixKeyCountAggregateOutputType> | number
+          }
+        }
+      }
       Gift: {
         payload: Prisma.$GiftPayload<ExtArgs>
         fields: Prisma.GiftFieldRefs
@@ -1410,6 +1500,7 @@ export namespace Prisma {
     verificationToken?: VerificationTokenOmit
     guest?: GuestOmit
     message?: MessageOmit
+    pixKey?: PixKeyOmit
     gift?: GiftOmit
     photo?: PhotoOmit
   }
@@ -1538,6 +1629,37 @@ export namespace Prisma {
    */
   export type UserCountOutputTypeCountSessionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: SessionWhereInput
+  }
+
+
+  /**
+   * Count Type PixKeyCountOutputType
+   */
+
+  export type PixKeyCountOutputType = {
+    gifts: number
+  }
+
+  export type PixKeyCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    gifts?: boolean | PixKeyCountOutputTypeCountGiftsArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * PixKeyCountOutputType without action
+   */
+  export type PixKeyCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PixKeyCountOutputType
+     */
+    select?: PixKeyCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * PixKeyCountOutputType without action
+   */
+  export type PixKeyCountOutputTypeCountGiftsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: GiftWhereInput
   }
 
 
@@ -7964,6 +8086,1123 @@ export namespace Prisma {
 
 
   /**
+   * Model PixKey
+   */
+
+  export type AggregatePixKey = {
+    _count: PixKeyCountAggregateOutputType | null
+    _avg: PixKeyAvgAggregateOutputType | null
+    _sum: PixKeySumAggregateOutputType | null
+    _min: PixKeyMinAggregateOutputType | null
+    _max: PixKeyMaxAggregateOutputType | null
+  }
+
+  export type PixKeyAvgAggregateOutputType = {
+    id: number | null
+  }
+
+  export type PixKeySumAggregateOutputType = {
+    id: number | null
+  }
+
+  export type PixKeyMinAggregateOutputType = {
+    id: number | null
+    name: string | null
+    key: string | null
+    type: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type PixKeyMaxAggregateOutputType = {
+    id: number | null
+    name: string | null
+    key: string | null
+    type: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type PixKeyCountAggregateOutputType = {
+    id: number
+    name: number
+    key: number
+    type: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type PixKeyAvgAggregateInputType = {
+    id?: true
+  }
+
+  export type PixKeySumAggregateInputType = {
+    id?: true
+  }
+
+  export type PixKeyMinAggregateInputType = {
+    id?: true
+    name?: true
+    key?: true
+    type?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type PixKeyMaxAggregateInputType = {
+    id?: true
+    name?: true
+    key?: true
+    type?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type PixKeyCountAggregateInputType = {
+    id?: true
+    name?: true
+    key?: true
+    type?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type PixKeyAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which PixKey to aggregate.
+     */
+    where?: PixKeyWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PixKeys to fetch.
+     */
+    orderBy?: PixKeyOrderByWithRelationInput | PixKeyOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: PixKeyWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PixKeys from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PixKeys.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned PixKeys
+    **/
+    _count?: true | PixKeyCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: PixKeyAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: PixKeySumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: PixKeyMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: PixKeyMaxAggregateInputType
+  }
+
+  export type GetPixKeyAggregateType<T extends PixKeyAggregateArgs> = {
+        [P in keyof T & keyof AggregatePixKey]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregatePixKey[P]>
+      : GetScalarType<T[P], AggregatePixKey[P]>
+  }
+
+
+
+
+  export type PixKeyGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: PixKeyWhereInput
+    orderBy?: PixKeyOrderByWithAggregationInput | PixKeyOrderByWithAggregationInput[]
+    by: PixKeyScalarFieldEnum[] | PixKeyScalarFieldEnum
+    having?: PixKeyScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: PixKeyCountAggregateInputType | true
+    _avg?: PixKeyAvgAggregateInputType
+    _sum?: PixKeySumAggregateInputType
+    _min?: PixKeyMinAggregateInputType
+    _max?: PixKeyMaxAggregateInputType
+  }
+
+  export type PixKeyGroupByOutputType = {
+    id: number
+    name: string
+    key: string
+    type: string
+    createdAt: Date
+    updatedAt: Date | null
+    _count: PixKeyCountAggregateOutputType | null
+    _avg: PixKeyAvgAggregateOutputType | null
+    _sum: PixKeySumAggregateOutputType | null
+    _min: PixKeyMinAggregateOutputType | null
+    _max: PixKeyMaxAggregateOutputType | null
+  }
+
+  type GetPixKeyGroupByPayload<T extends PixKeyGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<PixKeyGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof PixKeyGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], PixKeyGroupByOutputType[P]>
+            : GetScalarType<T[P], PixKeyGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type PixKeySelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    key?: boolean
+    type?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    gifts?: boolean | PixKey$giftsArgs<ExtArgs>
+    _count?: boolean | PixKeyCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["pixKey"]>
+
+  export type PixKeySelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    key?: boolean
+    type?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["pixKey"]>
+
+  export type PixKeySelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    key?: boolean
+    type?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["pixKey"]>
+
+  export type PixKeySelectScalar = {
+    id?: boolean
+    name?: boolean
+    key?: boolean
+    type?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type PixKeyOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "key" | "type" | "createdAt" | "updatedAt", ExtArgs["result"]["pixKey"]>
+  export type PixKeyInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    gifts?: boolean | PixKey$giftsArgs<ExtArgs>
+    _count?: boolean | PixKeyCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type PixKeyIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+  export type PixKeyIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+
+  export type $PixKeyPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "PixKey"
+    objects: {
+      gifts: Prisma.$GiftPayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: number
+      name: string
+      key: string
+      type: string
+      createdAt: Date
+      updatedAt: Date | null
+    }, ExtArgs["result"]["pixKey"]>
+    composites: {}
+  }
+
+  type PixKeyGetPayload<S extends boolean | null | undefined | PixKeyDefaultArgs> = $Result.GetResult<Prisma.$PixKeyPayload, S>
+
+  type PixKeyCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<PixKeyFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: PixKeyCountAggregateInputType | true
+    }
+
+  export interface PixKeyDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['PixKey'], meta: { name: 'PixKey' } }
+    /**
+     * Find zero or one PixKey that matches the filter.
+     * @param {PixKeyFindUniqueArgs} args - Arguments to find a PixKey
+     * @example
+     * // Get one PixKey
+     * const pixKey = await prisma.pixKey.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends PixKeyFindUniqueArgs>(args: SelectSubset<T, PixKeyFindUniqueArgs<ExtArgs>>): Prisma__PixKeyClient<$Result.GetResult<Prisma.$PixKeyPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one PixKey that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {PixKeyFindUniqueOrThrowArgs} args - Arguments to find a PixKey
+     * @example
+     * // Get one PixKey
+     * const pixKey = await prisma.pixKey.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends PixKeyFindUniqueOrThrowArgs>(args: SelectSubset<T, PixKeyFindUniqueOrThrowArgs<ExtArgs>>): Prisma__PixKeyClient<$Result.GetResult<Prisma.$PixKeyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first PixKey that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PixKeyFindFirstArgs} args - Arguments to find a PixKey
+     * @example
+     * // Get one PixKey
+     * const pixKey = await prisma.pixKey.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends PixKeyFindFirstArgs>(args?: SelectSubset<T, PixKeyFindFirstArgs<ExtArgs>>): Prisma__PixKeyClient<$Result.GetResult<Prisma.$PixKeyPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first PixKey that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PixKeyFindFirstOrThrowArgs} args - Arguments to find a PixKey
+     * @example
+     * // Get one PixKey
+     * const pixKey = await prisma.pixKey.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends PixKeyFindFirstOrThrowArgs>(args?: SelectSubset<T, PixKeyFindFirstOrThrowArgs<ExtArgs>>): Prisma__PixKeyClient<$Result.GetResult<Prisma.$PixKeyPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more PixKeys that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PixKeyFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all PixKeys
+     * const pixKeys = await prisma.pixKey.findMany()
+     * 
+     * // Get first 10 PixKeys
+     * const pixKeys = await prisma.pixKey.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const pixKeyWithIdOnly = await prisma.pixKey.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends PixKeyFindManyArgs>(args?: SelectSubset<T, PixKeyFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PixKeyPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a PixKey.
+     * @param {PixKeyCreateArgs} args - Arguments to create a PixKey.
+     * @example
+     * // Create one PixKey
+     * const PixKey = await prisma.pixKey.create({
+     *   data: {
+     *     // ... data to create a PixKey
+     *   }
+     * })
+     * 
+     */
+    create<T extends PixKeyCreateArgs>(args: SelectSubset<T, PixKeyCreateArgs<ExtArgs>>): Prisma__PixKeyClient<$Result.GetResult<Prisma.$PixKeyPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many PixKeys.
+     * @param {PixKeyCreateManyArgs} args - Arguments to create many PixKeys.
+     * @example
+     * // Create many PixKeys
+     * const pixKey = await prisma.pixKey.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends PixKeyCreateManyArgs>(args?: SelectSubset<T, PixKeyCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many PixKeys and returns the data saved in the database.
+     * @param {PixKeyCreateManyAndReturnArgs} args - Arguments to create many PixKeys.
+     * @example
+     * // Create many PixKeys
+     * const pixKey = await prisma.pixKey.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many PixKeys and only return the `id`
+     * const pixKeyWithIdOnly = await prisma.pixKey.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends PixKeyCreateManyAndReturnArgs>(args?: SelectSubset<T, PixKeyCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PixKeyPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a PixKey.
+     * @param {PixKeyDeleteArgs} args - Arguments to delete one PixKey.
+     * @example
+     * // Delete one PixKey
+     * const PixKey = await prisma.pixKey.delete({
+     *   where: {
+     *     // ... filter to delete one PixKey
+     *   }
+     * })
+     * 
+     */
+    delete<T extends PixKeyDeleteArgs>(args: SelectSubset<T, PixKeyDeleteArgs<ExtArgs>>): Prisma__PixKeyClient<$Result.GetResult<Prisma.$PixKeyPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one PixKey.
+     * @param {PixKeyUpdateArgs} args - Arguments to update one PixKey.
+     * @example
+     * // Update one PixKey
+     * const pixKey = await prisma.pixKey.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends PixKeyUpdateArgs>(args: SelectSubset<T, PixKeyUpdateArgs<ExtArgs>>): Prisma__PixKeyClient<$Result.GetResult<Prisma.$PixKeyPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more PixKeys.
+     * @param {PixKeyDeleteManyArgs} args - Arguments to filter PixKeys to delete.
+     * @example
+     * // Delete a few PixKeys
+     * const { count } = await prisma.pixKey.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends PixKeyDeleteManyArgs>(args?: SelectSubset<T, PixKeyDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more PixKeys.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PixKeyUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many PixKeys
+     * const pixKey = await prisma.pixKey.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends PixKeyUpdateManyArgs>(args: SelectSubset<T, PixKeyUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more PixKeys and returns the data updated in the database.
+     * @param {PixKeyUpdateManyAndReturnArgs} args - Arguments to update many PixKeys.
+     * @example
+     * // Update many PixKeys
+     * const pixKey = await prisma.pixKey.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more PixKeys and only return the `id`
+     * const pixKeyWithIdOnly = await prisma.pixKey.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends PixKeyUpdateManyAndReturnArgs>(args: SelectSubset<T, PixKeyUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PixKeyPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one PixKey.
+     * @param {PixKeyUpsertArgs} args - Arguments to update or create a PixKey.
+     * @example
+     * // Update or create a PixKey
+     * const pixKey = await prisma.pixKey.upsert({
+     *   create: {
+     *     // ... data to create a PixKey
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the PixKey we want to update
+     *   }
+     * })
+     */
+    upsert<T extends PixKeyUpsertArgs>(args: SelectSubset<T, PixKeyUpsertArgs<ExtArgs>>): Prisma__PixKeyClient<$Result.GetResult<Prisma.$PixKeyPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of PixKeys.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PixKeyCountArgs} args - Arguments to filter PixKeys to count.
+     * @example
+     * // Count the number of PixKeys
+     * const count = await prisma.pixKey.count({
+     *   where: {
+     *     // ... the filter for the PixKeys we want to count
+     *   }
+     * })
+    **/
+    count<T extends PixKeyCountArgs>(
+      args?: Subset<T, PixKeyCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], PixKeyCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a PixKey.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PixKeyAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends PixKeyAggregateArgs>(args: Subset<T, PixKeyAggregateArgs>): Prisma.PrismaPromise<GetPixKeyAggregateType<T>>
+
+    /**
+     * Group by PixKey.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PixKeyGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends PixKeyGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: PixKeyGroupByArgs['orderBy'] }
+        : { orderBy?: PixKeyGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, PixKeyGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetPixKeyGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the PixKey model
+   */
+  readonly fields: PixKeyFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for PixKey.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__PixKeyClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    gifts<T extends PixKey$giftsArgs<ExtArgs> = {}>(args?: Subset<T, PixKey$giftsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$GiftPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the PixKey model
+   */
+  interface PixKeyFieldRefs {
+    readonly id: FieldRef<"PixKey", 'Int'>
+    readonly name: FieldRef<"PixKey", 'String'>
+    readonly key: FieldRef<"PixKey", 'String'>
+    readonly type: FieldRef<"PixKey", 'String'>
+    readonly createdAt: FieldRef<"PixKey", 'DateTime'>
+    readonly updatedAt: FieldRef<"PixKey", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * PixKey findUnique
+   */
+  export type PixKeyFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PixKey
+     */
+    select?: PixKeySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PixKey
+     */
+    omit?: PixKeyOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PixKeyInclude<ExtArgs> | null
+    /**
+     * Filter, which PixKey to fetch.
+     */
+    where: PixKeyWhereUniqueInput
+  }
+
+  /**
+   * PixKey findUniqueOrThrow
+   */
+  export type PixKeyFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PixKey
+     */
+    select?: PixKeySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PixKey
+     */
+    omit?: PixKeyOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PixKeyInclude<ExtArgs> | null
+    /**
+     * Filter, which PixKey to fetch.
+     */
+    where: PixKeyWhereUniqueInput
+  }
+
+  /**
+   * PixKey findFirst
+   */
+  export type PixKeyFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PixKey
+     */
+    select?: PixKeySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PixKey
+     */
+    omit?: PixKeyOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PixKeyInclude<ExtArgs> | null
+    /**
+     * Filter, which PixKey to fetch.
+     */
+    where?: PixKeyWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PixKeys to fetch.
+     */
+    orderBy?: PixKeyOrderByWithRelationInput | PixKeyOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for PixKeys.
+     */
+    cursor?: PixKeyWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PixKeys from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PixKeys.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of PixKeys.
+     */
+    distinct?: PixKeyScalarFieldEnum | PixKeyScalarFieldEnum[]
+  }
+
+  /**
+   * PixKey findFirstOrThrow
+   */
+  export type PixKeyFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PixKey
+     */
+    select?: PixKeySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PixKey
+     */
+    omit?: PixKeyOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PixKeyInclude<ExtArgs> | null
+    /**
+     * Filter, which PixKey to fetch.
+     */
+    where?: PixKeyWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PixKeys to fetch.
+     */
+    orderBy?: PixKeyOrderByWithRelationInput | PixKeyOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for PixKeys.
+     */
+    cursor?: PixKeyWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PixKeys from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PixKeys.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of PixKeys.
+     */
+    distinct?: PixKeyScalarFieldEnum | PixKeyScalarFieldEnum[]
+  }
+
+  /**
+   * PixKey findMany
+   */
+  export type PixKeyFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PixKey
+     */
+    select?: PixKeySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PixKey
+     */
+    omit?: PixKeyOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PixKeyInclude<ExtArgs> | null
+    /**
+     * Filter, which PixKeys to fetch.
+     */
+    where?: PixKeyWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PixKeys to fetch.
+     */
+    orderBy?: PixKeyOrderByWithRelationInput | PixKeyOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing PixKeys.
+     */
+    cursor?: PixKeyWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PixKeys from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PixKeys.
+     */
+    skip?: number
+    distinct?: PixKeyScalarFieldEnum | PixKeyScalarFieldEnum[]
+  }
+
+  /**
+   * PixKey create
+   */
+  export type PixKeyCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PixKey
+     */
+    select?: PixKeySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PixKey
+     */
+    omit?: PixKeyOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PixKeyInclude<ExtArgs> | null
+    /**
+     * The data needed to create a PixKey.
+     */
+    data: XOR<PixKeyCreateInput, PixKeyUncheckedCreateInput>
+  }
+
+  /**
+   * PixKey createMany
+   */
+  export type PixKeyCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many PixKeys.
+     */
+    data: PixKeyCreateManyInput | PixKeyCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * PixKey createManyAndReturn
+   */
+  export type PixKeyCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PixKey
+     */
+    select?: PixKeySelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the PixKey
+     */
+    omit?: PixKeyOmit<ExtArgs> | null
+    /**
+     * The data used to create many PixKeys.
+     */
+    data: PixKeyCreateManyInput | PixKeyCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * PixKey update
+   */
+  export type PixKeyUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PixKey
+     */
+    select?: PixKeySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PixKey
+     */
+    omit?: PixKeyOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PixKeyInclude<ExtArgs> | null
+    /**
+     * The data needed to update a PixKey.
+     */
+    data: XOR<PixKeyUpdateInput, PixKeyUncheckedUpdateInput>
+    /**
+     * Choose, which PixKey to update.
+     */
+    where: PixKeyWhereUniqueInput
+  }
+
+  /**
+   * PixKey updateMany
+   */
+  export type PixKeyUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update PixKeys.
+     */
+    data: XOR<PixKeyUpdateManyMutationInput, PixKeyUncheckedUpdateManyInput>
+    /**
+     * Filter which PixKeys to update
+     */
+    where?: PixKeyWhereInput
+    /**
+     * Limit how many PixKeys to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * PixKey updateManyAndReturn
+   */
+  export type PixKeyUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PixKey
+     */
+    select?: PixKeySelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the PixKey
+     */
+    omit?: PixKeyOmit<ExtArgs> | null
+    /**
+     * The data used to update PixKeys.
+     */
+    data: XOR<PixKeyUpdateManyMutationInput, PixKeyUncheckedUpdateManyInput>
+    /**
+     * Filter which PixKeys to update
+     */
+    where?: PixKeyWhereInput
+    /**
+     * Limit how many PixKeys to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * PixKey upsert
+   */
+  export type PixKeyUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PixKey
+     */
+    select?: PixKeySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PixKey
+     */
+    omit?: PixKeyOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PixKeyInclude<ExtArgs> | null
+    /**
+     * The filter to search for the PixKey to update in case it exists.
+     */
+    where: PixKeyWhereUniqueInput
+    /**
+     * In case the PixKey found by the `where` argument doesn't exist, create a new PixKey with this data.
+     */
+    create: XOR<PixKeyCreateInput, PixKeyUncheckedCreateInput>
+    /**
+     * In case the PixKey was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<PixKeyUpdateInput, PixKeyUncheckedUpdateInput>
+  }
+
+  /**
+   * PixKey delete
+   */
+  export type PixKeyDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PixKey
+     */
+    select?: PixKeySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PixKey
+     */
+    omit?: PixKeyOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PixKeyInclude<ExtArgs> | null
+    /**
+     * Filter which PixKey to delete.
+     */
+    where: PixKeyWhereUniqueInput
+  }
+
+  /**
+   * PixKey deleteMany
+   */
+  export type PixKeyDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which PixKeys to delete
+     */
+    where?: PixKeyWhereInput
+    /**
+     * Limit how many PixKeys to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * PixKey.gifts
+   */
+  export type PixKey$giftsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Gift
+     */
+    select?: GiftSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Gift
+     */
+    omit?: GiftOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GiftInclude<ExtArgs> | null
+    where?: GiftWhereInput
+    orderBy?: GiftOrderByWithRelationInput | GiftOrderByWithRelationInput[]
+    cursor?: GiftWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: GiftScalarFieldEnum | GiftScalarFieldEnum[]
+  }
+
+  /**
+   * PixKey without action
+   */
+  export type PixKeyDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PixKey
+     */
+    select?: PixKeySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PixKey
+     */
+    omit?: PixKeyOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PixKeyInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Model Gift
    */
 
@@ -7978,11 +9217,13 @@ export namespace Prisma {
   export type GiftAvgAggregateOutputType = {
     id: number | null
     price: number | null
+    pixKeyId: number | null
   }
 
   export type GiftSumAggregateOutputType = {
     id: number | null
     price: number | null
+    pixKeyId: number | null
   }
 
   export type GiftMinAggregateOutputType = {
@@ -7991,6 +9232,7 @@ export namespace Prisma {
     description: string | null
     price: number | null
     pixKey: string | null
+    pixKeyId: number | null
     imageUrl: string | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -8002,6 +9244,7 @@ export namespace Prisma {
     description: string | null
     price: number | null
     pixKey: string | null
+    pixKeyId: number | null
     imageUrl: string | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -8013,6 +9256,7 @@ export namespace Prisma {
     description: number
     price: number
     pixKey: number
+    pixKeyId: number
     imageUrl: number
     createdAt: number
     updatedAt: number
@@ -8023,11 +9267,13 @@ export namespace Prisma {
   export type GiftAvgAggregateInputType = {
     id?: true
     price?: true
+    pixKeyId?: true
   }
 
   export type GiftSumAggregateInputType = {
     id?: true
     price?: true
+    pixKeyId?: true
   }
 
   export type GiftMinAggregateInputType = {
@@ -8036,6 +9282,7 @@ export namespace Prisma {
     description?: true
     price?: true
     pixKey?: true
+    pixKeyId?: true
     imageUrl?: true
     createdAt?: true
     updatedAt?: true
@@ -8047,6 +9294,7 @@ export namespace Prisma {
     description?: true
     price?: true
     pixKey?: true
+    pixKeyId?: true
     imageUrl?: true
     createdAt?: true
     updatedAt?: true
@@ -8058,6 +9306,7 @@ export namespace Prisma {
     description?: true
     price?: true
     pixKey?: true
+    pixKeyId?: true
     imageUrl?: true
     createdAt?: true
     updatedAt?: true
@@ -8156,6 +9405,7 @@ export namespace Prisma {
     description: string
     price: number | null
     pixKey: string | null
+    pixKeyId: number | null
     imageUrl: string | null
     createdAt: Date
     updatedAt: Date | null
@@ -8186,9 +9436,11 @@ export namespace Prisma {
     description?: boolean
     price?: boolean
     pixKey?: boolean
+    pixKeyId?: boolean
     imageUrl?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    selectedPixKey?: boolean | Gift$selectedPixKeyArgs<ExtArgs>
   }, ExtArgs["result"]["gift"]>
 
   export type GiftSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -8197,9 +9449,11 @@ export namespace Prisma {
     description?: boolean
     price?: boolean
     pixKey?: boolean
+    pixKeyId?: boolean
     imageUrl?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    selectedPixKey?: boolean | Gift$selectedPixKeyArgs<ExtArgs>
   }, ExtArgs["result"]["gift"]>
 
   export type GiftSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -8208,9 +9462,11 @@ export namespace Prisma {
     description?: boolean
     price?: boolean
     pixKey?: boolean
+    pixKeyId?: boolean
     imageUrl?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    selectedPixKey?: boolean | Gift$selectedPixKeyArgs<ExtArgs>
   }, ExtArgs["result"]["gift"]>
 
   export type GiftSelectScalar = {
@@ -8219,22 +9475,35 @@ export namespace Prisma {
     description?: boolean
     price?: boolean
     pixKey?: boolean
+    pixKeyId?: boolean
     imageUrl?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type GiftOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "description" | "price" | "pixKey" | "imageUrl" | "createdAt" | "updatedAt", ExtArgs["result"]["gift"]>
+  export type GiftOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "description" | "price" | "pixKey" | "pixKeyId" | "imageUrl" | "createdAt" | "updatedAt", ExtArgs["result"]["gift"]>
+  export type GiftInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    selectedPixKey?: boolean | Gift$selectedPixKeyArgs<ExtArgs>
+  }
+  export type GiftIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    selectedPixKey?: boolean | Gift$selectedPixKeyArgs<ExtArgs>
+  }
+  export type GiftIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    selectedPixKey?: boolean | Gift$selectedPixKeyArgs<ExtArgs>
+  }
 
   export type $GiftPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Gift"
-    objects: {}
+    objects: {
+      selectedPixKey: Prisma.$PixKeyPayload<ExtArgs> | null
+    }
     scalars: $Extensions.GetPayloadResult<{
       id: number
       name: string
       description: string
       price: number | null
       pixKey: string | null
+      pixKeyId: number | null
       imageUrl: string | null
       createdAt: Date
       updatedAt: Date | null
@@ -8632,6 +9901,7 @@ export namespace Prisma {
    */
   export interface Prisma__GiftClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
+    selectedPixKey<T extends Gift$selectedPixKeyArgs<ExtArgs> = {}>(args?: Subset<T, Gift$selectedPixKeyArgs<ExtArgs>>): Prisma__PixKeyClient<$Result.GetResult<Prisma.$PixKeyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -8666,6 +9936,7 @@ export namespace Prisma {
     readonly description: FieldRef<"Gift", 'String'>
     readonly price: FieldRef<"Gift", 'Float'>
     readonly pixKey: FieldRef<"Gift", 'String'>
+    readonly pixKeyId: FieldRef<"Gift", 'Int'>
     readonly imageUrl: FieldRef<"Gift", 'String'>
     readonly createdAt: FieldRef<"Gift", 'DateTime'>
     readonly updatedAt: FieldRef<"Gift", 'DateTime'>
@@ -8686,6 +9957,10 @@ export namespace Prisma {
      */
     omit?: GiftOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GiftInclude<ExtArgs> | null
+    /**
      * Filter, which Gift to fetch.
      */
     where: GiftWhereUniqueInput
@@ -8704,6 +9979,10 @@ export namespace Prisma {
      */
     omit?: GiftOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GiftInclude<ExtArgs> | null
+    /**
      * Filter, which Gift to fetch.
      */
     where: GiftWhereUniqueInput
@@ -8721,6 +10000,10 @@ export namespace Prisma {
      * Omit specific fields from the Gift
      */
     omit?: GiftOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GiftInclude<ExtArgs> | null
     /**
      * Filter, which Gift to fetch.
      */
@@ -8770,6 +10053,10 @@ export namespace Prisma {
      */
     omit?: GiftOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GiftInclude<ExtArgs> | null
+    /**
      * Filter, which Gift to fetch.
      */
     where?: GiftWhereInput
@@ -8818,6 +10105,10 @@ export namespace Prisma {
      */
     omit?: GiftOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GiftInclude<ExtArgs> | null
+    /**
      * Filter, which Gifts to fetch.
      */
     where?: GiftWhereInput
@@ -8861,6 +10152,10 @@ export namespace Prisma {
      */
     omit?: GiftOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GiftInclude<ExtArgs> | null
+    /**
      * The data needed to create a Gift.
      */
     data: XOR<GiftCreateInput, GiftUncheckedCreateInput>
@@ -8894,6 +10189,10 @@ export namespace Prisma {
      */
     data: GiftCreateManyInput | GiftCreateManyInput[]
     skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GiftIncludeCreateManyAndReturn<ExtArgs> | null
   }
 
   /**
@@ -8908,6 +10207,10 @@ export namespace Prisma {
      * Omit specific fields from the Gift
      */
     omit?: GiftOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GiftInclude<ExtArgs> | null
     /**
      * The data needed to update a Gift.
      */
@@ -8960,6 +10263,10 @@ export namespace Prisma {
      * Limit how many Gifts to update.
      */
     limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GiftIncludeUpdateManyAndReturn<ExtArgs> | null
   }
 
   /**
@@ -8974,6 +10281,10 @@ export namespace Prisma {
      * Omit specific fields from the Gift
      */
     omit?: GiftOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GiftInclude<ExtArgs> | null
     /**
      * The filter to search for the Gift to update in case it exists.
      */
@@ -9001,6 +10312,10 @@ export namespace Prisma {
      */
     omit?: GiftOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GiftInclude<ExtArgs> | null
+    /**
      * Filter which Gift to delete.
      */
     where: GiftWhereUniqueInput
@@ -9021,6 +10336,25 @@ export namespace Prisma {
   }
 
   /**
+   * Gift.selectedPixKey
+   */
+  export type Gift$selectedPixKeyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PixKey
+     */
+    select?: PixKeySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PixKey
+     */
+    omit?: PixKeyOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PixKeyInclude<ExtArgs> | null
+    where?: PixKeyWhereInput
+  }
+
+  /**
    * Gift without action
    */
   export type GiftDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -9032,6 +10366,10 @@ export namespace Prisma {
      * Omit specific fields from the Gift
      */
     omit?: GiftOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GiftInclude<ExtArgs> | null
   }
 
 
@@ -10153,12 +11491,25 @@ export namespace Prisma {
   export type MessageScalarFieldEnum = (typeof MessageScalarFieldEnum)[keyof typeof MessageScalarFieldEnum]
 
 
+  export const PixKeyScalarFieldEnum: {
+    id: 'id',
+    name: 'name',
+    key: 'key',
+    type: 'type',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type PixKeyScalarFieldEnum = (typeof PixKeyScalarFieldEnum)[keyof typeof PixKeyScalarFieldEnum]
+
+
   export const GiftScalarFieldEnum: {
     id: 'id',
     name: 'name',
     description: 'description',
     price: 'price',
     pixKey: 'pixKey',
+    pixKeyId: 'pixKeyId',
     imageUrl: 'imageUrl',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
@@ -10650,6 +12001,68 @@ export namespace Prisma {
     updatedAt?: DateTimeNullableWithAggregatesFilter<"Message"> | Date | string | null
   }
 
+  export type PixKeyWhereInput = {
+    AND?: PixKeyWhereInput | PixKeyWhereInput[]
+    OR?: PixKeyWhereInput[]
+    NOT?: PixKeyWhereInput | PixKeyWhereInput[]
+    id?: IntFilter<"PixKey"> | number
+    name?: StringFilter<"PixKey"> | string
+    key?: StringFilter<"PixKey"> | string
+    type?: StringFilter<"PixKey"> | string
+    createdAt?: DateTimeFilter<"PixKey"> | Date | string
+    updatedAt?: DateTimeNullableFilter<"PixKey"> | Date | string | null
+    gifts?: GiftListRelationFilter
+  }
+
+  export type PixKeyOrderByWithRelationInput = {
+    id?: SortOrder
+    name?: SortOrder
+    key?: SortOrder
+    type?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrderInput | SortOrder
+    gifts?: GiftOrderByRelationAggregateInput
+  }
+
+  export type PixKeyWhereUniqueInput = Prisma.AtLeast<{
+    id?: number
+    key?: string
+    AND?: PixKeyWhereInput | PixKeyWhereInput[]
+    OR?: PixKeyWhereInput[]
+    NOT?: PixKeyWhereInput | PixKeyWhereInput[]
+    name?: StringFilter<"PixKey"> | string
+    type?: StringFilter<"PixKey"> | string
+    createdAt?: DateTimeFilter<"PixKey"> | Date | string
+    updatedAt?: DateTimeNullableFilter<"PixKey"> | Date | string | null
+    gifts?: GiftListRelationFilter
+  }, "id" | "key">
+
+  export type PixKeyOrderByWithAggregationInput = {
+    id?: SortOrder
+    name?: SortOrder
+    key?: SortOrder
+    type?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrderInput | SortOrder
+    _count?: PixKeyCountOrderByAggregateInput
+    _avg?: PixKeyAvgOrderByAggregateInput
+    _max?: PixKeyMaxOrderByAggregateInput
+    _min?: PixKeyMinOrderByAggregateInput
+    _sum?: PixKeySumOrderByAggregateInput
+  }
+
+  export type PixKeyScalarWhereWithAggregatesInput = {
+    AND?: PixKeyScalarWhereWithAggregatesInput | PixKeyScalarWhereWithAggregatesInput[]
+    OR?: PixKeyScalarWhereWithAggregatesInput[]
+    NOT?: PixKeyScalarWhereWithAggregatesInput | PixKeyScalarWhereWithAggregatesInput[]
+    id?: IntWithAggregatesFilter<"PixKey"> | number
+    name?: StringWithAggregatesFilter<"PixKey"> | string
+    key?: StringWithAggregatesFilter<"PixKey"> | string
+    type?: StringWithAggregatesFilter<"PixKey"> | string
+    createdAt?: DateTimeWithAggregatesFilter<"PixKey"> | Date | string
+    updatedAt?: DateTimeNullableWithAggregatesFilter<"PixKey"> | Date | string | null
+  }
+
   export type GiftWhereInput = {
     AND?: GiftWhereInput | GiftWhereInput[]
     OR?: GiftWhereInput[]
@@ -10659,9 +12072,11 @@ export namespace Prisma {
     description?: StringFilter<"Gift"> | string
     price?: FloatNullableFilter<"Gift"> | number | null
     pixKey?: StringNullableFilter<"Gift"> | string | null
+    pixKeyId?: IntNullableFilter<"Gift"> | number | null
     imageUrl?: StringNullableFilter<"Gift"> | string | null
     createdAt?: DateTimeFilter<"Gift"> | Date | string
     updatedAt?: DateTimeNullableFilter<"Gift"> | Date | string | null
+    selectedPixKey?: XOR<PixKeyNullableScalarRelationFilter, PixKeyWhereInput> | null
   }
 
   export type GiftOrderByWithRelationInput = {
@@ -10670,9 +12085,11 @@ export namespace Prisma {
     description?: SortOrder
     price?: SortOrderInput | SortOrder
     pixKey?: SortOrderInput | SortOrder
+    pixKeyId?: SortOrderInput | SortOrder
     imageUrl?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrderInput | SortOrder
+    selectedPixKey?: PixKeyOrderByWithRelationInput
   }
 
   export type GiftWhereUniqueInput = Prisma.AtLeast<{
@@ -10684,9 +12101,11 @@ export namespace Prisma {
     description?: StringFilter<"Gift"> | string
     price?: FloatNullableFilter<"Gift"> | number | null
     pixKey?: StringNullableFilter<"Gift"> | string | null
+    pixKeyId?: IntNullableFilter<"Gift"> | number | null
     imageUrl?: StringNullableFilter<"Gift"> | string | null
     createdAt?: DateTimeFilter<"Gift"> | Date | string
     updatedAt?: DateTimeNullableFilter<"Gift"> | Date | string | null
+    selectedPixKey?: XOR<PixKeyNullableScalarRelationFilter, PixKeyWhereInput> | null
   }, "id">
 
   export type GiftOrderByWithAggregationInput = {
@@ -10695,6 +12114,7 @@ export namespace Prisma {
     description?: SortOrder
     price?: SortOrderInput | SortOrder
     pixKey?: SortOrderInput | SortOrder
+    pixKeyId?: SortOrderInput | SortOrder
     imageUrl?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrderInput | SortOrder
@@ -10714,6 +12134,7 @@ export namespace Prisma {
     description?: StringWithAggregatesFilter<"Gift"> | string
     price?: FloatNullableWithAggregatesFilter<"Gift"> | number | null
     pixKey?: StringNullableWithAggregatesFilter<"Gift"> | string | null
+    pixKeyId?: IntNullableWithAggregatesFilter<"Gift"> | number | null
     imageUrl?: StringNullableWithAggregatesFilter<"Gift"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"Gift"> | Date | string
     updatedAt?: DateTimeNullableWithAggregatesFilter<"Gift"> | Date | string | null
@@ -11172,6 +12593,70 @@ export namespace Prisma {
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
+  export type PixKeyCreateInput = {
+    name: string
+    key: string
+    type: string
+    createdAt?: Date | string
+    updatedAt?: Date | string | null
+    gifts?: GiftCreateNestedManyWithoutSelectedPixKeyInput
+  }
+
+  export type PixKeyUncheckedCreateInput = {
+    id?: number
+    name: string
+    key: string
+    type: string
+    createdAt?: Date | string
+    updatedAt?: Date | string | null
+    gifts?: GiftUncheckedCreateNestedManyWithoutSelectedPixKeyInput
+  }
+
+  export type PixKeyUpdateInput = {
+    name?: StringFieldUpdateOperationsInput | string
+    key?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    gifts?: GiftUpdateManyWithoutSelectedPixKeyNestedInput
+  }
+
+  export type PixKeyUncheckedUpdateInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    name?: StringFieldUpdateOperationsInput | string
+    key?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    gifts?: GiftUncheckedUpdateManyWithoutSelectedPixKeyNestedInput
+  }
+
+  export type PixKeyCreateManyInput = {
+    id?: number
+    name: string
+    key: string
+    type: string
+    createdAt?: Date | string
+    updatedAt?: Date | string | null
+  }
+
+  export type PixKeyUpdateManyMutationInput = {
+    name?: StringFieldUpdateOperationsInput | string
+    key?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type PixKeyUncheckedUpdateManyInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    name?: StringFieldUpdateOperationsInput | string
+    key?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
   export type GiftCreateInput = {
     name: string
     description: string
@@ -11180,6 +12665,7 @@ export namespace Prisma {
     imageUrl?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string | null
+    selectedPixKey?: PixKeyCreateNestedOneWithoutGiftsInput
   }
 
   export type GiftUncheckedCreateInput = {
@@ -11188,6 +12674,7 @@ export namespace Prisma {
     description: string
     price?: number | null
     pixKey?: string | null
+    pixKeyId?: number | null
     imageUrl?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string | null
@@ -11201,6 +12688,7 @@ export namespace Prisma {
     imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    selectedPixKey?: PixKeyUpdateOneWithoutGiftsNestedInput
   }
 
   export type GiftUncheckedUpdateInput = {
@@ -11209,6 +12697,7 @@ export namespace Prisma {
     description?: StringFieldUpdateOperationsInput | string
     price?: NullableFloatFieldUpdateOperationsInput | number | null
     pixKey?: NullableStringFieldUpdateOperationsInput | string | null
+    pixKeyId?: NullableIntFieldUpdateOperationsInput | number | null
     imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -11220,6 +12709,7 @@ export namespace Prisma {
     description: string
     price?: number | null
     pixKey?: string | null
+    pixKeyId?: number | null
     imageUrl?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string | null
@@ -11241,6 +12731,7 @@ export namespace Prisma {
     description?: StringFieldUpdateOperationsInput | string
     price?: NullableFloatFieldUpdateOperationsInput | number | null
     pixKey?: NullableStringFieldUpdateOperationsInput | string | null
+    pixKeyId?: NullableIntFieldUpdateOperationsInput | number | null
     imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -11717,6 +13208,51 @@ export namespace Prisma {
     id?: SortOrder
   }
 
+  export type GiftListRelationFilter = {
+    every?: GiftWhereInput
+    some?: GiftWhereInput
+    none?: GiftWhereInput
+  }
+
+  export type GiftOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type PixKeyCountOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    key?: SortOrder
+    type?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type PixKeyAvgOrderByAggregateInput = {
+    id?: SortOrder
+  }
+
+  export type PixKeyMaxOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    key?: SortOrder
+    type?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type PixKeyMinOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    key?: SortOrder
+    type?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type PixKeySumOrderByAggregateInput = {
+    id?: SortOrder
+  }
+
   export type FloatNullableFilter<$PrismaModel = never> = {
     equals?: number | FloatFieldRefInput<$PrismaModel> | null
     in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
@@ -11728,12 +13264,18 @@ export namespace Prisma {
     not?: NestedFloatNullableFilter<$PrismaModel> | number | null
   }
 
+  export type PixKeyNullableScalarRelationFilter = {
+    is?: PixKeyWhereInput | null
+    isNot?: PixKeyWhereInput | null
+  }
+
   export type GiftCountOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
     description?: SortOrder
     price?: SortOrder
     pixKey?: SortOrder
+    pixKeyId?: SortOrder
     imageUrl?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -11742,6 +13284,7 @@ export namespace Prisma {
   export type GiftAvgOrderByAggregateInput = {
     id?: SortOrder
     price?: SortOrder
+    pixKeyId?: SortOrder
   }
 
   export type GiftMaxOrderByAggregateInput = {
@@ -11750,6 +13293,7 @@ export namespace Prisma {
     description?: SortOrder
     price?: SortOrder
     pixKey?: SortOrder
+    pixKeyId?: SortOrder
     imageUrl?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -11761,6 +13305,7 @@ export namespace Prisma {
     description?: SortOrder
     price?: SortOrder
     pixKey?: SortOrder
+    pixKeyId?: SortOrder
     imageUrl?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -11769,6 +13314,7 @@ export namespace Prisma {
   export type GiftSumOrderByAggregateInput = {
     id?: SortOrder
     price?: SortOrder
+    pixKeyId?: SortOrder
   }
 
   export type FloatNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -11967,12 +13513,70 @@ export namespace Prisma {
     divide?: number
   }
 
+  export type GiftCreateNestedManyWithoutSelectedPixKeyInput = {
+    create?: XOR<GiftCreateWithoutSelectedPixKeyInput, GiftUncheckedCreateWithoutSelectedPixKeyInput> | GiftCreateWithoutSelectedPixKeyInput[] | GiftUncheckedCreateWithoutSelectedPixKeyInput[]
+    connectOrCreate?: GiftCreateOrConnectWithoutSelectedPixKeyInput | GiftCreateOrConnectWithoutSelectedPixKeyInput[]
+    createMany?: GiftCreateManySelectedPixKeyInputEnvelope
+    connect?: GiftWhereUniqueInput | GiftWhereUniqueInput[]
+  }
+
+  export type GiftUncheckedCreateNestedManyWithoutSelectedPixKeyInput = {
+    create?: XOR<GiftCreateWithoutSelectedPixKeyInput, GiftUncheckedCreateWithoutSelectedPixKeyInput> | GiftCreateWithoutSelectedPixKeyInput[] | GiftUncheckedCreateWithoutSelectedPixKeyInput[]
+    connectOrCreate?: GiftCreateOrConnectWithoutSelectedPixKeyInput | GiftCreateOrConnectWithoutSelectedPixKeyInput[]
+    createMany?: GiftCreateManySelectedPixKeyInputEnvelope
+    connect?: GiftWhereUniqueInput | GiftWhereUniqueInput[]
+  }
+
+  export type GiftUpdateManyWithoutSelectedPixKeyNestedInput = {
+    create?: XOR<GiftCreateWithoutSelectedPixKeyInput, GiftUncheckedCreateWithoutSelectedPixKeyInput> | GiftCreateWithoutSelectedPixKeyInput[] | GiftUncheckedCreateWithoutSelectedPixKeyInput[]
+    connectOrCreate?: GiftCreateOrConnectWithoutSelectedPixKeyInput | GiftCreateOrConnectWithoutSelectedPixKeyInput[]
+    upsert?: GiftUpsertWithWhereUniqueWithoutSelectedPixKeyInput | GiftUpsertWithWhereUniqueWithoutSelectedPixKeyInput[]
+    createMany?: GiftCreateManySelectedPixKeyInputEnvelope
+    set?: GiftWhereUniqueInput | GiftWhereUniqueInput[]
+    disconnect?: GiftWhereUniqueInput | GiftWhereUniqueInput[]
+    delete?: GiftWhereUniqueInput | GiftWhereUniqueInput[]
+    connect?: GiftWhereUniqueInput | GiftWhereUniqueInput[]
+    update?: GiftUpdateWithWhereUniqueWithoutSelectedPixKeyInput | GiftUpdateWithWhereUniqueWithoutSelectedPixKeyInput[]
+    updateMany?: GiftUpdateManyWithWhereWithoutSelectedPixKeyInput | GiftUpdateManyWithWhereWithoutSelectedPixKeyInput[]
+    deleteMany?: GiftScalarWhereInput | GiftScalarWhereInput[]
+  }
+
+  export type GiftUncheckedUpdateManyWithoutSelectedPixKeyNestedInput = {
+    create?: XOR<GiftCreateWithoutSelectedPixKeyInput, GiftUncheckedCreateWithoutSelectedPixKeyInput> | GiftCreateWithoutSelectedPixKeyInput[] | GiftUncheckedCreateWithoutSelectedPixKeyInput[]
+    connectOrCreate?: GiftCreateOrConnectWithoutSelectedPixKeyInput | GiftCreateOrConnectWithoutSelectedPixKeyInput[]
+    upsert?: GiftUpsertWithWhereUniqueWithoutSelectedPixKeyInput | GiftUpsertWithWhereUniqueWithoutSelectedPixKeyInput[]
+    createMany?: GiftCreateManySelectedPixKeyInputEnvelope
+    set?: GiftWhereUniqueInput | GiftWhereUniqueInput[]
+    disconnect?: GiftWhereUniqueInput | GiftWhereUniqueInput[]
+    delete?: GiftWhereUniqueInput | GiftWhereUniqueInput[]
+    connect?: GiftWhereUniqueInput | GiftWhereUniqueInput[]
+    update?: GiftUpdateWithWhereUniqueWithoutSelectedPixKeyInput | GiftUpdateWithWhereUniqueWithoutSelectedPixKeyInput[]
+    updateMany?: GiftUpdateManyWithWhereWithoutSelectedPixKeyInput | GiftUpdateManyWithWhereWithoutSelectedPixKeyInput[]
+    deleteMany?: GiftScalarWhereInput | GiftScalarWhereInput[]
+  }
+
+  export type PixKeyCreateNestedOneWithoutGiftsInput = {
+    create?: XOR<PixKeyCreateWithoutGiftsInput, PixKeyUncheckedCreateWithoutGiftsInput>
+    connectOrCreate?: PixKeyCreateOrConnectWithoutGiftsInput
+    connect?: PixKeyWhereUniqueInput
+  }
+
   export type NullableFloatFieldUpdateOperationsInput = {
     set?: number | null
     increment?: number
     decrement?: number
     multiply?: number
     divide?: number
+  }
+
+  export type PixKeyUpdateOneWithoutGiftsNestedInput = {
+    create?: XOR<PixKeyCreateWithoutGiftsInput, PixKeyUncheckedCreateWithoutGiftsInput>
+    connectOrCreate?: PixKeyCreateOrConnectWithoutGiftsInput
+    upsert?: PixKeyUpsertWithoutGiftsInput
+    disconnect?: PixKeyWhereInput | boolean
+    delete?: PixKeyWhereInput | boolean
+    connect?: PixKeyWhereUniqueInput
+    update?: XOR<XOR<PixKeyUpdateToOneWithWhereWithoutGiftsInput, PixKeyUpdateWithoutGiftsInput>, PixKeyUncheckedUpdateWithoutGiftsInput>
   }
 
   export type NestedStringFilter<$PrismaModel = never> = {
@@ -12448,6 +14052,118 @@ export namespace Prisma {
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
   }
 
+  export type GiftCreateWithoutSelectedPixKeyInput = {
+    name: string
+    description: string
+    price?: number | null
+    pixKey?: string | null
+    imageUrl?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string | null
+  }
+
+  export type GiftUncheckedCreateWithoutSelectedPixKeyInput = {
+    id?: number
+    name: string
+    description: string
+    price?: number | null
+    pixKey?: string | null
+    imageUrl?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string | null
+  }
+
+  export type GiftCreateOrConnectWithoutSelectedPixKeyInput = {
+    where: GiftWhereUniqueInput
+    create: XOR<GiftCreateWithoutSelectedPixKeyInput, GiftUncheckedCreateWithoutSelectedPixKeyInput>
+  }
+
+  export type GiftCreateManySelectedPixKeyInputEnvelope = {
+    data: GiftCreateManySelectedPixKeyInput | GiftCreateManySelectedPixKeyInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type GiftUpsertWithWhereUniqueWithoutSelectedPixKeyInput = {
+    where: GiftWhereUniqueInput
+    update: XOR<GiftUpdateWithoutSelectedPixKeyInput, GiftUncheckedUpdateWithoutSelectedPixKeyInput>
+    create: XOR<GiftCreateWithoutSelectedPixKeyInput, GiftUncheckedCreateWithoutSelectedPixKeyInput>
+  }
+
+  export type GiftUpdateWithWhereUniqueWithoutSelectedPixKeyInput = {
+    where: GiftWhereUniqueInput
+    data: XOR<GiftUpdateWithoutSelectedPixKeyInput, GiftUncheckedUpdateWithoutSelectedPixKeyInput>
+  }
+
+  export type GiftUpdateManyWithWhereWithoutSelectedPixKeyInput = {
+    where: GiftScalarWhereInput
+    data: XOR<GiftUpdateManyMutationInput, GiftUncheckedUpdateManyWithoutSelectedPixKeyInput>
+  }
+
+  export type GiftScalarWhereInput = {
+    AND?: GiftScalarWhereInput | GiftScalarWhereInput[]
+    OR?: GiftScalarWhereInput[]
+    NOT?: GiftScalarWhereInput | GiftScalarWhereInput[]
+    id?: IntFilter<"Gift"> | number
+    name?: StringFilter<"Gift"> | string
+    description?: StringFilter<"Gift"> | string
+    price?: FloatNullableFilter<"Gift"> | number | null
+    pixKey?: StringNullableFilter<"Gift"> | string | null
+    pixKeyId?: IntNullableFilter<"Gift"> | number | null
+    imageUrl?: StringNullableFilter<"Gift"> | string | null
+    createdAt?: DateTimeFilter<"Gift"> | Date | string
+    updatedAt?: DateTimeNullableFilter<"Gift"> | Date | string | null
+  }
+
+  export type PixKeyCreateWithoutGiftsInput = {
+    name: string
+    key: string
+    type: string
+    createdAt?: Date | string
+    updatedAt?: Date | string | null
+  }
+
+  export type PixKeyUncheckedCreateWithoutGiftsInput = {
+    id?: number
+    name: string
+    key: string
+    type: string
+    createdAt?: Date | string
+    updatedAt?: Date | string | null
+  }
+
+  export type PixKeyCreateOrConnectWithoutGiftsInput = {
+    where: PixKeyWhereUniqueInput
+    create: XOR<PixKeyCreateWithoutGiftsInput, PixKeyUncheckedCreateWithoutGiftsInput>
+  }
+
+  export type PixKeyUpsertWithoutGiftsInput = {
+    update: XOR<PixKeyUpdateWithoutGiftsInput, PixKeyUncheckedUpdateWithoutGiftsInput>
+    create: XOR<PixKeyCreateWithoutGiftsInput, PixKeyUncheckedCreateWithoutGiftsInput>
+    where?: PixKeyWhereInput
+  }
+
+  export type PixKeyUpdateToOneWithWhereWithoutGiftsInput = {
+    where?: PixKeyWhereInput
+    data: XOR<PixKeyUpdateWithoutGiftsInput, PixKeyUncheckedUpdateWithoutGiftsInput>
+  }
+
+  export type PixKeyUpdateWithoutGiftsInput = {
+    name?: StringFieldUpdateOperationsInput | string
+    key?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type PixKeyUncheckedUpdateWithoutGiftsInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    name?: StringFieldUpdateOperationsInput | string
+    key?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
   export type AccountCreateManyUserInput = {
     id?: string
     type: string
@@ -12526,6 +14242,49 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     sessionToken?: StringFieldUpdateOperationsInput | string
     expires?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type GiftCreateManySelectedPixKeyInput = {
+    id?: number
+    name: string
+    description: string
+    price?: number | null
+    pixKey?: string | null
+    imageUrl?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string | null
+  }
+
+  export type GiftUpdateWithoutSelectedPixKeyInput = {
+    name?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    price?: NullableFloatFieldUpdateOperationsInput | number | null
+    pixKey?: NullableStringFieldUpdateOperationsInput | string | null
+    imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type GiftUncheckedUpdateWithoutSelectedPixKeyInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    name?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    price?: NullableFloatFieldUpdateOperationsInput | number | null
+    pixKey?: NullableStringFieldUpdateOperationsInput | string | null
+    imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type GiftUncheckedUpdateManyWithoutSelectedPixKeyInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    name?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    price?: NullableFloatFieldUpdateOperationsInput | number | null
+    pixKey?: NullableStringFieldUpdateOperationsInput | string | null
+    imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
 

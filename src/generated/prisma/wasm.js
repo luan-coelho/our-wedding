@@ -177,12 +177,22 @@ exports.Prisma.MessageScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.PixKeyScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  key: 'key',
+  type: 'type',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.GiftScalarFieldEnum = {
   id: 'id',
   name: 'name',
   description: 'description',
   price: 'price',
   pixKey: 'pixKey',
+  pixKeyId: 'pixKeyId',
   imageUrl: 'imageUrl',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
@@ -219,6 +229,7 @@ exports.Prisma.ModelName = {
   VerificationToken: 'VerificationToken',
   Guest: 'Guest',
   Message: 'Message',
+  PixKey: 'PixKey',
   Gift: 'Gift',
   Photo: 'Photo'
 };

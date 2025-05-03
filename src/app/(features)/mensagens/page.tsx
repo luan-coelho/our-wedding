@@ -1,11 +1,11 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { FaHeart, FaCheck } from 'react-icons/fa'
-import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { Loader2 } from 'lucide-react'
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -13,13 +13,7 @@ import { Input } from '@/components/ui/input'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Textarea } from '@/components/ui/textarea'
 import { Alert, AlertDescription } from '@/components/ui/alert'
-
-const messageFormSchema = z.object({
-  name: z.string().min(2, 'Nome deve ter pelo menos 2 caracteres'),
-  message: z.string().min(10, 'Mensagem deve ter pelo menos 10 caracteres')
-})
-
-type MessageFormValues = z.infer<typeof messageFormSchema>
+import { messageFormSchema, MessageFormValues } from './message-schema'
 
 interface Message {
   id: number
@@ -28,78 +22,68 @@ interface Message {
   createdAt: string
 }
 
+async function fetchMessages(): Promise<Message[]> {
+  const response = await fetch('/api/messages')
+  if (!response.ok) {
+    throw new Error('Erro ao carregar mensagens')
+  }
+  return response.json()
+}
+
+async function createMessage(values: MessageFormValues): Promise<Message> {
+  const response = await fetch('/api/messages', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ ...values, email: '' }),
+  })
+
+  if (!response.ok) {
+    const errorData = await response.json()
+    throw new Error(errorData.error || 'Erro ao enviar mensagem')
+  }
+
+  return response.json()
+}
+
 export default function MensagensPage() {
-  const [messages, setMessages] = useState<Message[]>([])
-  const [isLoading, setIsLoading] = useState(true)
   const [submitted, setSubmitted] = useState(false)
   const [error, setError] = useState('')
+  const queryClient = useQueryClient()
+
+  const { data: messages = [], isLoading } = useQuery({
+    queryKey: ['messages'],
+    queryFn: fetchMessages,
+  })
 
   const form = useForm<MessageFormValues>({
     resolver: zodResolver(messageFormSchema),
     defaultValues: {
       name: '',
-      message: ''
-    }
+      message: '',
+    },
   })
 
-  const isSubmitting = form.formState.isSubmitting
-
-  useEffect(() => {
-    fetchMessages()
-  }, [])
-
-  const fetchMessages = async () => {
-    try {
-      setIsLoading(true)
-      const response = await fetch('/api/messages')
-
-      if (!response.ok) {
-        throw new Error('Erro ao carregar mensagens')
-      }
-
-      const data = await response.json()
-      setMessages(data)
-    } catch (err) {
-      console.error('Erro ao buscar mensagens:', err)
-    } finally {
-      setIsLoading(false)
-    }
-  }
-
-  const onSubmit = async (values: MessageFormValues) => {
-    setError('')
-
-    try {
-      const response = await fetch('/api/messages', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ ...values, email: '' }),
-      })
-
-      if (!response.ok) {
-        const errorData = await response.json()
-        throw new Error(errorData.error || 'Erro ao enviar mensagem')
-      }
-
-      const newMessage = await response.json()
-
-      setMessages(prev => [newMessage, ...prev])
+  const messageMutation = useMutation({
+    mutationFn: createMessage,
+    onSuccess: newMessage => {
+      queryClient.setQueryData(['messages'], (oldData: Message[] = []) => [newMessage, ...oldData])
       form.reset()
       setSubmitted(true)
-
-      // Resetando o estado de submissão após alguns segundos
-      setTimeout(() => {
-        setSubmitted(false)
-      }, 3000)
-    } catch (err: any) {
+      setTimeout(() => setSubmitted(false), 3000)
+    },
+    onError: (err: Error) => {
       setError(err.message || 'Ocorreu um erro ao enviar sua mensagem. Por favor, tente novamente.')
-      console.error(err)
-    }
+    },
+  })
+
+  function handleSubmit(values: MessageFormValues) {
+    setError('')
+    messageMutation.mutate(values)
   }
 
-  const formatDate = (dateString: string) => {
+  function formatDate(dateString: string) {
     const date = new Date(dateString)
     return date.toLocaleDateString('pt-BR', {
       day: '2-digit',
@@ -107,6 +91,8 @@ export default function MensagensPage() {
       year: 'numeric',
     })
   }
+
+  const isSubmitting = form.formState.isSubmitting || messageMutation.isPending
 
   return (
     <div className="py-16 px-4 wedding-container">
@@ -123,7 +109,7 @@ export default function MensagensPage() {
             </CardHeader>
             <CardContent>
               <Form {...form}>
-                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+                <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
                   <FormField
                     control={form.control}
                     name="name"
@@ -137,7 +123,7 @@ export default function MensagensPage() {
                       </FormItem>
                     )}
                   />
-                  
+
                   <FormField
                     control={form.control}
                     name="message"
@@ -156,13 +142,13 @@ export default function MensagensPage() {
                     )}
                   />
 
-                  {error && <Alert variant="destructive"><AlertDescription>{error}</AlertDescription></Alert>}
+                  {error && (
+                    <Alert variant="destructive">
+                      <AlertDescription>{error}</AlertDescription>
+                    </Alert>
+                  )}
 
-                  <Button 
-                    type="submit" 
-                    disabled={isSubmitting || submitted}
-                    className="w-full"
-                  >
+                  <Button type="submit" disabled={isSubmitting || submitted} className="w-full">
                     {isSubmitting ? (
                       <>
                         <Loader2 className="animate-spin mr-2 h-4 w-4" />

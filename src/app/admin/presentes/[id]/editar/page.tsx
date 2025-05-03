@@ -13,6 +13,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { useEffect } from 'react'
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 
 interface Gift {
   id: number
@@ -20,7 +21,15 @@ interface Gift {
   description: string
   price: number | null
   pixKey: string | null
+  pixKeyId: number | null
   imageUrl: string | null
+}
+
+type PixKey = {
+  id: number
+  name: string
+  key: string
+  type: string
 }
 
 export default function EditGiftPage() {
@@ -37,9 +46,12 @@ export default function EditGiftPage() {
       description: '',
       price: '',
       pixKey: '',
+      selectedPixKeyId: undefined,
       imageUrl: '',
     },
   })
+
+  const watchUseCustomPixKey = form.watch('pixKey')
 
   // Consulta para buscar os dados do presente
   const { data: gift, isLoading, error } = useQuery({
@@ -51,6 +63,18 @@ export default function EditGiftPage() {
       }
       return response.json()
     }
+  })
+
+  // Consulta para buscar as chaves PIX
+  const { data: pixKeys = [], isLoading: isLoadingPixKeys } = useQuery({
+    queryKey: ['pixKeys'],
+    queryFn: async () => {
+      const response = await fetch('/api/pixkeys')
+      if (!response.ok) {
+        throw new Error('Erro ao buscar chaves PIX')
+      }
+      return response.json() as Promise<PixKey[]>
+    },
   })
 
   // Atualiza o formulário quando os dados são carregados
@@ -70,6 +94,7 @@ export default function EditGiftPage() {
         description: gift.description || '',
         price: formattedPrice,
         pixKey: gift.pixKey || '',
+        selectedPixKeyId: gift.pixKeyId || undefined,
         imageUrl: gift.imageUrl || '',
       })
     }
@@ -134,6 +159,8 @@ export default function EditGiftPage() {
     const processedData = {
       ...formData,
       price: formData.price ? parseFloat(formData.price.replace(/\./g, '').replace(',', '.')) : null,
+      // Se estiver usando chave personalizada, limpar o ID de chave selecionada
+      pixKeyId: formData.pixKey ? null : formData.selectedPixKeyId,
     }
 
     updateMutation.mutate(processedData)
@@ -217,19 +244,68 @@ export default function EditGiftPage() {
                   )}
                 />
 
-                <FormField
-                  control={form.control}
-                  name="pixKey"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Chave PIX</FormLabel>
-                      <FormControl>
-                        <Input {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
+                <div className="space-y-4">
+                  <FormLabel>Chave PIX para Transferência</FormLabel>
+                  
+                  {/* Opção para usar chave personalizada */}
+                  <FormField
+                    control={form.control}
+                    name="pixKey"
+                    render={({ field }) => (
+                      <FormItem className="flex items-center gap-2 space-y-0">
+                        <FormControl>
+                          <Input 
+                            placeholder="Informar chave PIX personalizada" 
+                            {...field} 
+                          />
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
+                  
+                  {/* Ou selecionar entre chaves cadastradas */}
+                  {!watchUseCustomPixKey && (
+                    <div className="pt-2">
+                      <p className="text-sm text-muted-foreground mb-3">Ou selecione uma chave cadastrada:</p>
+                      
+                      {isLoadingPixKeys ? (
+                        <p className="text-sm text-muted-foreground">Carregando chaves PIX...</p>
+                      ) : pixKeys.length === 0 ? (
+                        <p className="text-sm text-muted-foreground">
+                          Nenhuma chave PIX cadastrada. <a href="/admin/chaves-pix" className="text-primary hover:underline">Cadastrar Chaves PIX</a>
+                        </p>
+                      ) : (
+                        <FormField
+                          control={form.control}
+                          name="selectedPixKeyId"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormControl>
+                                <RadioGroup
+                                  onValueChange={(value) => field.onChange(parseInt(value))}
+                                  value={field.value?.toString()}
+                                  className="space-y-2"
+                                >
+                                  {pixKeys.map((pixKey) => (
+                                    <FormItem key={pixKey.id} className="flex items-center space-x-3 space-y-0">
+                                      <FormControl>
+                                        <RadioGroupItem value={pixKey.id.toString()} />
+                                      </FormControl>
+                                      <FormLabel className="font-normal cursor-pointer">
+                                        {pixKey.name} ({pixKey.key})
+                                      </FormLabel>
+                                    </FormItem>
+                                  ))}
+                                </RadioGroup>
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      )}
+                    </div>
                   )}
-                />
+                </div>
 
                 <FormField
                   control={form.control}

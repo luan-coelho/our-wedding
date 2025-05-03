@@ -2,14 +2,14 @@ import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { auth } from '@/auth'
 
-// Garante que as rotas da API sejam processadas dinamicamente
-export const dynamic = 'force-dynamic'
-
 export async function GET() {
   try {
     const gifts = await prisma.gift.findMany({
       orderBy: {
         name: 'asc',
+      },
+      include: {
+        selectedPixKey: true,
       },
     })
 
@@ -37,6 +37,7 @@ export async function POST(request: Request) {
         description: body.description,
         price: body.price,
         pixKey: body.pixKey,
+        pixKeyId: body.pixKeyId,
         imageUrl: body.imageUrl,
       },
     })
@@ -68,6 +69,7 @@ export async function PUT(request: Request) {
         description: body.description,
         price: body.price,
         pixKey: body.pixKey,
+        pixKeyId: body.pixKeyId,
         imageUrl: body.imageUrl,
       },
     })

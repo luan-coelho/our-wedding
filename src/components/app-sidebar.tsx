@@ -4,6 +4,7 @@ import * as React from 'react'
 import {
   IconCamera,
   IconChartBar,
+  IconCreditCard,
   IconDashboard,
   IconDatabase,
   IconFileAi,
@@ -15,6 +16,7 @@ import {
   IconInnerShadowTop,
   IconListDetails,
   IconMapPin,
+  IconMessageCircle,
   IconReport,
   IconSearch,
   IconSettings,
@@ -52,6 +54,16 @@ const data = {
       title: 'Convidados',
       url: routes.frontend.admin.convidados.index,
       icon: IconUsers,
+    },
+    {
+      title: 'Chaves PIX',
+      url: routes.frontend.admin.chavesPix.index,
+      icon: IconCreditCard,
+    },
+    {
+      title: 'Portal',
+      url: routes.frontend.home,
+      icon: IconMessageCircle,
     },
   ],
 }

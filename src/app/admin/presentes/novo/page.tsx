@@ -6,11 +6,21 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import { GiftFormData, giftSchema } from '../schema'
 import { Textarea } from '@/components/ui/textarea'
+import { Checkbox } from '@/components/ui/checkbox'
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
+import { toast } from 'sonner'
+
+type PixKey = {
+  id: number
+  name: string
+  key: string
+  type: string
+}
 
 export default function AddGiftPage() {
   const router = useRouter()
@@ -23,7 +33,22 @@ export default function AddGiftPage() {
       description: '',
       price: '',
       pixKey: '',
+      selectedPixKeyId: undefined,
       imageUrl: '',
+    },
+  })
+
+  const watchUseCustomPixKey = form.watch('pixKey')
+
+  // Consulta para buscar as chaves PIX
+  const { data: pixKeys = [], isLoading: isLoadingPixKeys } = useQuery({
+    queryKey: ['pixKeys'],
+    queryFn: async () => {
+      const response = await fetch('/api/pixkeys')
+      if (!response.ok) {
+        throw new Error('Erro ao buscar chaves PIX')
+      }
+      return response.json() as Promise<PixKey[]>
     },
   })
 
@@ -49,10 +74,12 @@ export default function AddGiftPage() {
       // Invalidar queries para forçar recarregamento de dados
       queryClient.invalidateQueries({ queryKey: ['gifts'] })
       // Redirecionar para a página de gerenciamento após sucesso
+      toast.success('Presente criado com sucesso')
       router.push('/admin/presentes')
     },
     onError: error => {
       console.error('Erro ao criar presente:', error)
+      toast.error('Erro ao criar presente')
     },
   })
 
@@ -78,6 +105,8 @@ export default function AddGiftPage() {
     const processedData = {
       ...formData,
       price: formData.price ? parseFloat(formData.price.replace(/\./g, '').replace(',', '.')) : null,
+      // Se estiver usando chave personalizada, limpar o ID de chave selecionada
+      pixKeyId: formData.pixKey ? null : formData.selectedPixKeyId,
     }
 
     createGiftMutation.mutate(processedData)
@@ -149,19 +178,68 @@ export default function AddGiftPage() {
                   )}
                 />
 
-                <FormField
-                  control={form.control}
-                  name="pixKey"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Chave PIX</FormLabel>
-                      <FormControl>
-                        <Input {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
+                <div className="space-y-4">
+                  <FormLabel>Chave PIX para Transferência</FormLabel>
+                  
+                  {/* Opção para usar chave personalizada */}
+                  <FormField
+                    control={form.control}
+                    name="pixKey"
+                    render={({ field }) => (
+                      <FormItem className="flex items-center gap-2 space-y-0">
+                        <FormControl>
+                          <Input 
+                            placeholder="Informar chave PIX personalizada" 
+                            {...field} 
+                          />
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
+                  
+                  {/* Ou selecionar entre chaves cadastradas */}
+                  {!watchUseCustomPixKey && (
+                    <div className="pt-2">
+                      <p className="text-sm text-muted-foreground mb-3">Ou selecione uma chave cadastrada:</p>
+                      
+                      {isLoadingPixKeys ? (
+                        <p className="text-sm text-muted-foreground">Carregando chaves PIX...</p>
+                      ) : pixKeys.length === 0 ? (
+                        <p className="text-sm text-muted-foreground">
+                          Nenhuma chave PIX cadastrada. <a href="/admin/chaves-pix" className="text-primary hover:underline">Cadastrar Chaves PIX</a>
+                        </p>
+                      ) : (
+                        <FormField
+                          control={form.control}
+                          name="selectedPixKeyId"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormControl>
+                                <RadioGroup
+                                  onValueChange={(value) => field.onChange(parseInt(value))}
+                                  value={field.value?.toString()}
+                                  className="space-y-2"
+                                >
+                                  {pixKeys.map((pixKey) => (
+                                    <FormItem key={pixKey.id} className="flex items-center space-x-3 space-y-0">
+                                      <FormControl>
+                                        <RadioGroupItem value={pixKey.id.toString()} />
+                                      </FormControl>
+                                      <FormLabel className="font-normal cursor-pointer">
+                                        {pixKey.name} ({pixKey.key})
+                                      </FormLabel>
+                                    </FormItem>
+                                  ))}
+                                </RadioGroup>
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      )}
+                    </div>
                   )}
-                />
+                </div>
 
                 <FormField
                   control={form.control}

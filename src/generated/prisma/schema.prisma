@@ -79,15 +79,27 @@ model Message {
   updatedAt DateTime? @updatedAt
 }
 
+model PixKey {
+  id        Int       @id @default(autoincrement())
+  name      String
+  key       String    @unique
+  type      String
+  createdAt DateTime  @default(now())
+  updatedAt DateTime? @updatedAt
+  gifts     Gift[]
+}
+
 model Gift {
-  id          Int       @id @default(autoincrement())
-  name        String
-  description String
-  price       Float?
-  pixKey      String?
-  imageUrl    String?
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime? @updatedAt
+  id             Int       @id @default(autoincrement())
+  name           String
+  description    String
+  price          Float?
+  pixKey         String?
+  pixKeyId       Int?
+  selectedPixKey PixKey?   @relation(fields: [pixKeyId], references: [id])
+  imageUrl       String?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime? @updatedAt
 }
 
 model Photo {

@@ -106,44 +106,36 @@ export default function AdminGuestsPage() {
 
       <div className="container mx-auto px-4 mt-10">
         {/* Estatísticas de Convidados */}
-        <div className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-5 gap-4 mb-6">
-          <Card className="bg-blue-600 text-white">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+          <Card className="bg-blue-100 border-blue-600 text-blue-600">
             <CardContent className="pt-6">
               <div className="text-center">
-                <h3 className="text-3xl font-bold text-white">{totalGuests}</h3>
-                <p className="text-sm text-white">Total</p>
+                <h3 className="text-3xl font-bold">{totalGuests}</h3>
+                <p className="text-sm">Total</p>
               </div>
             </CardContent>
           </Card>
-          <Card className="bg-green-600 text-zinc-900">
+          <Card className="bg-green-100 border-green-600 text-green-600">
             <CardContent className="pt-6">
               <div className="text-center">
-                <h3 className="text-3xl font-bold text-zinc-900">{confirmedGuests}</h3>
-                <p className="text-sm text-zinc-900">Confirmados</p>
+                <h3 className="text-3xl font-bold">{confirmedGuests}</h3>
+                <p className="text-sm">Confirmados</p>
               </div>
             </CardContent>
           </Card>
-          <Card className="bg-red-600 text-zinc-900">
-            <CardContent className="pt-6 text-white">
+          <Card className="bg-yellow-100 border-yellow-600 text-yellow-600">
+            <CardContent className="pt-6">
               <div className="text-center">
                 <h3 className="text-3xl font-bold">{pendingGuests}</h3>
-                <p className="text-sm">Recusados</p>
+                <p className="text-sm">Pendentes</p>
               </div>
             </CardContent>
           </Card>
-          <Card className="bg-yellow-500 text-zinc-900">
+          <Card className="bg-zinc-100 border-zinc-600 text-zinc-600">
             <CardContent className="pt-6">
               <div className="text-center">
-                <h3 className="text-3xl font-bold text-zinc-900">{pendingGuests}</h3>
-                <p className="text-sm text-zinc-900">Pendentes</p>
-              </div>
-            </CardContent>
-          </Card>
-          <Card className="bg-zinc-400 text-zinc-900">
-            <CardContent className="pt-6">
-              <div className="text-center">
-                <h3 className="text-3xl font-bold text-zinc-900">{confirmationRate}%</h3>
-                <p className="text-sm text-zinc-900">Taxa de Confirmação</p>
+                <h3 className="text-3xl font-bold">{confirmationRate}%</h3>
+                <p className="text-sm">Taxa de Confirmação</p>
               </div>
             </CardContent>
           </Card>

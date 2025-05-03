@@ -24,6 +24,9 @@ export const routes = {
         create: '/admin/presentes/novo',
         edit: (id: string) => `/admin/presentes/${id}/editar`,
       },
+      chavesPix: {
+        index: '/admin/chaves-pix',
+      },
     },
     
     // Autenticação

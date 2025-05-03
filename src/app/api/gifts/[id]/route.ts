@@ -13,6 +13,9 @@ export async function GET(_: Request, { params }: { params: Promise<{ id: string
       where: {
         id: parseInt(id),
       },
+      include: {
+        selectedPixKey: true,
+      },
     })
 
     if (!gift) {
@@ -47,6 +50,7 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
         description: body.description,
         price: body.price,
         pixKey: body.pixKey,
+        pixKeyId: body.pixKeyId,
         imageUrl: body.imageUrl,
       },
     })
