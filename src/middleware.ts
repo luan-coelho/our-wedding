@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getToken } from 'next-auth/jwt'
 import { routes } from './lib/routes'
+
 export async function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname
 
