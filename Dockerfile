@@ -1,67 +1,58 @@
 # syntax=docker/dockerfile:1
 FROM node:20-alpine AS base
 
-# Instalar dependências somente quando necessário
+# Habilita o Corepack e ativa versão específica do pnpm
+RUN corepack enable && corepack prepare pnpm@10.10.0 --activate
+
+# Etapa de dependências
 FROM base AS deps
-# Check https://github.com/nodejs/docker-node/tree/b4117f9333da4138b03a546ec926ef50a31506c3#nodealpine to understand why libc6-compat might be needed.
 RUN apk add --no-cache libc6-compat openssl coreutils postgresql-client
 WORKDIR /app
 
-# Instalar dependências
-COPY package.json pnpm-lock.yaml* ./
-RUN corepack enable pnpm && pnpm i --frozen-lockfile
+# Copia arquivos necessários para instalar dependências
+COPY package.json pnpm-lock.yaml ./
+RUN pnpm install --no-frozen-lockfile
 
-# Reconstruir o código fonte apenas quando necessário
+# Etapa de build
 FROM base AS builder
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
-# Gerar o cliente do Prisma
+# Gera o cliente do Prisma
 RUN npx prisma generate
 
-# Desabilitar telemetria do Next.js (opcional)
-ENV NEXT_TELEMETRY_DISABLED 1
+# Desabilita telemetria do Next.js
+ENV NEXT_TELEMETRY_DISABLED=1
 
-RUN corepack enable pnpm && pnpm build
+RUN pnpm build
 
-# Imagem de produção, copiar todos os arquivos e executar o next
+# Etapa de produção
 FROM base AS runner
 WORKDIR /app
 
-ENV NODE_ENV production
-ENV NEXT_TELEMETRY_DISABLED 1
+ENV NODE_ENV=production
+ENV NEXT_TELEMETRY_DISABLED=1
+ENV PORT=3000
+ENV HOSTNAME="0.0.0.0"
+ENV AUTH_TRUST_HOST=true
 
-# Ferramentas para diagnóstico e migração
+# Ferramentas úteis
 RUN apk add --no-cache coreutils postgresql-client
 
-# Adicionar usuário do sistema para execução do Next.js
-RUN addgroup --system --gid 1001 nodejs
-RUN adduser --system --uid 1001 nextjs
+# Adiciona usuário seguro para rodar o app
+RUN addgroup --system --gid 1001 nodejs \
+ && adduser --system --uid 1001 nextjs
 
-# Copiar arquivos públicos
+# Copia arquivos necessários do build
 COPY --from=builder /app/public ./public
-
-# Definir permissões corretas para cache de pré-renderização
-RUN mkdir .next
-RUN chown nextjs:nodejs .next
-
-# Automaticamente aproveitar os traces de saída para reduzir o tamanho da imagem
-# https://nextjs.org/docs/advanced-features/output-file-tracing
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
-
-# Copiar prisma schema e migrações para o container final
 COPY --from=builder /app/prisma ./prisma
 COPY --from=builder /app/node_modules/.pnpm/@prisma+client*/node_modules/.prisma ./node_modules/.prisma
 
 USER nextjs
 
 EXPOSE 3000
-
-ENV PORT 3000
-ENV HOSTNAME "0.0.0.0"
-# Configuração recomendada para Auth.js em ambiente Docker
-ENV AUTH_TRUST_HOST true
 
 CMD ["node", "server.js"]
