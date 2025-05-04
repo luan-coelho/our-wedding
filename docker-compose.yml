@@ -20,13 +20,15 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
     command: postgres -c listen_addresses='*'
+    expose:
+      - '${POSTGRES_PORT}'
 
   app:
     build: 
       context: .  
       dockerfile: Dockerfile
     ports:
-      - '${NEXT_APP_PORT}:3000'
+      - '${PORT}:${PORT}'
     stdin_open: true
     tty: true
     depends_on:
@@ -35,33 +37,14 @@ services:
     environment:
       # Opcional: desativar migrações se necessário
       # SKIP_MIGRATIONS: "true"
-      NODE_ENV: production
+      NODE_ENV: ${NODE_ENV}
+      PORT: ${PORT}
       DATABASE_URL: "${DATABASE_URL}"
-      NEXTAUTH_URL: "${NEXTAUTH_URL}"
-      NEXTAUTH_SECRET: "${NEXTAUTH_SECRET}"
+      AUTH_URL: "${AUTH_URL}"
+      AUTH_SECRET: "${AUTH_SECRET}"
       AUTH_TRUST_HOST: "${AUTH_TRUST_HOST}"
     networks:
       - prisma-network
-
-  prisma-studio:
-    image: node:lts-alpine3.17
-    working_dir: /app
-    volumes:
-      - .:/app
-    command: >
-      sh -c "npm install -g pnpm && 
-             pnpm exec prisma studio --port 5555 --browser none"
-    ports:
-      - "5555:5555"
-    environment:
-      DATABASE_URL: "${DATABASE_URL}"
-    networks:
-      - prisma-network
-    depends_on:
-      postgres_db:
-        condition: service_healthy
-      app:
-        condition: service_started
 
 networks:
   prisma-network:

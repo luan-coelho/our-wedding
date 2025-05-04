@@ -57,7 +57,7 @@ npm install
    - Defina as variáveis de ambiente para NextAuth:
 
    ```
-   NEXTAUTH_SECRET="chave-secreta-gerada"
+   AUTH_SECRET="chave-secreta-gerada"
    ADMIN_EMAIL="admin@example.com"
    ADMIN_PASSWORD="senha-forte"
    ```
@@ -174,8 +174,8 @@ Este projeto pode ser executado com Docker e Docker Compose, o que facilita a co
    ```
    NODE_ENV=production
    DATABASE_URL="postgresql://postgres:prisma@postgres_db:5432/postgres?schema=public"
-   NEXTAUTH_URL=http://localhost:3000
-   NEXTAUTH_SECRET=meusegredomuitoseguro
+   AUTH_URL=http://localhost:3000
+   AUTH_SECRET=meusegredomuitoseguro
    ```
    Certifique-se de substituir `meusegredomuitoseguro` por uma string segura aleatória em ambiente de produção.
 
@@ -278,8 +278,8 @@ cd our-wedding
 2. Configure as variáveis de ambiente:
 
 Edite o arquivo `docker-compose.yml` e ajuste as variáveis de ambiente conforme necessário, especialmente:
-- `NEXTAUTH_SECRET`: Defina um valor secreto forte
-- `NEXTAUTH_URL`: Configure para a URL onde sua aplicação será acessada
+- `AUTH_SECRET`: Defina um valor secreto forte
+- `AUTH_URL`: Configure para a URL onde sua aplicação será acessada
 
 3. Construa e inicie os containers:
 

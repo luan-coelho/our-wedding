@@ -7,7 +7,7 @@ import { routes } from './lib/routes'
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   adapter: PrismaAdapter(prisma),
-  secret: process.env.NEXTAUTH_SECRET,
+  secret: process.env.AUTH_SECRET,
   session: {
     strategy: 'jwt',
   },

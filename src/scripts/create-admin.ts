@@ -3,6 +3,7 @@ import { prisma } from '../lib/prisma'
 
 async function createAdminUser() {
   const adminEmail = 'admin@gmail.com'
+  const adminPassword = 'admin'
   
   try {
     // Verificar se o usuário já existe
@@ -10,10 +11,11 @@ async function createAdminUser() {
       where: { email: adminEmail },
     })
 
+    const hashedPassword = await hash(adminPassword, 10)
+
     if (existingUser) {
       // Atualizar o usuário existente
       console.log('Atualizando usuário administrador existente...')
-      const hashedPassword = await hash('admin', 10)
       
       await prisma.user.update({
         where: { email: adminEmail },
@@ -28,7 +30,6 @@ async function createAdminUser() {
     } else {
       // Criar novo usuário administrador
       console.log('Criando novo usuário administrador...')
-      const hashedPassword = await hash('admin', 10)
       
       await prisma.user.create({
         data: {
