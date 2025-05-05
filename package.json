@@ -6,6 +6,8 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
+    "db:up": "docker compose up -d",
+    "db:down": "docker compose down",
     "lint": "next lint",
     "fix": "prettier --write . && eslint --fix .",
     "create-admin": "tsx src/scripts/create-admin.ts"
