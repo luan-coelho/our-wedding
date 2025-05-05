@@ -1,7 +1,6 @@
 services:
   postgres_db:
     image: postgres:16
-    hostname: postgres_db
     container_name: postgres_db
     restart: always
     environment:
@@ -20,35 +19,34 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
     command: postgres -c listen_addresses='*'
-    expose:
-      - '${POSTGRES_PORT}'
 
   app:
-    build: 
-      context: .  
+    build:
+      context: .
       dockerfile: Dockerfile
+    container_name: nextjs-app
+    restart: always
     ports:
       - '${PORT}:${PORT}'
-    stdin_open: true
-    tty: true
     depends_on:
       postgres_db:
         condition: service_healthy
     environment:
-      # Opcional: desativar migrações se necessário
-      # SKIP_MIGRATIONS: "true"
       NODE_ENV: ${NODE_ENV}
       PORT: ${PORT}
-      DATABASE_URL: "${DATABASE_URL}"
+      # importante: host do banco deve ser "postgres_db"
+      DATABASE_URL: ${DATABASE_URL}
       AUTH_URL: "${AUTH_URL}"
       AUTH_SECRET: "${AUTH_SECRET}"
       AUTH_TRUST_HOST: "${AUTH_TRUST_HOST}"
     networks:
       - prisma-network
+    stdin_open: true
+    tty: true
 
 networks:
   prisma-network:
     name: prisma-network
 
 volumes:
-  postgres_data: 
+  postgres_data:
