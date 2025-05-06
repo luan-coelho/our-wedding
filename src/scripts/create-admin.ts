@@ -15,19 +15,8 @@ async function createAdminUser() {
 
     const hashedPassword = await hash(adminPassword, 10)
 
-    if (existingUser) {
+    if (!existingUser) {
       // Atualizar o usuário existente
-      console.log('Atualizando usuário administrador existente...')
-
-      await db.update(users).set({
-        name: 'Administrador',
-        password: hashedPassword,
-        role: 'admin',
-      })
-
-      console.log('Usuário administrador atualizado com sucesso!')
-    } else {
-      // Criar novo usuário administrador
       console.log('Criando novo usuário administrador...')
 
       await db.insert(users).values({
@@ -42,7 +31,7 @@ async function createAdminUser() {
       console.log('Usuário administrador criado com sucesso!')
     }
   } catch (error) {
-    console.error('Erro ao criar/atualizar usuário administrador:', error)
+    console.error('Erro ao criar usuário administrador:', error)
   }
 }
 

@@ -1,0 +1,19 @@
+{
+  "name": "wedding-scripts",
+  "version": "1.0.0",
+  "description": "Scripts para o site de casamento",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "migrate": "node drizzle-migrate.mjs"
+  },
+  "dependencies": {
+    "dotenv": "^16.5.0",
+    "drizzle-orm": "^0.43.1",
+    "drizzle-kit": "^0.31.1",
+    "pg": "^8.15.6"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+} 

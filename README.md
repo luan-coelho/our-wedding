@@ -262,87 +262,100 @@ pnpm dev
 
 # Our Wedding
 
-Aplicação de site de casamento com recursos para gerenciamento de convidados, presentes, confirmações e galeria.
+Aplicação para gerenciamento de casamento, incluindo confirmação de presença, lista de presentes, galeria de fotos e mais.
 
-## Executando em Produção com Docker
+## Implantação em Produção
 
 ### Pré-requisitos
 
-- Docker
-- Docker Compose
+- Docker e Docker Compose instalados
+- Git para clonar o repositório
 
-### Passos para execução
+### Configuração do Ambiente
 
 1. Clone o repositório:
-
 ```bash
-git clone [URL_DO_REPOSITÓRIO]
+git clone <url-do-repositorio>
 cd our-wedding
 ```
 
-2. Configure as variáveis de ambiente:
-
-Edite o arquivo `docker-compose.yml` e ajuste as variáveis de ambiente conforme necessário, especialmente:
-
-- `AUTH_SECRET`: Defina um valor secreto forte
-- `AUTH_URL`: Configure para a URL onde sua aplicação será acessada
-
-3. Construa e inicie os containers:
-
+2. Crie o arquivo `.env` baseado no `.env.example`:
 ```bash
-docker-compose up -d
+cp .env.example .env
 ```
 
-4. Acesse a aplicação:
+3. Edite o arquivo `.env` com suas configurações:
+- Configure as credenciais do banco de dados
+- Defina um segredo forte para `AUTH_SECRET`
+- Atualize `AUTH_URL` com a URL pública da sua aplicação
 
-A aplicação estará disponível em `http://localhost:3000`
+### Implantação com Docker Compose
 
-### Conta de Administrador
-
-Um usuário administrador será criado automaticamente durante a inicialização através de um script Node.js:
-
-- Email: admin@gmail.com
-- Senha: admin
-
-**Importante**: Altere esta senha imediatamente após o primeiro login!
-
-Para criar manualmente o usuário administrador em ambiente de desenvolvimento, execute:
-
+1. Construa e inicie os containers:
 ```bash
-pnpm create-admin
+docker compose up -d
 ```
 
-### Interrompendo a aplicação
-
+2. Verifique se os containers estão rodando:
 ```bash
-docker compose down
+docker compose ps
 ```
 
-Para remover os volumes de dados (banco de dados):
-
+3. Verifique os logs da aplicação:
 ```bash
-docker compose down -v
+docker compose logs -f app
 ```
 
-## Desenvolvimento
+### Criação do Usuário Administrador
 
-Para executar o projeto em ambiente de desenvolvimento:
+Para criar um usuário administrador após a implantação:
 
 ```bash
-pnpm install
-pnpm prisma generate
-pnpm prisma migrate dev
-pnpm dev
+docker compose exec app pnpm run create-admin
 ```
 
-## Tecnologias
+### Manutenção
+
+- **Reiniciar a aplicação**:
+```bash
+docker compose restart app
+```
+
+- **Atualizar a aplicação**:
+```bash
+git pull
+docker compose build app
+docker compose up -d app
+```
+
+- **Backup do banco de dados**:
+```bash
+docker compose exec postgres_db pg_dump -U ${POSTGRES_USER} ${POSTGRES_DB} > backup_$(date +'%Y%m%d').sql
+```
+
+## Desenvolvimento Local
+
+Para desenvolvimento local, você pode executar:
+
+```bash
+# Iniciar o banco de dados
+pnpm run db:up
+
+# Executar migrações
+pnpm run db:migrate
+
+# Iniciar a aplicação em modo de desenvolvimento
+pnpm run dev
+```
+
+## Tecnologias Utilizadas
 
 - Next.js 15
 - React 19
-- Prisma
+- TypeScript
+- Drizzle ORM
 - PostgreSQL
-- TailwindCSS 4
-- Shadcn UI
+- Docker
 
 ## Banco de Dados
 

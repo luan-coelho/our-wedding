@@ -21,7 +21,7 @@ services:
       - postgres_data:/var/lib/postgresql/data
     command: postgres -c listen_addresses='*'
     env_file:
-      - .env
+      - .env.production
   app:
     build:
       context: .
@@ -41,16 +41,28 @@ services:
       AUTH_URL: '${AUTH_URL}'
       AUTH_SECRET: '${AUTH_SECRET}'
       AUTH_TRUST_HOST: '${AUTH_TRUST_HOST}'
+      # Credenciais para o script verificar disponibilidade do banco
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
     networks:
       - app-network
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:${PORT}/api/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 40s
     stdin_open: true
     tty: true
     env_file:
-      - .env
+      - .env.production
 
 networks:
   app-network:
     name: app-network
+    driver: bridge
 
 volumes:
   postgres_data:
+    name: wedding_postgres_data

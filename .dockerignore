@@ -7,11 +7,12 @@ node_modules
 .env.development
 .env.test
 .env.production
+.env.example
 README.md
 npm-debug.log
 yarn-debug.log
 yarn-error.log
 .DS_Store
-docker-compose.yml
-Dockerfile
-.dockerignore 
+.dockerignore
+# Manter o docker-compose.yml e Dockerfile durante o build
+# Manter os arquivos necessários para migração 
