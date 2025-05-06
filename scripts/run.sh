@@ -36,6 +36,21 @@ if [ ! -f "/app/drizzle/meta/_journal.json" ]; then
   echo '{"version":"5","dialect":"pg","entries":[]}' > /app/drizzle/meta/_journal.json
 fi
 
+# Verificar variáveis de ambiente relacionadas ao banco de dados
+echo "Verificando variáveis de ambiente para o banco de dados:"
+echo "DATABASE_URL=${DATABASE_URL:-(não definido)}"
+echo "POSTGRES_USER=${POSTGRES_USER:-(não definido)}"
+echo "POSTGRES_DB=${POSTGRES_DB:-(não definido)}"
+echo "POSTGRES_HOST=postgres_db (esperado)"
+
+# Testar conexão direta com o PostgreSQL usando psql
+echo "Testando conexão com PostgreSQL usando psql..."
+if PGPASSWORD=$POSTGRES_PASSWORD psql -h postgres_db -U $POSTGRES_USER -d $POSTGRES_DB -c "SELECT 1" >/dev/null 2>&1; then
+  echo "Conexão usando psql bem-sucedida!"
+else
+  echo "FALHA na conexão usando psql. Verifique as credenciais."
+fi
+
 # Listar arquivos na pasta de migrações para debug
 echo "Arquivos na pasta de migrações:"
 ls -la /app/drizzle/
