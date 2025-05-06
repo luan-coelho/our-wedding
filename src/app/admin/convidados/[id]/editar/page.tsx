@@ -20,7 +20,11 @@ export default function EditGuestPage() {
   }
 
   // Buscar convidado pelo ID
-  const { data: guest, isLoading, error } = useQuery({
+  const {
+    data: guest,
+    isLoading,
+    error,
+  } = useQuery({
     queryKey: ['guest', id],
     queryFn: async (): Promise<Guest> => {
       const response = await fetch(`/api/guests/${id}`)
@@ -43,11 +47,7 @@ export default function EditGuestPage() {
     <AdminProtected>
       <div className="container mx-auto py-10 px-4">
         <h1 className="text-3xl font-bold mb-6">Editar Convidado</h1>
-        {isLoading ? (
-          <div className="text-center py-4">Carregando...</div>
-        ) : guest ? (
-          <GuestForm guest={guest} />
-        ) : null}
+        {isLoading ? <div className="text-center py-4">Carregando...</div> : guest ? <GuestForm guest={guest} /> : null}
       </div>
     </AdminProtected>
   )

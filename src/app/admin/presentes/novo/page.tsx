@@ -13,7 +13,6 @@ import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import { GiftFormData, giftSchema } from '../schema'
-import Image from 'next/image'
 import { useState } from 'react'
 import { Eye, X } from 'lucide-react'
 
@@ -57,7 +56,7 @@ export default function AddGiftPage() {
 
   // Mutação para criar um novo presente
   const createGiftMutation = useMutation({
-    mutationFn: async (data: any) => {
+    mutationFn: async (data: GiftFormData) => {
       const response = await fetch('/api/gifts', {
         method: 'POST',
         headers: {
@@ -112,7 +111,7 @@ export default function AddGiftPage() {
       pixKeyId: formData.pixKey ? null : formData.selectedPixKeyId,
     }
 
-    createGiftMutation.mutate(processedData)
+    createGiftMutation.mutate(processedData as unknown as GiftFormData)
   }
 
   // Função para exibir a prévia da imagem
@@ -207,7 +206,7 @@ export default function AddGiftPage() {
 
                 <div className="space-y-4">
                   <FormLabel>Chave PIX para Transferência</FormLabel>
-                  
+
                   {/* Opção para usar chave personalizada */}
                   <FormField
                     control={form.control}
@@ -215,25 +214,25 @@ export default function AddGiftPage() {
                     render={({ field }) => (
                       <FormItem className="flex items-center gap-2 space-y-0">
                         <FormControl>
-                          <Input 
-                            placeholder="Informar chave PIX personalizada" 
-                            {...field} 
-                          />
+                          <Input placeholder="Informar chave PIX personalizada" {...field} />
                         </FormControl>
                       </FormItem>
                     )}
                   />
-                  
+
                   {/* Ou selecionar entre chaves cadastradas */}
                   {!watchUseCustomPixKey && (
                     <div className="pt-2">
                       <p className="text-sm text-muted-foreground mb-3">Ou selecione uma chave cadastrada:</p>
-                      
+
                       {isLoadingPixKeys ? (
                         <p className="text-sm text-muted-foreground">Carregando chaves PIX...</p>
                       ) : pixKeys.length === 0 ? (
                         <p className="text-sm text-muted-foreground">
-                          Nenhuma chave PIX cadastrada. <a href="/admin/chaves-pix" className="text-primary hover:underline">Cadastrar Chaves PIX</a>
+                          Nenhuma chave PIX cadastrada.{' '}
+                          <a href="/admin/chaves-pix" className="text-primary hover:underline">
+                            Cadastrar Chaves PIX
+                          </a>
                         </p>
                       ) : (
                         <FormField
@@ -243,14 +242,13 @@ export default function AddGiftPage() {
                             <FormItem>
                               <FormControl>
                                 <Select
-                                  onValueChange={(value) => field.onChange(parseInt(value))}
-                                  value={field.value?.toString()}
-                                >
+                                  onValueChange={value => field.onChange(parseInt(value))}
+                                  value={field.value?.toString()}>
                                   <SelectTrigger className="w-full">
                                     <SelectValue placeholder="Selecione uma chave PIX" />
                                   </SelectTrigger>
                                   <SelectContent>
-                                    {pixKeys.map((pixKey) => (
+                                    {pixKeys.map(pixKey => (
                                       <SelectItem key={pixKey.id} value={pixKey.id.toString()}>
                                         {pixKey.name} ({pixKey.key})
                                       </SelectItem>
@@ -277,13 +275,12 @@ export default function AddGiftPage() {
                         <FormControl>
                           <Input {...field} />
                         </FormControl>
-                        <Button 
-                          type="button" 
-                          variant="outline" 
-                          size="icon" 
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="icon"
                           onClick={handleShowImagePreview}
-                          title="Visualizar imagem"
-                        >
+                          title="Visualizar imagem">
                           <Eye className="h-4 w-4" />
                         </Button>
                       </div>
@@ -295,8 +292,7 @@ export default function AddGiftPage() {
                             variant="ghost"
                             size="icon"
                             className="absolute top-1 right-1 z-10"
-                            onClick={handleClearImagePreview}
-                          >
+                            onClick={handleClearImagePreview}>
                             <X className="h-4 w-4" />
                           </Button>
                           <div className="relative w-full h-48">

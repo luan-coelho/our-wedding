@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { prisma } from '@/lib/prisma'
+import { db } from '@/db'
+import { guests } from '@/db/schema'
+import { eq } from 'drizzle-orm'
 
 export async function PUT(request: NextRequest, { params }: { params: Promise<{ token: string }> }) {
   try {
@@ -7,8 +9,8 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
     const { isConfirmed } = await request.json()
 
     // Verifique se o convidado existe com o token fornecido
-    const guest = await prisma.guest.findUnique({
-      where: { token },
+    const guest = await db.query.guests.findFirst({
+      where: eq(guests.token, token),
     })
 
     if (!guest) {
@@ -16,13 +18,10 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
     }
 
     // Atualize o status de confirmação
-    const updatedGuest = await prisma.guest.update({
-      where: { token },
-      data: {
-        isConfirmed,
-        updatedAt: new Date(),
-      },
-    })
+    const updatedGuest = await db.update(guests).set({
+      isConfirmed,
+      updatedAt: new Date(),
+    }).where(eq(guests.token, token))
 
     return NextResponse.json(updatedGuest, { status: 200 })
   } catch (error) {

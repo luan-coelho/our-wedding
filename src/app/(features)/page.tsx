@@ -127,9 +127,7 @@ export default function Home() {
                 </div>
                 <h3 className="text-xl font-medium text-wedding-primary">Como Chegar</h3>
               </div>
-              <p className="text-wedding-accent">
-                Encontre facilmente o local da cerimônia.
-              </p>
+              <p className="text-wedding-accent">Encontre facilmente o local da cerimônia.</p>
             </Link>
           </div>
         </div>

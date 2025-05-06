@@ -1,16 +1,18 @@
 import { notFound } from 'next/navigation'
-import { prisma } from '@/lib/prisma'
+import { db } from '@/db'
+import { guests } from '@/db/schema'
+import { eq } from 'drizzle-orm'
 import ConfirmationForm from './confirmation-form'
 
-export default async function ConfirmacaoTokenPage({params}: {params: Promise<{ token: string }>}) {
+export default async function ConfirmacaoTokenPage({ params }: { params: Promise<{ token: string }> }) {
   const { token: slug } = await params
   const token = slug as string
   if (!token) {
     notFound()
   }
 
-  const guest = await prisma.guest.findUnique({
-    where: { token },
+  const guest = await db.query.guests.findFirst({
+    where: eq(guests.token, token),
   })
 
   if (!guest) {

@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@/auth'
-import { prisma } from '@/lib/prisma'
+import { db } from '@/db'
+import { gifts, pixKeys } from '@/db/schema'
+import { asc, eq } from 'drizzle-orm'
 
 // GET /api/pixkeys - Listar todas as chaves PIX
 export async function GET() {
@@ -12,11 +14,11 @@ export async function GET() {
       return NextResponse.json({ error: 'Não autorizado' }, { status: 403 })
     }
 
-    const pixKeys = await prisma.pixKey.findMany({
-      orderBy: { name: 'asc' },
+    const pixKeysList = await db.query.pixKeys.findMany({
+      orderBy: [asc(pixKeys.name)],
     })
 
-    return NextResponse.json(pixKeys)
+    return NextResponse.json(pixKeysList)
   } catch (error) {
     console.error('Erro ao buscar chaves PIX:', error)
     return NextResponse.json({ error: 'Erro ao buscar chaves PIX' }, { status: 500 })
@@ -36,12 +38,10 @@ export async function POST(request: NextRequest) {
     const data = await request.json()
 
     // Criar nova chave PIX
-    const pixKey = await prisma.pixKey.create({
-      data: {
-        name: data.name,
-        key: data.key,
-        type: data.type,
-      },
+    const pixKey = await db.insert(pixKeys).values({
+      name: data.name,
+      key: data.key,
+      type: data.type,
     })
 
     return NextResponse.json(pixKey)
@@ -62,14 +62,14 @@ export async function PUT(request: NextRequest) {
     }
 
     const data = await request.json()
-    
+
     if (!data.id) {
       return NextResponse.json({ error: 'ID da chave PIX não fornecido' }, { status: 400 })
     }
 
     // Verificar se a chave PIX existe
-    const existingKey = await prisma.pixKey.findUnique({
-      where: { id: data.id },
+    const existingKey = await db.query.pixKeys.findFirst({
+      where: eq(pixKeys.id, data.id),
     })
 
     if (!existingKey) {
@@ -77,14 +77,11 @@ export async function PUT(request: NextRequest) {
     }
 
     // Atualizar chave PIX
-    const updatedPixKey = await prisma.pixKey.update({
-      where: { id: data.id },
-      data: {
-        name: data.name,
-        key: data.key,
-        type: data.type,
-      },
-    })
+    const updatedPixKey = await db.update(pixKeys).set({
+      name: data.name,
+      key: data.key,
+      type: data.type,
+    }).where(eq(pixKeys.id, data.id))
 
     return NextResponse.json(updatedPixKey)
   } catch (error) {
@@ -111,21 +108,22 @@ export async function DELETE(request: NextRequest) {
     }
 
     // Verificar se a chave está sendo usada em algum presente
-    const giftsUsingPixKey = await prisma.gift.findMany({
-      where: { pixKeyId: parseInt(id) },
+    const giftsUsingPixKey = await db.query.gifts.findMany({
+      where: eq(gifts.pixKeyId, parseInt(id)),
     })
 
     if (giftsUsingPixKey.length > 0) {
-      return NextResponse.json({ 
-        error: 'Esta chave PIX está sendo usada em presentes e não pode ser excluída',
-        giftsCount: giftsUsingPixKey.length
-      }, { status: 400 })
+      return NextResponse.json(
+        {
+          error: 'Esta chave PIX está sendo usada em presentes e não pode ser excluída',
+          giftsCount: giftsUsingPixKey.length,
+        },
+        { status: 400 },
+      )
     }
 
     // Remover chave PIX
-    await prisma.pixKey.delete({
-      where: { id: parseInt(id) },
-    })
+    await db.delete(pixKeys).where(eq(pixKeys.id, parseInt(id)))
 
     return NextResponse.json({ success: true })
   } catch (error) {

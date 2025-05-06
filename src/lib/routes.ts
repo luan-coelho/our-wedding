@@ -28,13 +28,13 @@ export const routes = {
         index: '/admin/chaves-pix',
       },
     },
-    
+
     // Autenticação
     auth: {
       login: '/auth/login',
-    }
+    },
   },
-  
+
   // Rotas da API (backend)
   api: {
     auth: '/api/auth',
@@ -51,6 +51,6 @@ export const routes = {
     photos: '/api/photos',
     confirmacao: {
       byToken: (token: string) => `/api/confirmacao/${token}`,
-    }
-  }
-}; 
+    },
+  },
+}

@@ -16,14 +16,7 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
@@ -285,7 +278,7 @@ export default function ChavesPixPage() {
               </AlertDialogContent>
             </AlertDialog>
           </CardHeader>
-          
+
           <CardContent>
             {isLoading ? (
               <div className="text-center py-4">Carregando...</div>
@@ -310,16 +303,10 @@ export default function ChavesPixPage() {
                         <TableCell>{getPixKeyTypeLabel(pixKey.type)}</TableCell>
                         <TableCell className="text-center">
                           <div className="flex justify-center gap-2">
-                            <Button
-                              onClick={() => handleEditClick(pixKey)}
-                              variant="outline"
-                              size="sm">
+                            <Button onClick={() => handleEditClick(pixKey)} variant="outline" size="sm">
                               Editar
                             </Button>
-                            <Button
-                              onClick={() => handleDeleteClick(pixKey)}
-                              variant="destructive"
-                              size="sm">
+                            <Button onClick={() => handleDeleteClick(pixKey)} variant="destructive" size="sm">
                               Excluir
                             </Button>
                           </div>
@@ -333,7 +320,7 @@ export default function ChavesPixPage() {
           </CardContent>
         </Card>
       </div>
-      
+
       {/* Modal de Edição */}
       <AlertDialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
         <AlertDialogContent className="sm:max-w-md">

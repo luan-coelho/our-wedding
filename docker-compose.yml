@@ -12,7 +12,7 @@ services:
     networks:
       - app-network
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      test: ['CMD-SHELL', 'pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}']
       interval: 10s
       timeout: 5s
       retries: 30
@@ -38,9 +38,9 @@ services:
       PORT: ${PORT}
       # importante: host do banco deve ser "postgres_db"
       DATABASE_URL: ${DATABASE_URL}
-      AUTH_URL: "${AUTH_URL}"
-      AUTH_SECRET: "${AUTH_SECRET}"
-      AUTH_TRUST_HOST: "${AUTH_TRUST_HOST}"
+      AUTH_URL: '${AUTH_URL}'
+      AUTH_SECRET: '${AUTH_SECRET}'
+      AUTH_TRUST_HOST: '${AUTH_TRUST_HOST}'
     networks:
       - app-network
     stdin_open: true

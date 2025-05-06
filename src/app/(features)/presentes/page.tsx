@@ -5,7 +5,14 @@ import Image from 'next/image'
 import { FaGift, FaClipboard, FaCheck, FaQrcode } from 'react-icons/fa'
 import { IoCloseOutline } from 'react-icons/io5'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogClose } from '@/components/ui/dialog'
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogClose,
+} from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
 
@@ -102,8 +109,7 @@ export default function PresentesPage() {
           <h1 className="text-3xl md:text-5xl font-serif mb-6 text-wedding-dark">Lista de Presentes</h1>
           <div className="w-24 h-0.5 bg-wedding-primary/50 mx-auto mb-6" />
           <p className="text-lg text-wedding-accent mb-2 max-w-2xl mx-auto">
-            Sua presença é o nosso maior presente, mas se desejar nos presentear, 
-            aqui estão algumas sugestões. 
+            Sua presença é o nosso maior presente, mas se desejar nos presentear, aqui estão algumas sugestões.
           </p>
           <p className="text-wedding-accent max-w-2xl mx-auto">
             Você pode contribuir com o valor total ou parcial de qualquer item através do PIX.
@@ -161,12 +167,11 @@ export default function PresentesPage() {
                   </CardContent>
 
                   <CardFooter className="flex gap-3">
-                    <Button 
-                      variant="outline" 
-                      onClick={() => copyToClipboard(gift, gift.id)} 
+                    <Button
+                      variant="outline"
+                      onClick={() => copyToClipboard(gift, gift.id)}
                       className="flex-1"
-                      disabled={!getEffectivePixKey(gift)}
-                    >
+                      disabled={!getEffectivePixKey(gift)}>
                       {copiedId === gift.id ? (
                         <>
                           <FaCheck className="mr-2 h-4 w-4" />
@@ -180,11 +185,10 @@ export default function PresentesPage() {
                       )}
                     </Button>
 
-                    <Button 
-                      variant="secondary" 
+                    <Button
+                      variant="secondary"
                       onClick={() => setShowQRCode(gift.id)}
-                      disabled={!getEffectivePixKey(gift)}
-                    >
+                      disabled={!getEffectivePixKey(gift)}>
                       <FaQrcode className="mr-2 h-4 w-4" />
                       QR Code
                     </Button>
@@ -195,7 +199,7 @@ export default function PresentesPage() {
         )}
 
         {/* Dialog para QR Code */}
-        <Dialog open={showQRCode !== null} onOpenChange={(open) => !open && setShowQRCode(null)}>
+        <Dialog open={showQRCode !== null} onOpenChange={open => !open && setShowQRCode(null)}>
           <DialogContent className="sm:max-w-md">
             <DialogHeader>
               <DialogTitle className="text-center">QR Code PIX</DialogTitle>
@@ -203,7 +207,7 @@ export default function PresentesPage() {
                 Escaneie o código QR para realizar a transferência PIX
               </DialogDescription>
             </DialogHeader>
-            
+
             {selectedGift && getEffectivePixKey(selectedGift) && (
               <div className="flex flex-col items-center p-4">
                 <div className="bg-white p-4 rounded-lg shadow-sm mb-4 border">
@@ -219,10 +223,7 @@ export default function PresentesPage() {
                   )}
                 </p>
 
-                <Button 
-                  onClick={() => copyToClipboard(selectedGift, selectedGift.id)}
-                  className="w-full"
-                >
+                <Button onClick={() => copyToClipboard(selectedGift, selectedGift.id)} className="w-full">
                   {copiedId === selectedGift.id ? (
                     <>
                       <FaCheck className="mr-2 h-4 w-4" />
@@ -243,8 +244,8 @@ export default function PresentesPage() {
         <div className="mt-16 max-w-2xl mx-auto text-center bg-wedding-accent/5 p-8 rounded-xl border border-wedding-accent/10">
           <h2 className="text-2xl font-serif text-wedding-dark mb-4">Obrigado pelo seu presente!</h2>
           <p className="text-wedding-accent">
-            Seu carinho e generosidade significam muito para nós neste momento tão especial. Cada contribuição nos ajudará
-            a construir nosso novo lar juntos.
+            Seu carinho e generosidade significam muito para nós neste momento tão especial. Cada contribuição nos
+            ajudará a construir nosso novo lar juntos.
           </p>
         </div>
       </div>

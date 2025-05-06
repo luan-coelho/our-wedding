@@ -1,15 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { prisma } from '@/lib/prisma'
+import { db } from '@/db'
+import { messages } from '@/db/schema'
+import { desc } from 'drizzle-orm'
 
 export async function GET() {
   try {
-    const messages = await prisma.message.findMany({
-      orderBy: {
-        createdAt: 'desc',
-      },
+    const messagesList = await db.query.messages.findMany({
+      orderBy: [desc(messages.createdAt)],
     })
 
-    return NextResponse.json(messages, { status: 200 })
+    return NextResponse.json(messagesList, { status: 200 })
   } catch (error) {
     console.error('Erro ao buscar mensagens:', error)
     return NextResponse.json({ error: 'Erro ao buscar mensagens' }, { status: 500 })
@@ -27,11 +27,9 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Nome e mensagem são obrigatórios' }, { status: 400 })
     }
 
-    const newMessage = await prisma.message.create({
-      data: {
-        name,
-        content: message,
-      },
+    const newMessage = await db.insert(messages).values({
+      name,
+      content: message,
     })
 
     return NextResponse.json(newMessage, { status: 201 })

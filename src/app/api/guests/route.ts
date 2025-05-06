@@ -1,18 +1,18 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { prisma } from '@/lib/prisma'
+import { db } from '@/db'
+import { guests } from '@/db/schema'
+import { asc } from 'drizzle-orm'
 
 // Garante que as rotas da API sejam processadas dinamicamente
 export const dynamic = 'force-dynamic'
 
 export async function GET() {
   try {
-    const guests = await prisma.guest.findMany({
-      orderBy: {
-        name: 'asc',
-      },
+    const guestsList = await db.query.guests.findMany({
+      orderBy: [asc(guests.name)],
     })
 
-    return NextResponse.json(guests)
+    return NextResponse.json(guestsList)
   } catch (error) {
     console.error('Erro ao listar convidados:', error)
     return NextResponse.json({ error: 'Erro ao listar convidados' }, { status: 500 })
@@ -23,14 +23,8 @@ export async function POST(request: NextRequest) {
   try {
     const { name } = await request.json()
 
-    if (!name || name.trim() === '') {
-      return NextResponse.json({ error: 'O nome é obrigatório' }, { status: 400 })
-    }
-
-    const newGuest = await prisma.guest.create({
-      data: {
-        name,
-      },
+    const newGuest = await db.insert(guests).values({
+      name,
     })
 
     return NextResponse.json(newGuest, { status: 201 })

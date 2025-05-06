@@ -8,7 +8,7 @@ FROM base AS deps
 RUN apk add --no-cache libc6-compat
 WORKDIR /app
 
-COPY prisma ./prisma/
+COPY src/db/ ./src/db/
 
 # Instalar e habilitar o pnpm
 RUN corepack enable pnpm

@@ -1,15 +1,15 @@
 import { NextResponse } from 'next/server'
-import { prisma } from '@/lib/prisma'
+import { db } from '@/db'
+import { photos } from '@/db/schema'
+import { desc } from 'drizzle-orm'
 
 export async function GET() {
   try {
-    const photos = await prisma.photo.findMany({
-      orderBy: {
-        createdAt: 'desc',
-      },
+    const photosList = await db.query.photos.findMany({
+      orderBy: [desc(photos.createdAt)],
     })
 
-    return NextResponse.json(photos, { status: 200 })
+    return NextResponse.json(photosList, { status: 200 })
   } catch (error) {
     console.error('Erro ao buscar fotos:', error)
     return NextResponse.json({ error: 'Erro ao buscar fotos' }, { status: 500 })

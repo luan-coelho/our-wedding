@@ -1,13 +1,13 @@
 # Site de Casamento - Ester & Luan
 
-Este é um site para casamento desenvolvido com Next.js, React, TailwindCSS, Prisma e PostgreSQL. O site inclui várias páginas essenciais para um site de casamento, como: página inicial, confirmação de presença, lista de presentes, localização, galeria de fotos, mensagens para os noivos e a história do casal.
+Este é um site para casamento desenvolvido com Next.js, React, TailwindCSS, Drizzle ORM e PostgreSQL. O site inclui várias páginas essenciais para um site de casamento, como: página inicial, confirmação de presença, lista de presentes, localização, galeria de fotos, mensagens para os noivos e a história do casal.
 
 ## Tecnologias Utilizadas
 
 - **Next.js**: Framework React com renderização do lado do servidor
 - **React**: Biblioteca JavaScript para construir interfaces de usuário
 - **TailwindCSS**: Framework CSS utilitário
-- **Prisma**: ORM (Object-Relational Mapping) para banco de dados
+- **Drizzle ORM**: ORM (Object-Relational Mapping) para banco de dados
 - **PostgreSQL**: Banco de dados relacional
 - **NextAuth**: Sistema de autenticação para Next.js
 
@@ -65,13 +65,13 @@ npm install
 5. Execute as migrações do banco de dados:
 
 ```bash
-npx prisma migrate dev
+pnpm prisma migrate dev
 ```
 
 6. Crie o usuário administrador:
 
 ```bash
-npm run create-admin
+pnpm create-admin
 ```
 
 ## Execução
@@ -79,7 +79,7 @@ npm run create-admin
 Para iniciar o servidor de desenvolvimento:
 
 ```bash
-npm run dev
+pnpm dev
 ```
 
 O site estará disponível em: `http://localhost:3000`
@@ -89,13 +89,13 @@ O site estará disponível em: `http://localhost:3000`
 Para gerar uma versão otimizada para produção:
 
 ```bash
-npm run build
+pnpm build
 ```
 
 Para iniciar o servidor em modo de produção:
 
 ```bash
-npm start
+pnpm start
 ```
 
 ## Área de Administração
@@ -124,7 +124,7 @@ Para acessar, use o email e senha definidos nas variáveis de ambiente `ADMIN_EM
 - `src/components/`: Componentes reutilizáveis
 - `src/data/`: Dados estáticos (presentes, fotos)
 - `src/lib/`: Utilitários (conexão com o banco de dados, autenticação)
-- `prisma/`: Esquema e migrações do banco de dados
+- `src/db/`: Esquema e migrações do banco de dados
 - `public/`: Arquivos estáticos (imagens)
 
 ## Licença
@@ -165,21 +165,25 @@ Este projeto pode ser executado com Docker e Docker Compose, o que facilita a co
 ### Executando a aplicação
 
 1. Clone o repositório:
+
    ```bash
    git clone [URL_DO_REPOSITORIO]
    cd our-wedding
    ```
 
 2. Crie um arquivo `.env.prod` na raiz do projeto com as seguintes variáveis:
+
    ```
    NODE_ENV=production
-   DATABASE_URL="postgresql://postgres:prisma@postgres_db:5432/postgres?schema=public"
+   DATABASE_URL="postgresql://postgres:postgres@postgres_db:5432/postgres?schema=public"
    AUTH_URL=http://localhost:3000
    AUTH_SECRET=meusegredomuitoseguro
    ```
+
    Certifique-se de substituir `meusegredomuitoseguro` por uma string segura aleatória em ambiente de produção.
 
 3. Execute a aplicação com Docker Compose:
+
    ```bash
    docker compose up --build -d
    ```
@@ -191,17 +195,17 @@ Este projeto pode ser executado com Docker e Docker Compose, o que facilita a co
 ### Notas Técnicas
 
 - A aplicação usa pnpm como gerenciador de pacotes dentro dos containers Docker
-- O Prisma é configurado para gerar o cliente em ./src/generated/prisma
-- As migrações são executadas automaticamente na inicialização do container
 
 ### Parando a aplicação
 
 Para parar a aplicação:
+
 ```bash
 docker compose down
 ```
 
 Para parar a aplicação e remover os volumes (isso excluirá os dados do banco):
+
 ```bash
 docker compose down -v
 ```
@@ -211,6 +215,7 @@ docker compose down -v
 Se preferir executar a aplicação manualmente sem Docker:
 
 ### Pré-requisitos
+
 - Node.js 20 ou superior
 - pnpm instalado globalmente
 - PostgreSQL
@@ -278,6 +283,7 @@ cd our-wedding
 2. Configure as variáveis de ambiente:
 
 Edite o arquivo `docker-compose.yml` e ajuste as variáveis de ambiente conforme necessário, especialmente:
+
 - `AUTH_SECRET`: Defina um valor secreto forte
 - `AUTH_URL`: Configure para a URL onde sua aplicação será acessada
 
@@ -337,3 +343,20 @@ pnpm dev
 - PostgreSQL
 - TailwindCSS 4
 - Shadcn UI
+
+## Banco de Dados
+
+Este projeto utiliza o Drizzle ORM com PostgreSQL para gerenciar o banco de dados.
+
+### Comandos do Banco de Dados
+
+- Gerar migrações: `npm run db:generate`
+- Aplicar migrações: `npm run db:migrate`
+- Interface de gerenciamento: `npm run db:studio`
+
+### Estrutura de Arquivos
+
+- `/src/db/schema/`: Contém os schemas das tabelas
+- `/src/db/index.ts`: Exporta o cliente Drizzle e utilitários
+- `/src/db/migrate.ts`: Script para executar migrações
+- `/drizzle/`: Contém os arquivos de migração gerados

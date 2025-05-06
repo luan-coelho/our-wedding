@@ -39,6 +39,7 @@ Follow these rules when you write code:
 - Use named functions instead of constants, e.g. “function toggle(){}”. Also, define a type if possible.
 - use react query for fetch calls.
 - Avoid suggesting any kind of caching in fetch or route.
+- When creating new ts or js files, use Kebab Case, for example "user-form.ts" instead of "userForm.ts".
 
 ### technology-versions
 

@@ -1,7 +1,8 @@
 import { NextResponse } from 'next/server'
-import { prisma } from '@/lib/prisma'
+import { db } from '@/db'
+import { gifts } from '@/db/schema'
 import { auth } from '@/auth'
-
+import { eq } from 'drizzle-orm'
 // Garante que as rotas da API sejam processadas dinamicamente
 export const dynamic = 'force-dynamic'
 
@@ -9,11 +10,9 @@ export async function GET(_: Request, { params }: { params: Promise<{ id: string
   const { id } = await params
 
   try {
-    const gift = await prisma.gift.findUnique({
-      where: {
-        id: parseInt(id),
-      },
-      include: {
+    const gift = await db.query.gifts.findFirst({
+      where: eq(gifts.id, parseInt(id)),
+      with: {
         selectedPixKey: true,
       },
     })
@@ -41,19 +40,14 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
 
     const body = await request.json()
 
-    const updatedGift = await prisma.gift.update({
-      where: {
-        id: parseInt(id),
-      },
-      data: {
-        name: body.name,
-        description: body.description,
-        price: body.price,
-        pixKey: body.pixKey,
-        pixKeyId: body.pixKeyId,
-        imageUrl: body.imageUrl,
-      },
-    })
+    const updatedGift = await db.update(gifts).set({
+      name: body.name,
+      description: body.description,
+      price: body.price,
+      pixKey: body.pixKey,
+      pixKeyId: body.pixKeyId,
+      imageUrl: body.imageUrl,
+    }).where(eq(gifts.id, parseInt(id)))
 
     return NextResponse.json(updatedGift, { status: 200 })
   } catch (error) {
@@ -72,11 +66,7 @@ export async function DELETE(_: Request, { params }: { params: Promise<{ id: str
       return NextResponse.json({ error: 'Não autorizado' }, { status: 403 })
     }
 
-    await prisma.gift.delete({
-      where: {
-        id: parseInt(id),
-      },
-    })
+    await db.delete(gifts).where(eq(gifts.id, parseInt(id)))
 
     return NextResponse.json({ success: true }, { status: 200 })
   } catch (error) {

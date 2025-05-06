@@ -3,14 +3,7 @@
 import AdminProtected from '@/components/AdminProtected'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
@@ -38,7 +31,11 @@ export default function AdminGiftsPage() {
   }
 
   // Query para buscar presentes
-  const { data: gifts = [], isLoading, error } = useQuery({
+  const {
+    data: gifts = [],
+    isLoading,
+    error,
+  } = useQuery({
     queryKey: ['gifts'],
     queryFn: fetchGifts,
   })
@@ -58,10 +55,10 @@ export default function AdminGiftsPage() {
       queryClient.invalidateQueries({ queryKey: ['gifts'] })
       toast.success('Presente excluído com sucesso')
     },
-    onError: (error) => {
+    onError: error => {
       console.error('Erro ao excluir presente:', error)
       toast.error('Erro ao excluir presente')
-    }
+    },
   })
 
   const handleDelete = async (id: number) => {
@@ -89,11 +86,9 @@ export default function AdminGiftsPage() {
               Adicionar Presente
             </Button>
           </CardHeader>
-          
+
           <CardContent>
-            {error instanceof Error && (
-              <div className="bg-red-100 text-red-700 p-3 rounded mb-4">{error.message}</div>
-            )}
+            {error instanceof Error && <div className="bg-red-100 text-red-700 p-3 rounded mb-4">{error.message}</div>}
 
             {isLoading ? (
               <div className="text-center py-4">Carregando...</div>
@@ -118,16 +113,10 @@ export default function AdminGiftsPage() {
                         <TableCell>{gift.price ? `R$ ${gift.price.toFixed(2)}` : '-'}</TableCell>
                         <TableCell className="text-center">
                           <div className="flex justify-center gap-2">
-                            <Button
-                              onClick={() => handleEdit(gift.id)}
-                              variant="outline"
-                              size="sm">
+                            <Button onClick={() => handleEdit(gift.id)} variant="outline" size="sm">
                               Editar
                             </Button>
-                            <Button
-                              onClick={() => handleDelete(gift.id)}
-                              variant="destructive"
-                              size="sm">
+                            <Button onClick={() => handleDelete(gift.id)} variant="destructive" size="sm">
                               Excluir
                             </Button>
                           </div>

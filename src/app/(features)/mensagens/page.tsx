@@ -187,8 +187,8 @@ export default function MensagensPage() {
             </Card>
           ) : (
             <div className="space-y-6">
-              {messages.map(message => (
-                <Card key={message.id} className="py-2">
+              {messages.map((message, index) => (
+                <Card key={index} className="py-2">
                   <CardContent className="px-3 py-1">
                     <div className="flex">
                       <div className="w-10 h-10 bg-wedding-primary/20 rounded-full flex items-center justify-center mr-4 mt-1">

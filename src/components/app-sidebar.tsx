@@ -1,31 +1,16 @@
 'use client'
 
-import * as React from 'react'
 import {
-  IconCamera,
-  IconChartBar,
   IconCreditCard,
   IconDashboard,
-  IconDatabase,
-  IconFileAi,
-  IconFileDescription,
-  IconFileWord,
-  IconFolder,
   IconGift,
-  IconHelp,
   IconInnerShadowTop,
-  IconListDetails,
-  IconMapPin,
   IconMessageCircle,
-  IconReport,
-  IconSearch,
-  IconSettings,
   IconUsers,
 } from '@tabler/icons-react'
+import * as React from 'react'
 
-import { NavDocuments } from '@/components/nav-documents'
 import { NavMain } from '@/components/nav-main'
-import { NavSecondary } from '@/components/nav-secondary'
 import NavUser from '@/components/nav-user'
 import {
   Sidebar,
@@ -70,10 +55,10 @@ const data = {
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
-    <Sidebar className='bg-zinc-800' collapsible="offcanvas" {...props}>
-      <SidebarHeader className='bg-zinc-800'>
+    <Sidebar className="bg-zinc-800" collapsible="offcanvas" {...props}>
+      <SidebarHeader className="bg-zinc-800">
         <SidebarMenu>
-          <SidebarMenuItem className='bg-zinc-800'>
+          <SidebarMenuItem className="bg-zinc-800">
             <SidebarMenuButton asChild className="data-[slot=sidebar-menu-button]:!p-1.5 text-white">
               <a href="#">
                 <IconInnerShadowTop className="!size-5" />
@@ -83,7 +68,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarHeader>
-      <SidebarContent className='bg-zinc-800'>
+      <SidebarContent className="bg-zinc-800">
         <NavMain items={data.navMain} />
       </SidebarContent>
       <SidebarFooter>

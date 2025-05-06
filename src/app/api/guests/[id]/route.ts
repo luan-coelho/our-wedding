@@ -1,4 +1,6 @@
-import { prisma } from '@/lib/prisma'
+import { db } from '@/db'
+import { guests } from '@/db/schema'
+import { eq } from 'drizzle-orm'
 import { NextRequest, NextResponse } from 'next/server'
 
 // Garante que as rotas da API sejam processadas dinamicamente
@@ -14,8 +16,8 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
       return NextResponse.json({ error: 'ID inválido' }, { status: 400 })
     }
 
-    const guest = await prisma.guest.findUnique({
-      where: { id },
+    const guest = await db.query.guests.findFirst({
+      where: eq(guests.id, id),
     })
 
     if (!guest) {
@@ -46,8 +48,8 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
     }
 
     // Verificar se o convidado existe
-    const existingGuest = await prisma.guest.findUnique({
-      where: { id },
+    const existingGuest = await db.query.guests.findFirst({
+      where: eq(guests.id, id),
     })
 
     if (!existingGuest) {
@@ -55,13 +57,10 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
     }
 
     // Atualizar o convidado
-    const updatedGuest = await prisma.guest.update({
-      where: { id },
-      data: {
-        name,
-        updatedAt: new Date(),
-      },
-    })
+    const updatedGuest = await db.update(guests).set({
+      name,
+      updatedAt: new Date(),
+    }).where(eq(guests.id, id))
 
     return NextResponse.json(updatedGuest)
   } catch (error) {
@@ -81,8 +80,8 @@ export async function DELETE(_: NextRequest, { params }: { params: Promise<{ id:
     }
 
     // Verificar se o convidado existe
-    const existingGuest = await prisma.guest.findUnique({
-      where: { id },
+    const existingGuest = await db.query.guests.findFirst({
+      where: eq(guests.id, id),
     })
 
     if (!existingGuest) {
@@ -90,9 +89,7 @@ export async function DELETE(_: NextRequest, { params }: { params: Promise<{ id:
     }
 
     // Excluir o convidado
-    await prisma.guest.delete({
-      where: { id },
-    })
+    await db.delete(guests).where(eq(guests.id, id))
 
     return NextResponse.json({ success: true })
   } catch (error) {
