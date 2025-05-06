@@ -4,17 +4,16 @@ import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
+import { routes } from '@/lib/routes'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { AlertCircle } from 'lucide-react'
 import { signIn } from 'next-auth/react'
 import Image from 'next/image'
-import { useRouter, useSearchParams } from 'next/navigation'
+import { useSearchParams } from 'next/navigation'
 import { Suspense, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { LoginFormValues, loginSchema } from './login-schema'
-
 function LoginForm() {
-  const router = useRouter()
   const searchParams = useSearchParams()
   const callbackUrl = searchParams.get('callbackUrl') || '/admin'
 
@@ -34,19 +33,13 @@ function LoginForm() {
     setError('')
 
     try {
-      const result = await signIn('credentials', {
-        redirect: false,
+      await signIn('credentials', {
+        redirectTo: routes.frontend.admin.home ?? callbackUrl,
         email: data.email,
         password: data.password,
       })
-
-      if (result?.error) {
-        setError('Credenciais inválidas. Por favor, verifique seu email e senha.')
-      } else {
-        router.push(callbackUrl)
-      }
     } catch (error) {
-      setError('Ocorreu um erro ao fazer login. Por favor, tente novamente.')
+      setError('Credenciais inválidas. Por favor, verifique seu email e senha.')
     } finally {
       setIsLoading(false)
     }
