@@ -1,7 +1,7 @@
 'use client'
 
 import { IconLogout } from '@tabler/icons-react'
-
+import { routes } from '@/lib/routes'
 import { SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar'
 import { signOut, useSession } from 'next-auth/react'
 import { Button } from './ui/button'
@@ -19,7 +19,16 @@ export default function NavUser() {
             <span className="truncate font-medium">{session?.user?.name}</span>
             <span className="text-muted-foreground truncate text-xs">{session?.user?.email}</span>
           </div>
-          <Button className="cursor-pointer" asChild variant="ghost" size="icon" onClick={() => signOut()}>
+          <Button
+            className="cursor-pointer"
+            asChild
+            variant="ghost"
+            size="icon"
+            onClick={() =>
+              signOut({
+                redirectTo: routes.frontend.auth.login,
+              })
+            }>
             <IconLogout className="size-5" />
           </Button>
         </SidebarMenuButton>
