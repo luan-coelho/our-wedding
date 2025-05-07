@@ -7,30 +7,66 @@ import { routes } from '@/lib/routes'
 import { AlertCircle, HeartHandshake } from 'lucide-react'
 import Image from 'next/image'
 import { useSearchParams } from 'next/navigation'
-import { Suspense } from 'react'
+import { Suspense, useEffect, useState } from 'react'
 
 function LoginForm() {
   const searchParams = useSearchParams()
   const callbackUrl = searchParams.get('callbackUrl') || routes.frontend.admin.home
+  const [errorMessage, setErrorMessage] = useState<string | null>(null)
+  
+  // Captura erros da URL
+  useEffect(() => {
+    const error = searchParams.get('error')
+    if (error) {
+      // Mensagens específicas para cada tipo de erro
+      if (error === 'AccessDenied') {
+        setErrorMessage(
+          'Você não está cadastrado no sistema. Entre em contato com um administrador para solicitar acesso.'
+        )
+      } else if (error === 'Callback') {
+        setErrorMessage('Houve um problema durante o login. Tente novamente.')
+      } else if (error === 'OAuthSignin') {
+        setErrorMessage('Erro ao iniciar autenticação com Google. Tente novamente.')
+      } else if (error === 'OAuthCallback') {
+        setErrorMessage('Erro na resposta de autenticação do Google. Tente novamente.')
+      } else if (error === 'SessionRequired') {
+        setErrorMessage('Você precisa estar autenticado para acessar esse recurso.')
+      } else {
+        setErrorMessage(`Erro de autenticação: ${error}`)
+      }
+    }
+  }, [searchParams])
 
   const {
     mutate: loginWithGoogle,
     isPending,
-    error,
   } = useGoogleLogin({
     callbackUrl,
   })
 
   function handleGoogleLogin() {
-    loginWithGoogle()
+    setErrorMessage(null)
+    loginWithGoogle(undefined, {
+      onError: (error) => {
+        console.error("Login error:", error)
+        setErrorMessage('Ocorreu um erro ao tentar fazer login com Google. Tente novamente.')
+      },
+      onSuccess: (data) => {
+        if (data?.error) {
+          setErrorMessage(data?.error)
+        }
+      }
+    })
   }
 
   return (
     <div className="space-y-6">
-      {error && (
+      {errorMessage && (
         <Alert variant="destructive" className="bg-red-100 border-red-600 text-red-600">
           <AlertCircle className="h-4 w-4" />
-          <AlertDescription>Ocorreu um erro ao tentar fazer login com Google. Tente novamente.</AlertDescription>
+          <AlertDescription>
+            {errorMessage}
+          </AlertDescription>
         </Alert>
       )}
 

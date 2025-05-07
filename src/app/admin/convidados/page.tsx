@@ -1,14 +1,16 @@
 'use client'
 
-import AdminProtected from '@/components/admin-protected'
+import { useState } from 'react'
+import { useSession } from 'next-auth/react'
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import Link from 'next/link'
+
+import AdminProtected from '@/components/admin-protected'
 import { CopyToClipboard } from '@/components/copy-to-clipboard'
-import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { toast } from 'sonner'
 import {
   Dialog,
   DialogClose,
@@ -18,8 +20,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog'
-import { useState } from 'react'
-import { useSession } from 'next-auth/react'
+import { toast } from 'sonner'
 
 interface Guest {
   id: number
@@ -29,61 +30,99 @@ interface Guest {
 }
 
 export default function AdminGuestsPage() {
+  const { data: session } = useSession()
   const queryClient = useQueryClient()
   const [guestToDelete, setGuestToDelete] = useState<Guest | null>(null)
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
-  const { data: session } = useSession()
+  
   const isAdmin = session?.user?.role === 'admin'
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'
 
-  // Função para buscar convidados
-  const fetchGuests = async (): Promise<Guest[]> => {
-    const response = await fetch('/api/guests')
-    if (!response.ok) {
-      throw new Error('Falha ao buscar convidados')
-    }
-    return response.json()
-  }
-
-  // Query para buscar convidados
+  // Query to fetch guests
   const { data: guests = [], isLoading } = useQuery({
     queryKey: ['guests'],
-    queryFn: fetchGuests,
+    queryFn: async () => {
+      const response = await fetch('/api/guests')
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.error || 'Failed to fetch guests')
+      }
+      return response.json() as Promise<Guest[]>
+    },
   })
 
-  // Cálculo das estatísticas
+  // Mutation to delete a guest
+  const deleteGuestMutation = useMutation({
+    mutationFn: async (guestId: number) => {
+      const response = await fetch(`/api/guests/${guestId}`, {
+        method: 'DELETE',
+      })
+      
+      const data = await response.json()
+      
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to delete guest')
+      }
+      
+      return data
+    },
+    onSuccess: (data) => {
+      toast.success(data.message || 'Convidado excluído com sucesso')
+      queryClient.invalidateQueries({ queryKey: ['guests'] })
+      setIsDeleteDialogOpen(false)
+      setGuestToDelete(null)
+    },
+    onError: (error: Error) => {
+      toast.error(error.message || 'Erro ao excluir convidado')
+    },
+  })
+
+  // Guest statistics
   const totalGuests = guests.length
   const confirmedGuests = guests.filter(guest => guest.isConfirmed).length
   const pendingGuests = totalGuests - confirmedGuests
   const confirmationRate = totalGuests > 0 ? Math.round((confirmedGuests / totalGuests) * 100) : 0
 
-  const handleDeleteClick = (guest: Guest) => {
+  function handleDeleteClick(guest: Guest) {
     setGuestToDelete(guest)
     setIsDeleteDialogOpen(true)
   }
 
-  const confirmDelete = async () => {
+  function handleConfirmDelete() {
     if (!guestToDelete) return
-
-    try {
-      const response = await fetch(`/api/guests/${guestToDelete.id}`, {
-        method: 'DELETE',
-      })
-
-      if (!response.ok) {
-        throw new Error('Falha ao excluir convidado')
-      }
-
-      toast.success('Convidado excluído com sucesso')
-      queryClient.invalidateQueries({ queryKey: ['guests'] })
-    } catch (error) {
-      toast.error('Erro ao excluir convidado')
-    } finally {
-      setIsDeleteDialogOpen(false)
-      setGuestToDelete(null)
-    }
+    deleteGuestMutation.mutate(guestToDelete.id)
   }
 
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'
+  const statsCards = [
+    {
+      title: 'Total',
+      value: totalGuests,
+      bgColor: 'bg-blue-100',
+      borderColor: 'border-blue-600',
+      textColor: 'text-blue-600',
+    },
+    {
+      title: 'Confirmados',
+      value: confirmedGuests,
+      bgColor: 'bg-green-100',
+      borderColor: 'border-green-600',
+      textColor: 'text-green-600',
+    },
+    {
+      title: 'Pendentes',
+      value: pendingGuests,
+      bgColor: 'bg-yellow-100',
+      borderColor: 'border-yellow-600',
+      textColor: 'text-yellow-600',
+    },
+    {
+      title: 'Taxa de Confirmação',
+      value: `${confirmationRate}%`,
+      bgColor: 'bg-white',
+      borderColor: 'border-zinc-600',
+      textColor: 'text-zinc-600',
+    },
+  ]
 
   return (
     <AdminProtected>
@@ -93,12 +132,13 @@ export default function AdminGuestsPage() {
             <DialogHeader>
               <DialogTitle>Confirmar exclusão</DialogTitle>
               <DialogDescription>
-                Tem certeza que deseja excluir o convidado "{guestToDelete?.name}"? Esta ação não pode ser desfeita.
+                Tem certeza que deseja excluir o convidado &ldquo;{guestToDelete?.name}&rdquo;? Esta ação não pode ser
+                desfeita.
               </DialogDescription>
             </DialogHeader>
             <DialogFooter className="gap-2 justify-end">
-              <Button variant="destructive" onClick={confirmDelete}>
-                Excluir
+              <Button variant="destructive" onClick={handleConfirmDelete} disabled={deleteGuestMutation.isPending}>
+                {deleteGuestMutation.isPending ? 'Excluindo...' : 'Excluir'}
               </Button>
               <DialogClose asChild>
                 <Button variant="outline">Cancelar</Button>
@@ -109,40 +149,18 @@ export default function AdminGuestsPage() {
       )}
 
       <div className="container mx-auto px-4 mt-10">
-        {/* Estatísticas de Convidados */}
+        {/* Guest Statistics */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-          <Card className="bg-blue-100 border-blue-600 text-blue-600">
-            <CardContent className="pt-6">
-              <div className="text-center">
-                <h3 className="text-3xl font-bold">{totalGuests}</h3>
-                <p className="text-sm">Total</p>
-              </div>
-            </CardContent>
-          </Card>
-          <Card className="bg-green-100 border-green-600 text-green-600">
-            <CardContent className="pt-6">
-              <div className="text-center">
-                <h3 className="text-3xl font-bold">{confirmedGuests}</h3>
-                <p className="text-sm">Confirmados</p>
-              </div>
-            </CardContent>
-          </Card>
-          <Card className="bg-yellow-100 border-yellow-600 text-yellow-600">
-            <CardContent className="pt-6">
-              <div className="text-center">
-                <h3 className="text-3xl font-bold">{pendingGuests}</h3>
-                <p className="text-sm">Pendentes</p>
-              </div>
-            </CardContent>
-          </Card>
-          <Card className="bg-white border-zinc-600 text-zinc-600">
-            <CardContent className="pt-6">
-              <div className="text-center">
-                <h3 className="text-3xl font-bold">{confirmationRate}%</h3>
-                <p className="text-sm">Taxa de Confirmação</p>
-              </div>
-            </CardContent>
-          </Card>
+          {statsCards.map((card, index) => (
+            <Card key={index} className={`${card.bgColor} ${card.borderColor} ${card.textColor}`}>
+              <CardContent className="pt-6">
+                <div className="text-center">
+                  <h3 className="text-3xl font-bold">{card.value}</h3>
+                  <p className="text-sm">{card.title}</p>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
         </div>
 
         <Card className="rounded-lg">
@@ -170,37 +188,39 @@ export default function AdminGuestsPage() {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {guests.map(guest => (
-                      <TableRow key={guest.id}>
-                        <TableCell>{guest.name}</TableCell>
-                        <TableCell className="text-center">
-                          <span
-                            className={`inline-block w-3 h-3 rounded-full ${guest.isConfirmed ? 'bg-green-500' : 'bg-red-500'}`}
-                          />
-                        </TableCell>
-                        <TableCell>
-                          <div className="flex items-center gap-2">
-                            <Input
-                              readOnly
-                              value={`${baseUrl}/confirmacao/${guest.token}`}
-                              className="flex-1 text-sm bg-gray-50"
+                    {guests.length > 0 ? (
+                      guests.map(guest => (
+                        <TableRow key={guest.id}>
+                          <TableCell>{guest.name}</TableCell>
+                          <TableCell className="text-center">
+                            <span
+                              className={`inline-block w-3 h-3 rounded-full ${guest.isConfirmed ? 'bg-green-500' : 'bg-red-500'}`}
+                              aria-label={guest.isConfirmed ? 'Confirmado' : 'Não confirmado'}
                             />
-                            <CopyToClipboard text={`${baseUrl}/confirmacao/${guest.token}`} />
-                          </div>
-                        </TableCell>
-                        {isAdmin && (
-                          <TableCell className="text-center flex gap-2 justify-center">
-                            <Button asChild variant="outline" size="sm">
-                              <Link href={`/admin/convidados/${guest.id}/editar`}>Editar</Link>
-                            </Button>
-                            <Button onClick={() => handleDeleteClick(guest)} variant="destructive" size="sm">
-                              Excluir
-                            </Button>
                           </TableCell>
-                        )}
-                      </TableRow>
-                    ))}
-                    {guests.length === 0 && (
+                          <TableCell>
+                            <div className="flex items-center gap-2">
+                              <Input
+                                readOnly
+                                value={`${baseUrl}/confirmacao/${guest.token}`}
+                                className="flex-1 text-sm bg-gray-50"
+                              />
+                              <CopyToClipboard text={`${baseUrl}/confirmacao/${guest.token}`} />
+                            </div>
+                          </TableCell>
+                          {isAdmin && (
+                            <TableCell className="text-center flex gap-2 justify-center">
+                              <Button asChild variant="outline" size="sm">
+                                <Link href={`/admin/convidados/${guest.id}/editar`}>Editar</Link>
+                              </Button>
+                              <Button onClick={() => handleDeleteClick(guest)} variant="destructive" size="sm">
+                                Excluir
+                              </Button>
+                            </TableCell>
+                          )}
+                        </TableRow>
+                      ))
+                    ) : (
                       <TableRow>
                         <TableCell colSpan={isAdmin ? 4 : 3} className="text-center text-gray-500">
                           Nenhum convidado cadastrado

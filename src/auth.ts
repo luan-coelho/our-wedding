@@ -30,7 +30,7 @@ declare module 'next-auth/jwt' {
 }
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
-  debug: true,
+  //debug: true,
   providers: [
     Google({
       profile(profile) {
@@ -45,6 +45,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   },
   pages: {
     signIn: routes.frontend.auth.login,
+    error: routes.frontend.auth.login,
   },
   callbacks: {
     async signIn({ user, account }) {

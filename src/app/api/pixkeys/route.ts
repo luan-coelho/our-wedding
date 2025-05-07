@@ -93,17 +93,18 @@ export async function PUT(request: NextRequest) {
 }
 
 // DELETE /api/pixkeys - Remover uma chave PIX
-export async function DELETE(request: NextRequest) {
+export async function DELETE(
+  request: Request,
+  { params }: { params: Promise<{ id: string }> }
+) {
   try {
+    const id = (await params).id;
     const session = await auth()
 
     // Verificar autorização
     if (!session?.user || session.user.role !== 'admin') {
       return NextResponse.json({ error: 'Não autorizado' }, { status: 403 })
     }
-
-    const { searchParams } = new URL(request.url)
-    const id = searchParams.get('id')
 
     if (!id) {
       return NextResponse.json({ error: 'ID da chave PIX não fornecido' }, { status: 400 })
