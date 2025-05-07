@@ -26,9 +26,7 @@ yarn-debug.log*
 yarn-error.log*
 
 # local env files
-.env*.local
-.env
-.env.prod
+.env*
 
 # vercel
 .vercel
@@ -49,3 +47,5 @@ backup_*.sql
 
 generated/prisma/
 src/generated/prisma/
+
+.idea

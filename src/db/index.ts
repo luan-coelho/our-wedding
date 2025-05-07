@@ -15,6 +15,7 @@ export const db = drizzle(pool, { schema })
 export { schema }
 
 // Função utilitária para executar queries em transações
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function transaction<T>(callback: (tx: any) => Promise<T>): Promise<T> {
   const client = await pool.connect()
   try {

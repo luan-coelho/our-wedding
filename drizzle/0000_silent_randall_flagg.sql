@@ -1,4 +1,4 @@
-CREATE TABLE "User" (
+CREATE TABLE "user" (
 	"id" text PRIMARY KEY NOT NULL,
 	"name" text,
 	"email" text,
@@ -7,52 +7,47 @@ CREATE TABLE "User" (
 	"image" text,
 	"role" text DEFAULT 'user' NOT NULL,
 	"createdAt" timestamp DEFAULT now() NOT NULL,
-	"updatedAt" timestamp NOT NULL,
-	CONSTRAINT "User_email_unique" UNIQUE("email")
+	"updatedAt" timestamp,
+	CONSTRAINT "user_email_unique" UNIQUE("email")
 );
 --> statement-breakpoint
-CREATE TABLE "Account" (
-	"id" text PRIMARY KEY NOT NULL,
+CREATE TABLE "account" (
 	"userId" text NOT NULL,
 	"type" text NOT NULL,
 	"provider" text NOT NULL,
 	"providerAccountId" text NOT NULL,
 	"refresh_token" text,
 	"access_token" text,
-	"expires_at" text,
+	"expires_at" integer,
 	"token_type" text,
 	"scope" text,
 	"id_token" text,
 	"session_state" text
 );
 --> statement-breakpoint
-CREATE TABLE "Session" (
-	"id" text PRIMARY KEY NOT NULL,
-	"sessionToken" text NOT NULL,
+CREATE TABLE "session" (
+	"sessionToken" text PRIMARY KEY NOT NULL,
 	"userId" text NOT NULL,
-	"expires" timestamp NOT NULL,
-	CONSTRAINT "Session_sessionToken_unique" UNIQUE("sessionToken")
+	"expires" timestamp NOT NULL
 );
 --> statement-breakpoint
-CREATE TABLE "VerificationToken" (
+CREATE TABLE "verification-token" (
 	"identifier" text NOT NULL,
 	"token" text NOT NULL,
-	"expires" timestamp NOT NULL,
-	CONSTRAINT "VerificationToken_identifier_token_pk" PRIMARY KEY("identifier","token"),
-	CONSTRAINT "VerificationToken_token_unique" UNIQUE("token")
+	"expires" timestamp NOT NULL
 );
 --> statement-breakpoint
-CREATE TABLE "Guest" (
+CREATE TABLE "guest" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"name" text NOT NULL,
 	"isConfirmed" boolean DEFAULT false NOT NULL,
 	"token" uuid DEFAULT gen_random_uuid() NOT NULL,
 	"createdAt" timestamp DEFAULT now() NOT NULL,
 	"updatedAt" timestamp,
-	CONSTRAINT "Guest_token_unique" UNIQUE("token")
+	CONSTRAINT "guest_token_unique" UNIQUE("token")
 );
 --> statement-breakpoint
-CREATE TABLE "Message" (
+CREATE TABLE "message" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"name" text NOT NULL,
 	"content" text NOT NULL,
@@ -60,17 +55,17 @@ CREATE TABLE "Message" (
 	"updatedAt" timestamp
 );
 --> statement-breakpoint
-CREATE TABLE "PixKey" (
+CREATE TABLE "pix-key" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"name" text NOT NULL,
 	"key" text NOT NULL,
 	"type" text NOT NULL,
 	"createdAt" timestamp DEFAULT now() NOT NULL,
 	"updatedAt" timestamp,
-	CONSTRAINT "PixKey_key_unique" UNIQUE("key")
+	CONSTRAINT "pix-key_key_unique" UNIQUE("key")
 );
 --> statement-breakpoint
-CREATE TABLE "Gift" (
+CREATE TABLE "gift" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"name" text NOT NULL,
 	"description" text NOT NULL,
@@ -82,7 +77,7 @@ CREATE TABLE "Gift" (
 	"updatedAt" timestamp
 );
 --> statement-breakpoint
-CREATE TABLE "Photo" (
+CREATE TABLE "photo" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"url" text NOT NULL,
 	"description" text,
@@ -90,7 +85,19 @@ CREATE TABLE "Photo" (
 	"updatedAt" timestamp
 );
 --> statement-breakpoint
-ALTER TABLE "Account" ADD CONSTRAINT "Account_userId_User_id_fk" FOREIGN KEY ("userId") REFERENCES "public"."User"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "Session" ADD CONSTRAINT "Session_userId_User_id_fk" FOREIGN KEY ("userId") REFERENCES "public"."User"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "Gift" ADD CONSTRAINT "Gift_pixKeyId_PixKey_id_fk" FOREIGN KEY ("pixKeyId") REFERENCES "public"."PixKey"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
-CREATE UNIQUE INDEX "provider_providerAccountId_idx" ON "Account" USING btree ("provider","providerAccountId");
+CREATE TABLE "authenticator" (
+	"credentialID" text NOT NULL,
+	"userId" text NOT NULL,
+	"providerAccountId" text NOT NULL,
+	"credentialPublicKey" text NOT NULL,
+	"counter" integer NOT NULL,
+	"credentialDeviceType" text NOT NULL,
+	"credentialBackedUp" boolean NOT NULL,
+	"transports" text,
+	CONSTRAINT "authenticator_credentialID_unique" UNIQUE("credentialID")
+);
+--> statement-breakpoint
+ALTER TABLE "account" ADD CONSTRAINT "account_userId_user_id_fk" FOREIGN KEY ("userId") REFERENCES "public"."user"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "session" ADD CONSTRAINT "session_userId_user_id_fk" FOREIGN KEY ("userId") REFERENCES "public"."user"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "gift" ADD CONSTRAINT "gift_pixKeyId_pix-key_id_fk" FOREIGN KEY ("pixKeyId") REFERENCES "public"."pix-key"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "authenticator" ADD CONSTRAINT "authenticator_userId_user_id_fk" FOREIGN KEY ("userId") REFERENCES "public"."user"("id") ON DELETE cascade ON UPDATE no action;

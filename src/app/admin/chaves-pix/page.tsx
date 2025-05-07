@@ -1,6 +1,6 @@
 'use client'
 
-import AdminProtected from '@/components/AdminProtected'
+import AdminProtected from '@/components/admin-protected'
 import {
   AlertDialog,
   AlertDialogAction,

@@ -1,5 +1,5 @@
 import { db } from '@/db'
-import { guests } from '@/db/schema'
+import { tableUsers } from '@/db/schema'
 import { eq } from 'drizzle-orm'
 import { NextRequest, NextResponse } from 'next/server'
 
@@ -16,8 +16,8 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
       return NextResponse.json({ error: 'ID inválido' }, { status: 400 })
     }
 
-    const guest = await db.query.guests.findFirst({
-      where: eq(guests.id, id),
+    const guest = await db.query.tableUsers.findFirst({
+      where: eq(tableUsers.id, id.toString()),
     })
 
     if (!guest) {
@@ -48,8 +48,8 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
     }
 
     // Verificar se o convidado existe
-    const existingGuest = await db.query.guests.findFirst({
-      where: eq(guests.id, id),
+    const existingGuest = await db.query.tableUsers.findFirst({
+      where: eq(tableUsers.id, id.toString()),
     })
 
     if (!existingGuest) {
@@ -57,14 +57,16 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
     }
 
     // Atualizar o convidado
-    const updatedGuest = await db.update(guests).set({
-      name,
-      updatedAt: new Date(),
-    }).where(eq(guests.id, id))
+    const updatedGuest = await db
+      .update(tableUsers)
+      .set({
+        name,
+        updatedAt: new Date(),
+      })
+      .where(eq(tableUsers.id, id.toString()))
 
     return NextResponse.json(updatedGuest)
   } catch (error) {
-    console.error('Erro ao atualizar convidado:', error)
     return NextResponse.json({ error: 'Erro ao atualizar convidado' }, { status: 500 })
   }
 }
@@ -80,8 +82,8 @@ export async function DELETE(_: NextRequest, { params }: { params: Promise<{ id:
     }
 
     // Verificar se o convidado existe
-    const existingGuest = await db.query.guests.findFirst({
-      where: eq(guests.id, id),
+    const existingGuest = await db.query.tableUsers.findFirst({
+      where: eq(tableUsers.id, id.toString()),
     })
 
     if (!existingGuest) {
@@ -89,7 +91,7 @@ export async function DELETE(_: NextRequest, { params }: { params: Promise<{ id:
     }
 
     // Excluir o convidado
-    await db.delete(guests).where(eq(guests.id, id))
+    await db.delete(tableUsers).where(eq(tableUsers.id, id.toString()))
 
     return NextResponse.json({ success: true })
   } catch (error) {

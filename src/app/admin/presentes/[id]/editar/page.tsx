@@ -1,6 +1,6 @@
 'use client'
 
-import AdminProtected from '@/components/AdminProtected'
+import AdminProtected from '@/components/admin-protected'
 import { useParams, useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -15,6 +15,7 @@ import { Textarea } from '@/components/ui/textarea'
 import { useEffect, useState } from 'react'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Eye, X } from 'lucide-react'
+import Image from 'next/image'
 
 interface Gift {
   id: number
@@ -371,11 +372,13 @@ export default function EditGiftPage() {
                             <X className="h-4 w-4" />
                           </Button>
                           <div className="relative w-full h-48">
-                            <img
+                            <Image
                               src={imagePreview}
                               alt="Prévia da imagem"
                               className="rounded-md object-contain w-full h-full"
                               onError={handleImageError}
+                              width={1920}
+                              height={1080}
                             />
                           </div>
                         </div>

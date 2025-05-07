@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import { db } from '@/db'
-import { gifts } from '@/db/schema'
+import { tableGifts } from '@/db/schema'
 import { auth } from '@/auth'
 import { eq } from 'drizzle-orm'
 // Garante que as rotas da API sejam processadas dinamicamente
@@ -10,8 +10,8 @@ export async function GET(_: Request, { params }: { params: Promise<{ id: string
   const { id } = await params
 
   try {
-    const gift = await db.query.gifts.findFirst({
-      where: eq(gifts.id, parseInt(id)),
+    const gift = await db.query.tableGifts.findFirst({
+      where: eq(tableGifts.id, parseInt(id)),
       with: {
         selectedPixKey: true,
       },
@@ -40,18 +40,20 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
 
     const body = await request.json()
 
-    const updatedGift = await db.update(gifts).set({
-      name: body.name,
-      description: body.description,
-      price: body.price,
-      pixKey: body.pixKey,
-      pixKeyId: body.pixKeyId,
-      imageUrl: body.imageUrl,
-    }).where(eq(gifts.id, parseInt(id)))
+    const updatedGift = await db
+      .update(tableGifts)
+      .set({
+        name: body.name,
+        description: body.description,
+        price: body.price,
+        pixKey: body.pixKey,
+        pixKeyId: body.pixKeyId,
+        imageUrl: body.imageUrl,
+      })
+      .where(eq(tableGifts.id, parseInt(id)))
 
     return NextResponse.json(updatedGift, { status: 200 })
   } catch (error) {
-    console.error('Erro ao atualizar presente:', error)
     return NextResponse.json({ error: 'Erro ao atualizar presente' }, { status: 500 })
   }
 }
@@ -66,11 +68,10 @@ export async function DELETE(_: Request, { params }: { params: Promise<{ id: str
       return NextResponse.json({ error: 'Não autorizado' }, { status: 403 })
     }
 
-    await db.delete(gifts).where(eq(gifts.id, parseInt(id)))
+    await db.delete(tableGifts).where(eq(tableGifts.id, parseInt(id)))
 
     return NextResponse.json({ success: true }, { status: 200 })
   } catch (error) {
-    console.error('Erro ao excluir presente:', error)
     return NextResponse.json({ error: 'Erro ao excluir presente' }, { status: 500 })
   }
 }

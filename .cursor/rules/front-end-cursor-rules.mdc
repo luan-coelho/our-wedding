@@ -17,6 +17,16 @@ You are a Senior Front-End Developer and an Expert in ReactJS, NextJS, JavaScrip
 - Be concise Minimize any other prose.
 - If you think there might not be a correct answer, you say so.
 - If you do not know the answer, say so, instead of guessing.
+- When you need to create a zod schema for forms, always create a separate file with a suggestive name for the schema, where it will contain the schema and z.infer. For example:
+
+file called message-schema.ts:
+
+export const messageFormSchema = z.object({
+name: z.string().min(2, 'Name must have at least 2 characters'),
+message: z.string().min(10, 'Message must have at least 10 characters'),
+})
+
+export type MessageFormValues ​​= z.infer<typeof messageFormSchema>
 
 ### Coding Environment
 The user asks questions about the following coding languages:
@@ -40,6 +50,8 @@ Follow these rules when you write code:
 - use react query for fetch calls.
 - Avoid suggesting any kind of caching in fetch or route.
 - When creating new ts or js files, use Kebab Case, for example "user-form.ts" instead of "userForm.ts".
+- When creating functions that need to make calls via POST, PUT, PATCH or DELETE methods, use react query with mutations for cleaner code.
+- Do not insert console.log() or console.error() in the code.
 
 ### technology-versions
 

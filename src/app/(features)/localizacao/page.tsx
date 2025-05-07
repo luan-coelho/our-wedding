@@ -1,8 +1,8 @@
 'use client'
 
-import { FaMapMarkerAlt, FaDirections, FaCar, FaUber, FaTaxi } from 'react-icons/fa'
-import { MdContentCopy } from 'react-icons/md'
 import { useState } from 'react'
+import { FaDirections, FaMapMarkerAlt } from 'react-icons/fa'
+import { MdContentCopy } from 'react-icons/md'
 
 export default function LocalizacaoPage() {
   const [copied, setCopied] = useState(false)

@@ -274,17 +274,20 @@ Aplicação para gerenciamento de casamento, incluindo confirmação de presenç
 ### Configuração do Ambiente
 
 1. Clone o repositório:
+
 ```bash
 git clone <url-do-repositorio>
 cd our-wedding
 ```
 
 2. Crie o arquivo `.env` baseado no `.env.example`:
+
 ```bash
 cp .env.example .env
 ```
 
 3. Edite o arquivo `.env` com suas configurações:
+
 - Configure as credenciais do banco de dados
 - Defina um segredo forte para `AUTH_SECRET`
 - Atualize `AUTH_URL` com a URL pública da sua aplicação
@@ -292,16 +295,19 @@ cp .env.example .env
 ### Implantação com Docker Compose
 
 1. Construa e inicie os containers:
+
 ```bash
 docker compose up -d
 ```
 
 2. Verifique se os containers estão rodando:
+
 ```bash
 docker compose ps
 ```
 
 3. Verifique os logs da aplicação:
+
 ```bash
 docker compose logs -f app
 ```
@@ -317,11 +323,13 @@ docker compose exec app pnpm run create-admin
 ### Manutenção
 
 - **Reiniciar a aplicação**:
+
 ```bash
 docker compose restart app
 ```
 
 - **Atualizar a aplicação**:
+
 ```bash
 git pull
 docker compose build app
@@ -329,6 +337,7 @@ docker compose up -d app
 ```
 
 - **Backup do banco de dados**:
+
 ```bash
 docker compose exec postgres_db pg_dump -U ${POSTGRES_USER} ${POSTGRES_DB} > backup_$(date +'%Y%m%d').sql
 ```
@@ -373,3 +382,51 @@ Este projeto utiliza o Drizzle ORM com PostgreSQL para gerenciar o banco de dado
 - `/src/db/index.ts`: Exporta o cliente Drizzle e utilitários
 - `/src/db/migrate.ts`: Script para executar migrações
 - `/drizzle/`: Contém os arquivos de migração gerados
+
+## Migração do Banco de Dados - Atualização de Usuários
+
+Foi adicionado um novo campo `forcePasswordChange` na tabela de usuários para implementar a funcionalidade de troca de senha no primeiro acesso. Para aplicar esta migração, execute os seguintes comandos:
+
+```bash
+# Aplicar a migração
+npx drizzle-kit push:pg
+
+# OU, se preferir aplicar manualmente:
+psql -U seu_usuario -d seu_banco_de_dados -f drizzle/0001_black_malice.sql
+```
+
+## Novas Funcionalidades
+
+### Usuários com perfis diferentes
+
+- **Administrador**: Acesso total a todas as funcionalidades.
+- **Cerimonialista**: Pode apenas visualizar a lista de convidados.
+
+### Troca obrigatória de senha no primeiro acesso
+
+Quando um novo usuário é criado, ele será forçado a trocar a senha no primeiro acesso.
+
+### Gerenciamento de Usuários
+
+Nova tela para criar e gerenciar usuários com diferentes níveis de acesso.
+
+## Autenticação com Google
+
+Para configurar a autenticação com Google, você precisa obter as credenciais OAuth no Google Cloud Platform:
+
+1. Acesse o [Google Cloud Console](https://console.cloud.google.com/)
+2. Crie um novo projeto ou selecione um existente
+3. Vá para "APIs e Serviços" > "Credenciais"
+4. Clique em "Criar credenciais" e selecione "ID de cliente OAuth"
+5. Selecione "Aplicativo da Web" como tipo
+6. Dê um nome para seu cliente OAuth
+7. Adicione as URIs de redirecionamento autorizadas:
+   - `http://localhost:8080/api/auth/callback/google` (para desenvolvimento)
+   - `https://seu-dominio.com/api/auth/callback/google` (para produção)
+8. Clique em "Criar"
+9. Copie o ID do cliente e o segredo do cliente
+10. Adicione-os ao arquivo .env:
+    ```
+    GOOGLE_CLIENT_ID="seu-id-do-cliente"
+    GOOGLE_CLIENT_SECRET="seu-segredo-do-cliente"
+    ```

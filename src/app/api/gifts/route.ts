@@ -1,13 +1,13 @@
 import { NextResponse } from 'next/server'
 import { db } from '@/db'
-import { gifts } from '@/db/schema'
+import { tableGifts } from '@/db/schema'
 import { asc, eq } from 'drizzle-orm'
 import { auth } from '@/auth'
 
 export async function GET() {
   try {
-    const giftsList = await db.query.gifts.findMany({
-      orderBy: asc(gifts.name),
+    const giftsList = await db.query.tableGifts.findMany({
+      orderBy: asc(tableGifts.name),
       with: {
         selectedPixKey: true,
       },
@@ -15,7 +15,6 @@ export async function GET() {
 
     return NextResponse.json(giftsList, { status: 200 })
   } catch (error) {
-    console.error('Erro ao buscar presentes:', error)
     return NextResponse.json({ error: 'Erro ao buscar presentes' }, { status: 500 })
   }
 }
@@ -31,7 +30,7 @@ export async function POST(request: Request) {
 
     const body = await request.json()
 
-    const newGift = await db.insert(gifts).values({
+    const newGift = await db.insert(tableGifts).values({
       name: body.name,
       description: body.description,
       price: body.price,
@@ -58,18 +57,20 @@ export async function PUT(request: Request) {
 
     const body = await request.json()
 
-    const updatedGift = await db.update(gifts).set({
-      name: body.name,
-      description: body.description,
-      price: body.price,
-      pixKey: body.pixKey,
-      pixKeyId: body.pixKeyId,
-      imageUrl: body.imageUrl,
-    }).where(eq(gifts.id, body.id))
+    const updatedGift = await db
+      .update(tableGifts)
+      .set({
+        name: body.name,
+        description: body.description,
+        price: body.price,
+        pixKey: body.pixKey,
+        pixKeyId: body.pixKeyId,
+        imageUrl: body.imageUrl,
+      })
+      .where(eq(tableGifts.id, body.id))
 
     return NextResponse.json(updatedGift, { status: 200 })
   } catch (error) {
-    console.error('Erro ao atualizar presente:', error)
     return NextResponse.json({ error: 'Erro ao atualizar presente' }, { status: 500 })
   }
 }
@@ -90,11 +91,10 @@ export async function DELETE(request: Request) {
       return NextResponse.json({ error: 'ID não fornecido' }, { status: 400 })
     }
 
-    await db.delete(gifts).where(eq(gifts.id, parseInt(id)))
+    await db.delete(tableGifts).where(eq(tableGifts.id, parseInt(id)))
 
     return NextResponse.json({ success: true }, { status: 200 })
   } catch (error) {
-    console.error('Erro ao excluir presente:', error)
     return NextResponse.json({ error: 'Erro ao excluir presente' }, { status: 500 })
   }
 }

@@ -9,7 +9,7 @@ interface TimeLeft {
   seconds: number
 }
 
-const CountdownTimer = ({ targetDate }: { targetDate: Date }) => {
+export default function CountdownTimer({ targetDate }: { targetDate: Date }) {
   const calculateTimeLeft = (): TimeLeft => {
     const difference = +targetDate - +new Date()
 
@@ -33,11 +33,8 @@ const CountdownTimer = ({ targetDate }: { targetDate: Date }) => {
   }
 
   const [timeLeft, setTimeLeft] = useState<TimeLeft>(calculateTimeLeft())
-  const [isClient, setIsClient] = useState(false)
 
   useEffect(() => {
-    setIsClient(true)
-
     const timer = setTimeout(() => {
       setTimeLeft(calculateTimeLeft())
     }, 1000)
@@ -51,10 +48,6 @@ const CountdownTimer = ({ targetDate }: { targetDate: Date }) => {
     { label: 'Minutos', value: timeLeft.minutes },
     { label: 'Segundos', value: timeLeft.seconds },
   ]
-
-  if (!isClient) {
-    return null
-  }
 
   return (
     <div className="bg-wedding-primary/10 p-6 md:p-8 rounded-lg shadow-sm">
@@ -75,5 +68,3 @@ const CountdownTimer = ({ targetDate }: { targetDate: Date }) => {
     </div>
   )
 }
-
-export default CountdownTimer

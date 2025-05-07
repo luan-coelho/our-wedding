@@ -1,6 +1,6 @@
 'use client'
 
-import AdminProtected from '@/components/AdminProtected'
+import AdminProtected from '@/components/admin-protected'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
@@ -55,8 +55,7 @@ export default function AdminGiftsPage() {
       queryClient.invalidateQueries({ queryKey: ['gifts'] })
       toast.success('Presente excluído com sucesso')
     },
-    onError: error => {
-      console.error('Erro ao excluir presente:', error)
+    onError: () => {
       toast.error('Erro ao excluir presente')
     },
   })

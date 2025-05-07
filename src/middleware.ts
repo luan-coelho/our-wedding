@@ -1,28 +1,43 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getToken } from 'next-auth/jwt'
+import { getAuthToken } from './lib/auth-helpers'
 import { routes } from './lib/routes'
 
 export async function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname
 
-  // Verifica se é uma rota administrativa
-  if (pathname.startsWith('/admin')) {
-    const token = await getToken({
-      req: request,
-      secret: process.env.AUTH_SECRET,
-    })
-
-    // Se não estiver autenticado, redireciona para a página de login
-    if (!token) {
-      const url = new URL(routes.frontend.auth.login, request.url)
-      url.searchParams.set('callbackUrl', encodeURI(request.url))
-      return NextResponse.redirect(url)
-    }
-
-    // Se estiver autenticado, permite o acesso
+  // Apenas verifica rotas administrativas
+  if (!pathname.startsWith('/admin')) {
     return NextResponse.next()
   }
 
+  const token = await getAuthToken(request)
+
+  // Se não estiver autenticado, redireciona para login
+  if (!token) {
+    const loginUrl = new URL(routes.frontend.auth.login, request.url)
+    loginUrl.searchParams.set('callbackUrl', encodeURI(request.url))
+    return NextResponse.redirect(loginUrl)
+  }
+
+  // Visitantes não têm acesso às rotas administrativas
+  if (token.role === 'guest' || token.role === 'visitante') {
+    return NextResponse.redirect(new URL('/', request.url))
+  }
+
+  // Planner só pode visualizar a lista de convidados
+  if (token.role === 'planner') {
+    // Se tentar acessar outra rota além de /admin/convidados, redireciona
+    if (!pathname.startsWith('/admin/convidados')) {
+      return NextResponse.redirect(new URL('/admin/convidados', request.url))
+    }
+    
+    // Se estiver tentando acessar operações de criação/edição/exclusão, bloqueia acesso
+    if (pathname.includes('/novo') || pathname.includes('/editar') || pathname.includes('/excluir')) {
+      return NextResponse.redirect(new URL('/admin/convidados', request.url))
+    }
+  }
+
+  // Administrador tem acesso total
   return NextResponse.next()
 }
 

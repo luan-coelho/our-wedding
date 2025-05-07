@@ -1,8 +1,8 @@
 'use client'
 
-import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { FaUsers, FaGift, FaComments, FaImages, FaKey } from 'react-icons/fa'
+import { useEffect, useState } from 'react'
+import { FaGift, FaImages, FaKey, FaUsers } from 'react-icons/fa'
 
 export default function AdminPage() {
   const [_, setStats] = useState({
@@ -55,6 +55,7 @@ export default function AdminPage() {
       icon: <FaUsers className="w-8 h-8" />,
       href: '/admin/convidados',
       color: 'bg-blue-50 text-blue-600',
+      disabled: false,
     },
     {
       title: 'Presentes',
@@ -62,6 +63,7 @@ export default function AdminPage() {
       icon: <FaGift className="w-8 h-8" />,
       href: '/admin/presentes',
       color: 'bg-green-50 text-green-600',
+      disabled: false,
     },
     {
       title: 'Chaves PIX',
@@ -69,6 +71,7 @@ export default function AdminPage() {
       icon: <FaKey className="w-8 h-8" />,
       href: '/admin/chaves-pix',
       color: 'bg-purple-50 text-purple-600',
+      disabled: false,
     },
     {
       title: 'Galeria',
@@ -76,6 +79,7 @@ export default function AdminPage() {
       icon: <FaImages className="w-8 h-8" />,
       href: '/admin/galeria',
       color: 'bg-amber-50 text-amber-600',
+      disabled: true,
     },
   ]
 
@@ -88,8 +92,10 @@ export default function AdminPage() {
           {adminModules.map(module => (
             <Link
               key={module.title}
-              href={module.href}
-              className="block p-6 border rounded-lg hover:shadow-md transition-shadow group">
+              href={module.disabled ? '#' : module.href}
+              className={`block p-6 border rounded-lg hover:shadow-md transition-shadow group bg-white ${
+                module.disabled ? 'opacity-50 cursor-not-allowed' : ''
+              }`}>
               <div className="flex items-start">
                 <div className={`p-3 rounded-lg ${module.color} mr-4`}>{module.icon}</div>
                 <div>

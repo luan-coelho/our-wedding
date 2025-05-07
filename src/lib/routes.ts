@@ -27,6 +27,9 @@ export const routes = {
       chavesPix: {
         index: '/admin/chaves-pix',
       },
+      usuarios: {
+        index: '/admin/usuarios',
+      },
     },
 
     // Autenticação
@@ -51,6 +54,10 @@ export const routes = {
     photos: '/api/photos',
     confirmacao: {
       byToken: (token: string) => `/api/confirmacao/${token}`,
+    },
+    users: {
+      base: '/api/users',
+      changePassword: '/api/users/change-password',
     },
   },
 }

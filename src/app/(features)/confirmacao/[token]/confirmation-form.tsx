@@ -40,7 +40,6 @@ export default function ConfirmationForm({ guest }: ConfirmationFormProps) {
       setConfirmationStatus('success')
       router.refresh()
     } catch (error) {
-      console.error('Erro ao confirmar presença:', error)
       setConfirmationStatus('error')
     } finally {
       setIsSubmitting(false)

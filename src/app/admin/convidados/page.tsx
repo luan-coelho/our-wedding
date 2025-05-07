@@ -1,8 +1,8 @@
 'use client'
 
-import AdminProtected from '@/components/AdminProtected'
+import AdminProtected from '@/components/admin-protected'
 import Link from 'next/link'
-import { CopyToClipboard } from '@/components/CopyToClipboard'
+import { CopyToClipboard } from '@/components/copy-to-clipboard'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
@@ -19,6 +19,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog'
 import { useState } from 'react'
+import { useSession } from 'next-auth/react'
 
 interface Guest {
   id: number
@@ -31,6 +32,8 @@ export default function AdminGuestsPage() {
   const queryClient = useQueryClient()
   const [guestToDelete, setGuestToDelete] = useState<Guest | null>(null)
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
+  const { data: session } = useSession()
+  const isAdmin = session?.user?.role === 'admin'
 
   // Função para buscar convidados
   const fetchGuests = async (): Promise<Guest[]> => {
@@ -84,24 +87,26 @@ export default function AdminGuestsPage() {
 
   return (
     <AdminProtected>
-      <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Confirmar exclusão</DialogTitle>
-            <DialogDescription>
-              Tem certeza que deseja excluir o convidado "{guestToDelete?.name}"? Esta ação não pode ser desfeita.
-            </DialogDescription>
-          </DialogHeader>
-          <DialogFooter className="gap-2 justify-end">
-            <Button variant="destructive" onClick={confirmDelete}>
-              Excluir
-            </Button>
-            <DialogClose asChild>
-              <Button variant="outline">Cancelar</Button>
-            </DialogClose>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      {isAdmin && (
+        <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Confirmar exclusão</DialogTitle>
+              <DialogDescription>
+                Tem certeza que deseja excluir o convidado "{guestToDelete?.name}"? Esta ação não pode ser desfeita.
+              </DialogDescription>
+            </DialogHeader>
+            <DialogFooter className="gap-2 justify-end">
+              <Button variant="destructive" onClick={confirmDelete}>
+                Excluir
+              </Button>
+              <DialogClose asChild>
+                <Button variant="outline">Cancelar</Button>
+              </DialogClose>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      )}
 
       <div className="container mx-auto px-4 mt-10">
         {/* Estatísticas de Convidados */}
@@ -130,7 +135,7 @@ export default function AdminGuestsPage() {
               </div>
             </CardContent>
           </Card>
-          <Card className="bg-zinc-100 border-zinc-600 text-zinc-600">
+          <Card className="bg-white border-zinc-600 text-zinc-600">
             <CardContent className="pt-6">
               <div className="text-center">
                 <h3 className="text-3xl font-bold">{confirmationRate}%</h3>
@@ -143,9 +148,11 @@ export default function AdminGuestsPage() {
         <Card className="rounded-lg">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-2xl font-bold">Convidados</CardTitle>
-            <Button asChild>
-              <Link href="/admin/convidados/novo">Adicionar Convidado</Link>
-            </Button>
+            {isAdmin && (
+              <Button asChild>
+                <Link href="/admin/convidados/novo">Adicionar Convidado</Link>
+              </Button>
+            )}
           </CardHeader>
 
           <CardContent>
@@ -159,7 +166,7 @@ export default function AdminGuestsPage() {
                       <TableHead>Nome</TableHead>
                       <TableHead className="text-center">Confirmado</TableHead>
                       <TableHead>Link de Convite</TableHead>
-                      <TableHead className="text-center">Ações</TableHead>
+                      {isAdmin && <TableHead className="text-center">Ações</TableHead>}
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -181,19 +188,21 @@ export default function AdminGuestsPage() {
                             <CopyToClipboard text={`${baseUrl}/confirmacao/${guest.token}`} />
                           </div>
                         </TableCell>
-                        <TableCell className="text-center flex gap-2 justify-center">
-                          <Button asChild variant="outline" size="sm">
-                            <Link href={`/admin/convidados/${guest.id}/editar`}>Editar</Link>
-                          </Button>
-                          <Button onClick={() => handleDeleteClick(guest)} variant="destructive" size="sm">
-                            Excluir
-                          </Button>
-                        </TableCell>
+                        {isAdmin && (
+                          <TableCell className="text-center flex gap-2 justify-center">
+                            <Button asChild variant="outline" size="sm">
+                              <Link href={`/admin/convidados/${guest.id}/editar`}>Editar</Link>
+                            </Button>
+                            <Button onClick={() => handleDeleteClick(guest)} variant="destructive" size="sm">
+                              Excluir
+                            </Button>
+                          </TableCell>
+                        )}
                       </TableRow>
                     ))}
                     {guests.length === 0 && (
                       <TableRow>
-                        <TableCell colSpan={4} className="text-center text-gray-500">
+                        <TableCell colSpan={isAdmin ? 4 : 3} className="text-center text-gray-500">
                           Nenhum convidado cadastrado
                         </TableCell>
                       </TableRow>

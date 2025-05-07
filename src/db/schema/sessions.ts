@@ -1,14 +1,10 @@
 import { pgTable, text, timestamp } from 'drizzle-orm/pg-core'
-import { randomUUID } from 'crypto'
-import { users } from './users'
+import { tableUsers } from './users'
 
-export const sessions = pgTable('Session', {
-  id: text('id')
-    .primaryKey()
-    .$defaultFn(() => randomUUID()),
-  sessionToken: text('sessionToken').notNull().unique(),
+export const tableSessions = pgTable('session', {
+  sessionToken: text('sessionToken').primaryKey(),
   userId: text('userId')
     .notNull()
-    .references(() => users.id, { onDelete: 'cascade' }),
-  expires: timestamp('expires').notNull(),
+    .references(() => tableUsers.id, { onDelete: 'cascade' }),
+  expires: timestamp('expires', { mode: 'date' }).notNull(),
 })

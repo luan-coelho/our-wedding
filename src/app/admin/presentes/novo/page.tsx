@@ -1,20 +1,21 @@
 'use client'
 
-import AdminProtected from '@/components/AdminProtected'
+import AdminProtected from '@/components/admin-protected'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import { Textarea } from '@/components/ui/textarea'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Textarea } from '@/components/ui/textarea'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { Eye, X } from 'lucide-react'
+import Image from 'next/image'
 import { useRouter } from 'next/navigation'
+import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import { GiftFormData, giftSchema } from '../schema'
-import { useState } from 'react'
-import { Eye, X } from 'lucide-react'
 
 type PixKey = {
   id: number
@@ -296,11 +297,13 @@ export default function AddGiftPage() {
                             <X className="h-4 w-4" />
                           </Button>
                           <div className="relative w-full h-48">
-                            <img
+                            <Image
                               src={imagePreview}
                               alt="Prévia da imagem"
                               className="rounded-md object-contain w-full h-full"
                               onError={handleImageError}
+                              width={100}
+                              height={100}
                             />
                           </div>
                         </div>

@@ -1,6 +1,6 @@
 {
-  "id": "6a866b15-9ebf-428f-b841-1ca203e5cc07",
-  "prevId": "00000000-0000-0000-0000-000000000000",
+  "id": "51408693-6994-4196-93b9-962e3ee06137",
+  "prevId": "6a866b15-9ebf-428f-b841-1ca203e5cc07",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -49,7 +49,14 @@
           "type": "text",
           "primaryKey": false,
           "notNull": true,
-          "default": "'user'"
+          "default": "'guest'"
+        },
+        "active": {
+          "name": "active",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": true
         },
         "createdAt": {
           "name": "createdAt",

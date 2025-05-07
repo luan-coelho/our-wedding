@@ -1,6 +1,6 @@
 import { pgTable, serial, text, timestamp } from 'drizzle-orm/pg-core'
 
-export const pixKeys = pgTable('PixKey', {
+export const tablePixKeys = pgTable('pix-key', {
   id: serial('id').primaryKey(),
   name: text('name').notNull(),
   key: text('key').notNull().unique(),

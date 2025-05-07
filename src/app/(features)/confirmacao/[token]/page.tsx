@@ -1,6 +1,6 @@
 import { notFound } from 'next/navigation'
 import { db } from '@/db'
-import { guests } from '@/db/schema'
+import { tableGuests } from '@/db/schema'
 import { eq } from 'drizzle-orm'
 import ConfirmationForm from './confirmation-form'
 
@@ -11,8 +11,8 @@ export default async function ConfirmacaoTokenPage({ params }: { params: Promise
     notFound()
   }
 
-  const guest = await db.query.guests.findFirst({
-    where: eq(guests.token, token),
+  const guest = await db.query.tableGuests.findFirst({
+    where: eq(tableGuests.token, token),
   })
 
   if (!guest) {

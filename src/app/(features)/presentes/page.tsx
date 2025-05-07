@@ -1,20 +1,12 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import Image from 'next/image'
-import { FaGift, FaClipboard, FaCheck, FaQrcode } from 'react-icons/fa'
-import { IoCloseOutline } from 'react-icons/io5'
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-  DialogClose,
-} from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { Skeleton } from '@/components/ui/skeleton'
+import Image from 'next/image'
+import { useEffect, useState } from 'react'
+import { FaCheck, FaClipboard, FaGift, FaQrcode } from 'react-icons/fa'
 
 interface Gift {
   id: number

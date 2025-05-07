@@ -2,7 +2,7 @@
 
 import Image from 'next/image'
 import Link from 'next/link'
-import CountdownTimer from '@/components/CountdownTimer'
+import CountdownTimer from '@/components/countdown-timer'
 import { FaCalendarAlt, FaMapMarkerAlt, FaClock } from 'react-icons/fa'
 import { MdChecklist } from 'react-icons/md'
 import { routes } from '@/lib/routes'

@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/db'
-import { messages } from '@/db/schema'
+import { tableMessages } from '@/db/schema'
 import { desc } from 'drizzle-orm'
 
 export async function GET() {
   try {
-    const messagesList = await db.query.messages.findMany({
-      orderBy: [desc(messages.createdAt)],
+    const messagesList = await db.query.tableMessages.findMany({
+      orderBy: [desc(tableMessages.createdAt)],
     })
 
     return NextResponse.json(messagesList, { status: 200 })
@@ -27,14 +27,13 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Nome e mensagem são obrigatórios' }, { status: 400 })
     }
 
-    const newMessage = await db.insert(messages).values({
+    const newMessage = await db.insert(tableMessages).values({
       name,
       content: message,
     })
 
     return NextResponse.json(newMessage, { status: 201 })
   } catch (error) {
-    console.error('Erro ao criar mensagem:', error)
     return NextResponse.json({ error: 'Erro ao enviar mensagem' }, { status: 500 })
   }
 }

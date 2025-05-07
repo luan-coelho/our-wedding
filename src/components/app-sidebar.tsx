@@ -7,8 +7,10 @@ import {
   IconInnerShadowTop,
   IconMessageCircle,
   IconUsers,
+  IconUserPlus,
 } from '@tabler/icons-react'
 import * as React from 'react'
+import { useSession } from 'next-auth/react'
 
 import { NavMain } from '@/components/nav-main'
 import NavUser from '@/components/nav-user'
@@ -23,8 +25,11 @@ import {
 } from '@/components/ui/sidebar'
 import { routes } from '@/lib/routes'
 
-const data = {
-  navMain: [
+export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const { data: session } = useSession()
+  const isAdmin = session?.user?.role === 'admin'
+
+  const navItems = [
     {
       title: 'Início',
       url: routes.frontend.admin.home,
@@ -34,6 +39,7 @@ const data = {
       title: 'Lista de Presentes',
       url: routes.frontend.admin.presentes.index,
       icon: IconGift,
+      requireAdmin: true,
     },
     {
       title: 'Convidados',
@@ -44,16 +50,24 @@ const data = {
       title: 'Chaves PIX',
       url: routes.frontend.admin.chavesPix.index,
       icon: IconCreditCard,
+      requireAdmin: true,
+    },
+    {
+      title: 'Usuários',
+      url: routes.frontend.admin.usuarios.index,
+      icon: IconUserPlus,
+      requireAdmin: true,
     },
     {
       title: 'Portal',
       url: routes.frontend.home,
       icon: IconMessageCircle,
     },
-  ],
-}
+  ]
 
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  // Filtra os itens do menu com base no papel do usuário
+  const filteredNavItems = navItems.filter(item => !item.requireAdmin || isAdmin)
+
   return (
     <Sidebar className="bg-zinc-800" collapsible="offcanvas" {...props}>
       <SidebarHeader className="bg-zinc-800">
@@ -69,7 +83,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent className="bg-zinc-800">
-        <NavMain items={data.navMain} />
+        <NavMain items={filteredNavItems} />
       </SidebarContent>
       <SidebarFooter>
         <NavUser />

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/db'
-import { guests } from '@/db/schema'
+import { tableGuests } from '@/db/schema'
 import { eq } from 'drizzle-orm'
 
 export async function PUT(request: NextRequest, { params }: { params: Promise<{ token: string }> }) {
@@ -9,8 +9,8 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
     const { isConfirmed } = await request.json()
 
     // Verifique se o convidado existe com o token fornecido
-    const guest = await db.query.guests.findFirst({
-      where: eq(guests.token, token),
+    const guest = await db.query.tableGuests.findFirst({
+      where: eq(tableGuests.token, token),
     })
 
     if (!guest) {
@@ -18,10 +18,13 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
     }
 
     // Atualize o status de confirmação
-    const updatedGuest = await db.update(guests).set({
-      isConfirmed,
-      updatedAt: new Date(),
-    }).where(eq(guests.token, token))
+    const updatedGuest = await db
+      .update(tableGuests)
+      .set({
+        isConfirmed,
+        updatedAt: new Date(),
+      })
+      .where(eq(tableGuests.token, token))
 
     return NextResponse.json(updatedGuest, { status: 200 })
   } catch (error) {

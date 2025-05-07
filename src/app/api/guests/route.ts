@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/db'
-import { guests } from '@/db/schema'
+import { tableUsers } from '@/db/schema'
 import { asc } from 'drizzle-orm'
 
 // Garante que as rotas da API sejam processadas dinamicamente
@@ -8,8 +8,8 @@ export const dynamic = 'force-dynamic'
 
 export async function GET() {
   try {
-    const guestsList = await db.query.guests.findMany({
-      orderBy: [asc(guests.name)],
+    const guestsList = await db.query.tableUsers.findMany({
+      orderBy: [asc(tableUsers.name)],
     })
 
     return NextResponse.json(guestsList)
@@ -23,13 +23,12 @@ export async function POST(request: NextRequest) {
   try {
     const { name } = await request.json()
 
-    const newGuest = await db.insert(guests).values({
+    const newGuest = await db.insert(tableUsers).values({
       name,
     })
 
     return NextResponse.json(newGuest, { status: 201 })
   } catch (error) {
-    console.error('Erro ao criar convidado:', error)
     return NextResponse.json({ error: 'Erro ao criar convidado' }, { status: 500 })
   }
 }

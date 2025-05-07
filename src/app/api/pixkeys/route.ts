@@ -1,8 +1,8 @@
-import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@/auth'
 import { db } from '@/db'
-import { gifts, pixKeys } from '@/db/schema'
+import { tableGifts, tablePixKeys } from '@/db/schema'
 import { asc, eq } from 'drizzle-orm'
+import { NextRequest, NextResponse } from 'next/server'
 
 // GET /api/pixkeys - Listar todas as chaves PIX
 export async function GET() {
@@ -14,8 +14,8 @@ export async function GET() {
       return NextResponse.json({ error: 'Não autorizado' }, { status: 403 })
     }
 
-    const pixKeysList = await db.query.pixKeys.findMany({
-      orderBy: [asc(pixKeys.name)],
+    const pixKeysList = await db.query.tablePixKeys.findMany({
+      orderBy: [asc(tablePixKeys.name)],
     })
 
     return NextResponse.json(pixKeysList)
@@ -38,7 +38,7 @@ export async function POST(request: NextRequest) {
     const data = await request.json()
 
     // Criar nova chave PIX
-    const pixKey = await db.insert(pixKeys).values({
+    const pixKey = await db.insert(tablePixKeys).values({
       name: data.name,
       key: data.key,
       type: data.type,
@@ -46,7 +46,6 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json(pixKey)
   } catch (error) {
-    console.error('Erro ao criar chave PIX:', error)
     return NextResponse.json({ error: 'Erro ao criar chave PIX' }, { status: 500 })
   }
 }
@@ -68,8 +67,8 @@ export async function PUT(request: NextRequest) {
     }
 
     // Verificar se a chave PIX existe
-    const existingKey = await db.query.pixKeys.findFirst({
-      where: eq(pixKeys.id, data.id),
+    const existingKey = await db.query.tablePixKeys.findFirst({
+      where: eq(tablePixKeys.id, data.id),
     })
 
     if (!existingKey) {
@@ -77,11 +76,14 @@ export async function PUT(request: NextRequest) {
     }
 
     // Atualizar chave PIX
-    const updatedPixKey = await db.update(pixKeys).set({
-      name: data.name,
-      key: data.key,
-      type: data.type,
-    }).where(eq(pixKeys.id, data.id))
+    const updatedPixKey = await db
+      .update(tablePixKeys)
+      .set({
+        name: data.name,
+        key: data.key,
+        type: data.type,
+      })
+      .where(eq(tablePixKeys.id, data.id))
 
     return NextResponse.json(updatedPixKey)
   } catch (error) {
@@ -108,8 +110,8 @@ export async function DELETE(request: NextRequest) {
     }
 
     // Verificar se a chave está sendo usada em algum presente
-    const giftsUsingPixKey = await db.query.gifts.findMany({
-      where: eq(gifts.pixKeyId, parseInt(id)),
+    const giftsUsingPixKey = await db.query.tableGifts.findMany({
+      where: eq(tableGifts.pixKeyId, parseInt(id)),
     })
 
     if (giftsUsingPixKey.length > 0) {
@@ -123,11 +125,10 @@ export async function DELETE(request: NextRequest) {
     }
 
     // Remover chave PIX
-    await db.delete(pixKeys).where(eq(pixKeys.id, parseInt(id)))
+    await db.delete(tablePixKeys).where(eq(tablePixKeys.id, parseInt(id)))
 
     return NextResponse.json({ success: true })
   } catch (error) {
-    console.error('Erro ao excluir chave PIX:', error)
     return NextResponse.json({ error: 'Erro ao excluir chave PIX' }, { status: 500 })
   }
 }
