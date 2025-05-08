@@ -1,7 +1,7 @@
-import { pgTable, serial, text, boolean, timestamp, uuid } from 'drizzle-orm/pg-core'
+import { boolean, pgTable, text, timestamp, uuid } from 'drizzle-orm/pg-core'
 
 export const tableGuests = pgTable('guest', {
-  id: serial('id').primaryKey(),
+  id: uuid('id').primaryKey().defaultRandom(),
   name: text('name').notNull(),
   isConfirmed: boolean('isConfirmed').notNull().default(false),
   token: uuid('token').notNull().unique().defaultRandom(),

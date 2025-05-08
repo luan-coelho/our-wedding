@@ -1,6 +1,6 @@
 'use client'
 
-import AdminProtected from '@/components/admin-protected'
+import { AdminProtected } from '@/components/roles'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
@@ -16,7 +16,16 @@ import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { MoreHorizontal, Edit, XCircle } from 'lucide-react'
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog'
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog'
 
 interface User {
   id: string
@@ -71,12 +80,12 @@ export default function UsuariosPage() {
       const response = await fetch(`/api/users?email=${encodeURIComponent(email)}`, {
         method: 'DELETE',
       })
-      
+
       if (!response.ok) {
         const data = await response.json()
         throw new Error(data.error || 'Erro ao remover acesso')
       }
-      
+
       return response.json()
     },
     onSuccess: () => {
@@ -86,7 +95,7 @@ export default function UsuariosPage() {
     },
     onError: (error: Error) => {
       toast.error(error.message)
-    }
+    },
   })
 
   // Função para abrir o modal de edição
@@ -127,9 +136,9 @@ export default function UsuariosPage() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ 
+        body: JSON.stringify({
           name: isEditingUser?.name || data.email.split('@')[0], // Nome provisório baseado no email
-          ...data 
+          ...data,
         }),
       })
 
@@ -189,11 +198,11 @@ export default function UsuariosPage() {
                   <FormItem>
                     <FormLabel>Email</FormLabel>
                     <FormControl>
-                      <Input 
-                        placeholder="email@exemplo.com" 
-                        {...field} 
+                      <Input
+                        placeholder="email@exemplo.com"
+                        {...field}
                         readOnly={!!isEditingUser}
-                        className={isEditingUser ? "bg-gray-100" : ""}
+                        className={isEditingUser ? 'bg-gray-100' : ''}
                       />
                     </FormControl>
                     <FormDescription>
@@ -223,8 +232,8 @@ export default function UsuariosPage() {
                       </SelectContent>
                     </Select>
                     <FormDescription>
-                      Cerimonialistas podem apenas visualizar a lista de convidados.
-                      Visitantes não têm acesso à área administrativa.
+                      Cerimonialistas podem apenas visualizar a lista de convidados. Visitantes não têm acesso à área
+                      administrativa.
                     </FormDescription>
                     <FormMessage />
                   </FormItem>
@@ -244,13 +253,13 @@ export default function UsuariosPage() {
         </DialogContent>
       </Dialog>
 
-      <AlertDialog open={!!userToRemove} onOpenChange={(open) => !open && setUserToRemove(null)}>
+      <AlertDialog open={!!userToRemove} onOpenChange={open => !open && setUserToRemove(null)}>
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Remover acesso</AlertDialogTitle>
             <AlertDialogDescription>
-              Tem certeza que deseja remover o acesso de <strong>{userToRemove?.email}</strong>?
-              O usuário não poderá mais acessar o sistema.
+              Tem certeza que deseja remover o acesso de <strong>{userToRemove?.email}</strong>? O usuário não poderá
+              mais acessar o sistema.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
@@ -287,7 +296,7 @@ export default function UsuariosPage() {
                   </TableHeader>
                   <TableBody>
                     {users.map(user => (
-                      <TableRow key={user.id} className={!user.active ? "opacity-60" : ""}>
+                      <TableRow key={user.id} className={!user.active ? 'opacity-60' : ''}>
                         <TableCell>{user.name || '-'}</TableCell>
                         <TableCell>{user.email}</TableCell>
                         <TableCell>{getRoleName(user.role)}</TableCell>
@@ -317,10 +326,9 @@ export default function UsuariosPage() {
                                 Editar
                               </DropdownMenuItem>
                               {user.active && (
-                                <DropdownMenuItem 
+                                <DropdownMenuItem
                                   onClick={() => handleRemoveAccess(user)}
-                                  className="text-red-600 focus:text-red-600"
-                                >
+                                  className="text-red-600 focus:text-red-600">
                                   <XCircle className="mr-2 h-4 w-4" />
                                   Remover Acesso
                                 </DropdownMenuItem>

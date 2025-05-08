@@ -5,11 +5,6 @@ import { routes } from './lib/routes'
 export async function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname
 
-  // Apenas verifica rotas administrativas
-  if (!pathname.startsWith('/admin')) {
-    return NextResponse.next()
-  }
-
   const token = await getAuthToken(request)
 
   // Se não estiver autenticado, redireciona para login
@@ -20,20 +15,20 @@ export async function middleware(request: NextRequest) {
   }
 
   // Visitantes não têm acesso às rotas administrativas
-  if (token.role === 'guest' || token.role === 'visitante') {
+  if (token.role === 'guest') {
     return NextResponse.redirect(new URL('/', request.url))
   }
 
   // Planner só pode visualizar a lista de convidados
   if (token.role === 'planner') {
-    // Se tentar acessar outra rota além de /admin/convidados, redireciona
-    if (!pathname.startsWith('/admin/convidados')) {
-      return NextResponse.redirect(new URL('/admin/convidados', request.url))
+    // Se tentar acessar outra rota além de /admin/convidados, redireciona para a área de convidados
+    if (!pathname.startsWith(routes.frontend.admin.convidados.index)) {
+      return NextResponse.redirect(new URL(routes.frontend.admin.convidados.index, request.url))
     }
-    
+
     // Se estiver tentando acessar operações de criação/edição/exclusão, bloqueia acesso
     if (pathname.includes('/novo') || pathname.includes('/editar') || pathname.includes('/excluir')) {
-      return NextResponse.redirect(new URL('/admin/convidados', request.url))
+      return NextResponse.redirect(new URL(routes.frontend.admin.convidados.index, request.url))
     }
   }
 

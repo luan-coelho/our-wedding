@@ -1,7 +1,7 @@
 'use client'
 
 import GuestForm from '../guest-form'
-import AdminProtected from '@/components/admin-protected'
+import AdminProtected from '@/components/roles/admin-protected'
 
 export default function AddGuestPage() {
   return (

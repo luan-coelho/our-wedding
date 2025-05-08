@@ -2,32 +2,9 @@ import { eq } from 'drizzle-orm'
 import NextAuth from 'next-auth'
 import Google from 'next-auth/providers/google'
 import { db } from './db'
-import { tableUsers } from './db/schema/users'
+import { tableUsers } from '@/db/schema'
 import { routes } from './lib/routes'
-
-declare module 'next-auth' {
-  interface User {
-    id?: string
-    role?: string
-  }
-
-  interface Session {
-    user: {
-      id?: string
-      name?: string | null
-      email?: string | null
-      image?: string | null
-      role?: string
-    }
-  }
-}
-
-declare module 'next-auth/jwt' {
-  interface JWT {
-    id?: string
-    role?: string
-  }
-}
+import { UserRoleType } from './lib/auth-types'
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   //debug: true,
@@ -57,12 +34,16 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
         // Se o usuário não existir no sistema, bloqueia o acesso
         if (!existingUser) {
-          throw new Error('Você não está cadastrado no sistema. Entre em contato com um administrador para solicitar acesso.')
+          throw new Error(
+            'Você não está cadastrado no sistema. Entre em contato com um administrador para solicitar acesso.',
+          )
         }
-        
+
         // Verifica se o usuário está ativo
         if (!existingUser.active) {
-          throw new Error('Seu acesso foi revogado. Entre em contato com um administrador se acredita que isso é um erro.')
+          throw new Error(
+            'Seu acesso foi revogado. Entre em contato com um administrador se acredita que isso é um erro.',
+          )
         }
 
         // Atualiza informações do usuário caso necessário
@@ -79,7 +60,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
         // Atribui os dados do banco de dados ao usuário
         user.id = existingUser.id
-        user.role = existingUser.role
+        user.role = existingUser.role as UserRoleType
         return true
       }
       return false
@@ -90,20 +71,20 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         token.role = session.user.role
         return token
       }
-      
+
       // Passa as informações do usuário para o token durante o login
       if (user) {
         token.id = user.id
         token.role = user.role
       }
-      
+
       return token
     },
     async session({ session, token }) {
       // Passa os dados do token para a sessão
       if (token) {
-        if (token.id) session.user.id = token.id
-        if (token.role) session.user.role = token.role
+        if (token.id) session.user.id = token.id as string
+        if (token.role) session.user.role = token.role as UserRoleType
       }
       return session
     },

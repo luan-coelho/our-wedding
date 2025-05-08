@@ -3,12 +3,9 @@ import { db } from '@/db'
 import { tableGuests } from '@/db/schema'
 import { asc } from 'drizzle-orm'
 
-// Garante que as rotas da API sejam processadas dinamicamente
-export const dynamic = 'force-dynamic'
-
 export async function GET() {
   try {
-    const guestsList = await db.query.tableUsers.findMany({
+    const guestsList = await db.query.tableGuests.findMany({
       orderBy: [asc(tableGuests.name)],
     })
 

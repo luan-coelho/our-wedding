@@ -1,0 +1,1 @@
+ALTER TABLE "gift" ALTER COLUMN "pixKeyId" SET DATA TYPE uuid;

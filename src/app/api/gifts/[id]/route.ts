@@ -3,15 +3,14 @@ import { db } from '@/db'
 import { tableGifts } from '@/db/schema'
 import { auth } from '@/auth'
 import { eq } from 'drizzle-orm'
-// Garante que as rotas da API sejam processadas dinamicamente
-export const dynamic = 'force-dynamic'
+import { isAdmin } from '@/lib/auth-types'
 
 export async function GET(_: Request, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
 
   try {
     const gift = await db.query.tableGifts.findFirst({
-      where: eq(tableGifts.id, parseInt(id)),
+      where: eq(tableGifts.id, id),
       with: {
         selectedPixKey: true,
       },
@@ -34,7 +33,7 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
 
   try {
     // Verificar autorização
-    if (!session?.user || session.user.role !== 'admin') {
+    if (!session?.user || !isAdmin(session.user.role)) {
       return NextResponse.json({ error: 'Não autorizado' }, { status: 403 })
     }
 
@@ -50,7 +49,7 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
         pixKeyId: body.pixKeyId,
         imageUrl: body.imageUrl,
       })
-      .where(eq(tableGifts.id, parseInt(id)))
+      .where(eq(tableGifts.id, id))
 
     return NextResponse.json(updatedGift, { status: 200 })
   } catch (error) {
@@ -64,11 +63,11 @@ export async function DELETE(_: Request, { params }: { params: Promise<{ id: str
 
   try {
     // Verificar autorização
-    if (!session?.user || session.user.role !== 'admin') {
+    if (!session?.user || !isAdmin(session.user.role)) {
       return NextResponse.json({ error: 'Não autorizado' }, { status: 403 })
     }
 
-    await db.delete(tableGifts).where(eq(tableGifts.id, parseInt(id)))
+    await db.delete(tableGifts).where(eq(tableGifts.id, id))
 
     return NextResponse.json({ success: true }, { status: 200 })
   } catch (error) {

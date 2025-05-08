@@ -1,15 +1,12 @@
-import { randomUUID } from 'crypto'
-import { pgTable, text, timestamp, boolean } from 'drizzle-orm/pg-core'
+import { boolean, pgTable, text, timestamp, uuid } from 'drizzle-orm/pg-core'
+import { UserRole } from '@/lib/auth-types'
 
 export const tableUsers = pgTable('user', {
-  id: text('id')
-    .primaryKey()
-    .$defaultFn(() => randomUUID()),
+  id: uuid('id').primaryKey().defaultRandom(),
   name: text('name'),
   email: text('email').unique(),
-  emailVerified: timestamp('emailVerified'),
   image: text('image'),
-  role: text('role').notNull().default('guest'),
+  role: text('role').$type<`${UserRole}`>().notNull().default(UserRole.GUEST),
   active: boolean('active').notNull().default(true),
   createdAt: timestamp('createdAt').defaultNow().notNull(),
   updatedAt: timestamp('updatedAt'),

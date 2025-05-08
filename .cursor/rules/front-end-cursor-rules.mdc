@@ -52,6 +52,7 @@ Follow these rules when you write code:
 - When creating new ts or js files, use Kebab Case, for example "user-form.ts" instead of "userForm.ts".
 - When creating functions that need to make calls via POST, PUT, PATCH or DELETE methods, use react query with mutations for cleaner code.
 - Do not insert console.log() or console.error() in the code.
+- The code must always be written in English, with the exception of comments, which must be in Brazilian Portuguese.
 
 ### technology-versions
 

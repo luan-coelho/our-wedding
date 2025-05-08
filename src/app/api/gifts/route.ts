@@ -1,33 +1,25 @@
-import { NextResponse } from 'next/server'
 import { db } from '@/db'
-import { tableGifts } from '@/db/schema'
+import { tableGifts, tablePixKeys } from '@/db/schema'
 import { asc, eq } from 'drizzle-orm'
-import { auth } from '@/auth'
+import { NextResponse } from 'next/server'
 
 export async function GET() {
   try {
-    const giftsList = await db.query.tableGifts.findMany({
-      orderBy: asc(tableGifts.name),
-      with: {
-        selectedPixKey: true,
-      },
-    })
+    const giftsList = await db
+      .select()
+      .from(tableGifts)
+      .orderBy(asc(tableGifts.name))
+      .leftJoin(tablePixKeys, eq(tableGifts.pixKeyId, tablePixKeys.id))
 
     return NextResponse.json(giftsList, { status: 200 })
   } catch (error) {
+    console.error('Erro ao buscar presentes:', error)
     return NextResponse.json({ error: 'Erro ao buscar presentes' }, { status: 500 })
   }
 }
 
 export async function POST(request: Request) {
-  const session = await auth()
-
   try {
-    // Verificar autorização
-    if (!session?.user || session.user.role !== 'admin') {
-      return NextResponse.json({ error: 'Não autorizado' }, { status: 403 })
-    }
-
     const body = await request.json()
 
     const newGift = await db.insert(tableGifts).values({
@@ -46,16 +38,14 @@ export async function POST(request: Request) {
   }
 }
 
-export async function PUT(request: Request) {
-  const session = await auth()
-
+export async function PUT(request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
-    // Verificar autorização
-    if (!session?.user || session.user.role !== 'admin') {
-      return NextResponse.json({ error: 'Não autorizado' }, { status: 403 })
-    }
-
     const body = await request.json()
+    const id: string = (await params).id
+
+    if (!id) {
+      return NextResponse.json({ error: 'ID não fornecido' }, { status: 400 })
+    }
 
     const updatedGift = await db
       .update(tableGifts)
@@ -67,7 +57,7 @@ export async function PUT(request: Request) {
         pixKeyId: body.pixKeyId,
         imageUrl: body.imageUrl,
       })
-      .where(eq(tableGifts.id, body.id))
+      .where(eq(tableGifts.id, id))
 
     return NextResponse.json(updatedGift, { status: 200 })
   } catch (error) {
@@ -75,23 +65,15 @@ export async function PUT(request: Request) {
   }
 }
 
-export async function DELETE(request: Request) {
-  const session = await auth()
-
+export async function DELETE(_: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
-    // Verificar autorização
-    if (!session?.user || session.user.role !== 'admin') {
-      return NextResponse.json({ error: 'Não autorizado' }, { status: 403 })
-    }
-
-    const { searchParams } = new URL(request.url)
-    const id = searchParams.get('id')
+    const id: string = (await params).id
 
     if (!id) {
       return NextResponse.json({ error: 'ID não fornecido' }, { status: 400 })
     }
 
-    await db.delete(tableGifts).where(eq(tableGifts.id, parseInt(id)))
+    await db.delete(tableGifts).where(eq(tableGifts.id, id))
 
     return NextResponse.json({ success: true }, { status: 200 })
   } catch (error) {

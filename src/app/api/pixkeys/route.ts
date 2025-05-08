@@ -3,6 +3,7 @@ import { db } from '@/db'
 import { tableGifts, tablePixKeys } from '@/db/schema'
 import { asc, eq } from 'drizzle-orm'
 import { NextRequest, NextResponse } from 'next/server'
+import { isAdmin } from '@/lib/auth-types'
 
 // GET /api/pixkeys - Listar todas as chaves PIX
 export async function GET() {
@@ -10,13 +11,11 @@ export async function GET() {
 
   try {
     // Verificar autorização
-    if (!session?.user || session.user.role !== 'admin') {
+    if (!session?.user || !isAdmin(session.user.role)) {
       return NextResponse.json({ error: 'Não autorizado' }, { status: 403 })
     }
 
-    const pixKeysList = await db.query.tablePixKeys.findMany({
-      orderBy: [asc(tablePixKeys.name)],
-    })
+    const pixKeysList = await db.select().from(tablePixKeys).orderBy(asc(tablePixKeys.name))
 
     return NextResponse.json(pixKeysList)
   } catch (error) {
@@ -31,7 +30,7 @@ export async function POST(request: NextRequest) {
     const session = await auth()
 
     // Verificar autorização
-    if (!session?.user || session.user.role !== 'admin') {
+    if (!session?.user || !isAdmin(session.user.role)) {
       return NextResponse.json({ error: 'Não autorizado' }, { status: 403 })
     }
 
@@ -56,7 +55,7 @@ export async function PUT(request: NextRequest) {
     const session = await auth()
 
     // Verificar autorização
-    if (!session?.user || session.user.role !== 'admin') {
+    if (!session?.user || !isAdmin(session.user.role)) {
       return NextResponse.json({ error: 'Não autorizado' }, { status: 403 })
     }
 
@@ -67,9 +66,7 @@ export async function PUT(request: NextRequest) {
     }
 
     // Verificar se a chave PIX existe
-    const existingKey = await db.query.tablePixKeys.findFirst({
-      where: eq(tablePixKeys.id, data.id),
-    })
+    const existingKey = await db.select().from(tablePixKeys).where(eq(tablePixKeys.id, data.id))
 
     if (!existingKey) {
       return NextResponse.json({ error: 'Chave PIX não encontrada' }, { status: 404 })
@@ -93,16 +90,13 @@ export async function PUT(request: NextRequest) {
 }
 
 // DELETE /api/pixkeys - Remover uma chave PIX
-export async function DELETE(
-  request: Request,
-  { params }: { params: Promise<{ id: string }> }
-) {
+export async function DELETE(request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const id = (await params).id;
+    const id = (await params).id
     const session = await auth()
 
     // Verificar autorização
-    if (!session?.user || session.user.role !== 'admin') {
+    if (!session?.user || !isAdmin(session.user.role)) {
       return NextResponse.json({ error: 'Não autorizado' }, { status: 403 })
     }
 
@@ -111,9 +105,7 @@ export async function DELETE(
     }
 
     // Verificar se a chave está sendo usada em algum presente
-    const giftsUsingPixKey = await db.query.tableGifts.findMany({
-      where: eq(tableGifts.pixKeyId, parseInt(id)),
-    })
+    const giftsUsingPixKey = await db.select().from(tableGifts).where(eq(tableGifts.pixKeyId, id))
 
     if (giftsUsingPixKey.length > 0) {
       return NextResponse.json(
@@ -126,7 +118,7 @@ export async function DELETE(
     }
 
     // Remover chave PIX
-    await db.delete(tablePixKeys).where(eq(tablePixKeys.id, parseInt(id)))
+    await db.delete(tablePixKeys).where(eq(tablePixKeys.id, id))
 
     return NextResponse.json({ success: true })
   } catch (error) {

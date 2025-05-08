@@ -13,12 +13,12 @@ export function useGoogleLogin({ callbackUrl }: UseGoogleLoginProps) {
           callbackUrl: process.env.AUTH_URL ?? callbackUrl,
           redirect: false,
         })
-        
+
         // Se não tiver erro e tiver uma URL para redirecionar, faça o redirecionamento manual
         if (result && !result.error && result.url) {
           window.location.href = result.url
         }
-        
+
         return result
       } catch (error) {
         console.error('Login error:', error)

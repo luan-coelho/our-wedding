@@ -1,45 +1,21 @@
 import { auth } from '@/auth'
 import { db } from '@/db'
 import { tableUsers } from '@/db/schema'
-import { eq } from 'drizzle-orm'
+import { isAdmin } from '@/lib/auth-types'
+import { asc, eq, not } from 'drizzle-orm'
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
 
-// Schema para validação da concessão de permissões
-const permissionSchema = z.object({
-  email: z.string().email('Email inválido'),
-  role: z.enum(['admin', 'planner', 'guest']),
-  name: z.string().optional(),
-})
-
 // Schema para remoção de acesso
-const removeAccessSchema = z.object({
-  email: z.string().email('Email inválido'),
-})
-
-// GET para listar todos os usuários com permissões
 export async function GET() {
   const session = await auth()
 
-  // Verifica se o usuário está autenticado e é um administrador
-  if (!session || session.user.role !== 'admin') {
-    return new NextResponse(JSON.stringify({ error: 'Não autorizado' }), {
-      status: 403,
-    })
-  }
-
   // Busca todos os usuários
-  const allUsers = await db.query.tableUsers.findMany({
-    columns: {
-      id: true,
-      name: true,
-      email: true,
-      role: true,
-      createdAt: true,
-      updatedAt: true,
-      active: true,
-    },
-  })
+  const allUsers = await db
+    .select()
+    .from(tableUsers)
+    .where(not(eq(tableUsers.id, session?.user.id!)))
+    .orderBy(asc(tableUsers.name))
 
   return NextResponse.json(allUsers)
 }
@@ -49,7 +25,7 @@ export async function POST(request: NextRequest) {
   const session = await auth()
 
   // Verifica se o usuário está autenticado e é um administrador
-  if (!session || session.user.role !== 'admin') {
+  if (!session || !(await isAdmin())) {
     return new NextResponse(JSON.stringify({ error: 'Não autorizado' }), {
       status: 403,
     })
@@ -59,22 +35,26 @@ export async function POST(request: NextRequest) {
     // Recebe os dados do corpo da requisição
     const body = await request.json()
 
+    const permissionSchema = z.object({
+      email: z.string().email('Email inválido'),
+      role: z.enum(['admin', 'planner', 'guest']),
+      name: z.string().optional(),
+    })
+
     // Valida os dados com o schema
     const { email, role, name } = permissionSchema.parse(body)
 
     // Verifica se já existe um usuário com este email
-    const existingUser = await db.query.tableUsers.findFirst({
-      where: eq(tableUsers.email, email),
-    })
+    const existingUser = await db.select().from(tableUsers).where(eq(tableUsers.email, email))
 
     if (existingUser) {
       // Atualiza a role do usuário existente e ativa a conta se estiver inativa
       await db
         .update(tableUsers)
-        .set({ 
+        .set({
           role,
           active: true,
-          updatedAt: new Date()
+          updatedAt: new Date(),
         })
         .where(eq(tableUsers.email, email))
         .returning()
@@ -90,7 +70,7 @@ export async function POST(request: NextRequest) {
         email,
         role,
         active: true,
-        updatedAt: new Date()
+        updatedAt: new Date(),
       })
       .returning({
         id: tableUsers.id,
@@ -117,7 +97,7 @@ export async function DELETE(request: NextRequest) {
   const session = await auth()
 
   // Verifica se o usuário está autenticado e é um administrador
-  if (!session || session.user.role !== 'admin') {
+  if (!session || !(await isAdmin())) {
     return new NextResponse(JSON.stringify({ error: 'Não autorizado' }), {
       status: 403,
     })
@@ -133,14 +113,16 @@ export async function DELETE(request: NextRequest) {
         status: 400,
       })
     }
-    
+
+    const removeAccessSchema = z.object({
+      email: z.string().email('Email inválido'),
+    })
+
     // Valida o email
     removeAccessSchema.parse({ email })
 
     // Verifica se o usuário existe
-    const existingUser = await db.query.tableUsers.findFirst({
-      where: eq(tableUsers.email, email),
-    })
+    const existingUser = await db.select().from(tableUsers).where(eq(tableUsers.email, email))
 
     if (!existingUser) {
       return new NextResponse(JSON.stringify({ error: 'Usuário não encontrado' }), {
@@ -158,9 +140,9 @@ export async function DELETE(request: NextRequest) {
     // Desativa o usuário em vez de remover
     await db
       .update(tableUsers)
-      .set({ 
+      .set({
         active: false,
-        updatedAt: new Date() 
+        updatedAt: new Date(),
       })
       .where(eq(tableUsers.email, email))
 
