@@ -11,7 +11,7 @@ export async function GET() {
 
   try {
     // Verificar autorização
-    if (!session?.user || !isAdmin(session.user.role)) {
+    if (!session?.user || !(await isAdmin(session))) {
       return NextResponse.json({ error: 'Não autorizado' }, { status: 403 })
     }
 
@@ -30,7 +30,7 @@ export async function POST(request: NextRequest) {
     const session = await auth()
 
     // Verificar autorização
-    if (!session?.user || !isAdmin(session.user.role)) {
+    if (!session?.user || !(await isAdmin(session))) {
       return NextResponse.json({ error: 'Não autorizado' }, { status: 403 })
     }
 
@@ -55,7 +55,7 @@ export async function PUT(request: NextRequest) {
     const session = await auth()
 
     // Verificar autorização
-    if (!session?.user || !isAdmin(session.user.role)) {
+    if (!session?.user || !(await isAdmin(session))) {
       return NextResponse.json({ error: 'Não autorizado' }, { status: 403 })
     }
 
@@ -96,7 +96,7 @@ export async function DELETE(request: Request, { params }: { params: Promise<{ i
     const session = await auth()
 
     // Verificar autorização
-    if (!session?.user || !isAdmin(session.user.role)) {
+    if (!session?.user || !(await isAdmin(session))) {
       return NextResponse.json({ error: 'Não autorizado' }, { status: 403 })
     }
 

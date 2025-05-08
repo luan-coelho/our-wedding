@@ -25,7 +25,7 @@ export async function POST(request: NextRequest) {
   const session = await auth()
 
   // Verifica se o usuário está autenticado e é um administrador
-  if (!session || !(await isAdmin())) {
+  if (!session || !(await isAdmin(session))) {
     return new NextResponse(JSON.stringify({ error: 'Não autorizado' }), {
       status: 403,
     })
@@ -97,7 +97,7 @@ export async function DELETE(request: NextRequest) {
   const session = await auth()
 
   // Verifica se o usuário está autenticado e é um administrador
-  if (!session || !(await isAdmin())) {
+  if (!session || !(await isAdmin(session))) {
     return new NextResponse(JSON.stringify({ error: 'Não autorizado' }), {
       status: 403,
     })

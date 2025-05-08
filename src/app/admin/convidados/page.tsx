@@ -122,7 +122,7 @@ export default function AdminGuestsPage() {
   ]
 
   return (
-    <AdminProtected>
+    <>
       <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
         <DialogContent>
           <DialogHeader>
@@ -231,6 +231,6 @@ export default function AdminGuestsPage() {
           </CardContent>
         </Card>
       </div>
-    </AdminProtected>
+    </>
   )
 }

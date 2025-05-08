@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 
 interface Guest {
-  id: number
+  id: string
   name: string
   isConfirmed: boolean
   token: string

@@ -1,33 +1,27 @@
-import { auth } from '@/auth'
+import { Session } from 'next-auth';
 
 export enum UserRole {
   ADMIN = 'admin',
   PLANNER = 'planner',
-  GUEST = 'guest',
+  GUEST = 'guest'
 }
 
-export type UserRoleType = `${UserRole}`
+export type UserRoleType = `${UserRole}`;
 
 // Funções utilitárias para verificação de roles
-export async function isAdmin(): Promise<boolean> {
-  return hasRole(UserRole.ADMIN)
+export function isAdmin(session: Session): boolean {
+  return session?.user.role === UserRole.ADMIN;
 }
 
-export async function isPlanner(): Promise<boolean> {
-  return hasRole(UserRole.PLANNER)
+export function isPlanner(session: Session): boolean {
+  return session?.user.role === UserRole.PLANNER;
 }
 
-export async function isAdminOrPlanner(): Promise<boolean> {
-  return isAdmin() || isPlanner()
+export function isAdminOrPlanner(session: Session): boolean {
+  return isAdmin(session) || isPlanner(session);
 }
 
-export async function isGuest(): Promise<boolean> {
-  return hasRole(UserRole.GUEST)
-}
+export function isGuest(session: Session): boolean {
+  return session?.user.role === UserRole.GUEST;
+} 
 
-export async function hasRole(role: UserRoleType): Promise<boolean> {
-  const session = await auth()
-
-  if (!session) return false
-  return session?.user.role === role
-}

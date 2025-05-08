@@ -1,6 +1,6 @@
 'use client'
 
-import AdminProtected from '@/components/roles/admin-protected'
+import { AdminProtected } from '@/components/roles'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'

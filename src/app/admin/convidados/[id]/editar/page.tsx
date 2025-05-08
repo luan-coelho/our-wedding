@@ -3,7 +3,7 @@
 import { useParams, notFound } from 'next/navigation'
 import GuestForm from '../../guest-form'
 import { useQuery } from '@tanstack/react-query'
-import AdminProtected from '@/components/roles/admin-protected'
+import { AdminProtected } from '@/components/roles'
 
 interface Guest {
   id: number

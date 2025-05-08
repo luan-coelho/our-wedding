@@ -33,7 +33,7 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
 
   try {
     // Verificar autorização
-    if (!session?.user || !isAdmin(session.user.role)) {
+    if (!session?.user || !(await isAdmin(session))) {
       return NextResponse.json({ error: 'Não autorizado' }, { status: 403 })
     }
 
@@ -63,7 +63,7 @@ export async function DELETE(_: Request, { params }: { params: Promise<{ id: str
 
   try {
     // Verificar autorização
-    if (!session?.user || !isAdmin(session.user.role)) {
+    if (!session?.user || !(await isAdmin(session))) {
       return NextResponse.json({ error: 'Não autorizado' }, { status: 403 })
     }
 

@@ -1,6 +1,6 @@
 'use client'
 
-import AdminProtected from '@/components/roles/admin-protected'
+import { AdminProtected } from '@/components/roles'
 import { useParams, useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
