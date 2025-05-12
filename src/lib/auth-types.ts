@@ -6,6 +6,8 @@ export enum UserRole {
   GUEST = 'guest'
 }
 
+export const userRolesList: string[] = Object.values(UserRole);
+
 export type UserRoleType = `${UserRole}`;
 
 // Funções utilitárias para verificação de roles

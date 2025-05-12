@@ -50,17 +50,17 @@ export default function CountdownTimer({ targetDate }: { targetDate: Date }) {
   ]
 
   return (
-    <div className="bg-wedding-primary/10 p-6 md:p-8 rounded-lg shadow-sm">
-      <h3 className="text-center text-xl md:text-2xl font-medium mb-6 text-wedding-primary">
+    <div className="bg-wedding-light p-6 md:p-8 rounded-lg shadow-md">
+      <h3 className="text-center text-xl md:text-2xl font-medium mb-6 text-wedding-accent">
         Contagem Regressiva para o Grande Dia
       </h3>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {timeUnits.map(unit => (
           <div key={unit.label} className="text-center">
-            <div className="bg-wedding-secondary rounded-lg p-3 md:p-4 shadow-sm">
-              <span className="block text-3xl md:text-4xl font-bold text-wedding-accent">{unit.value}</span>
-              <span className="block text-sm font-medium text-wedding-primary mt-1">{unit.label}</span>
+            <div className="bg-white rounded-lg p-3 md:p-4 shadow-sm border-l-4 border-l-wedding-primary">
+              <span className="block text-3xl md:text-4xl font-bold text-wedding-primary">{unit.value}</span>
+              <span className="block text-sm font-medium text-wedding-accent mt-1">{unit.label}</span>
             </div>
           </div>
         ))}

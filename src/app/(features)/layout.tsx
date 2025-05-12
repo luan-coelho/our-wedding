@@ -11,7 +11,7 @@ export default function AppLayout({
   return (
     <React.Fragment>
       <Header />
-      <main className="flex-grow bg-gradient-to-b from-slate-50 to-white p-10">{children}</main>
+      <main className="flex-grow bg-gradient-to-b from-white to-wedding-light/20 min-h-screen">{children}</main>
       <Footer />
     </React.Fragment>
   )

@@ -1,6 +1,8 @@
 import AuthProvider from '@/components/auth-provider'
+import { Ban, CircleCheckBig, CircleEllipsis, Info, TriangleAlert } from 'lucide-react'
 import type { Metadata } from 'next'
 import { Poppins } from 'next/font/google'
+import { Toaster } from 'sonner'
 import './globals.css'
 import Providers from './Providers'
 
@@ -25,6 +27,26 @@ export default function RootLayout({
       <body className={poppins.variable}>
         <Providers>
           <AuthProvider>{children}</AuthProvider>
+          <Toaster
+            toastOptions={{
+              duration: 5000,
+              classNames: {
+                error: 'bg-red-500 text-white border border-red-500',
+                success: 'bg-green-500 text-white border border-green-500',
+                warning: 'bg-yellow-400 text-black border border-yellow-400',
+                info: 'bg-blue-500 text-white border border-blue-500',
+              },
+            }}
+            icons={{
+              success: <CircleCheckBig />,
+              info: <Info />,
+              warning: <TriangleAlert />,
+              error: <Ban />,
+              loading: <CircleEllipsis />,
+            }}
+            position="top-right"
+            theme="dark"
+          />
         </Providers>
       </body>
     </html>

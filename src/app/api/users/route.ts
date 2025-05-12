@@ -36,9 +36,9 @@ export async function POST(request: NextRequest) {
     const body = await request.json()
 
     const permissionSchema = z.object({
+      name: z.string().min(1, 'Nome é obrigatório'),
       email: z.string().email('Email inválido'),
       role: z.enum(['admin', 'planner', 'guest']),
-      name: z.string().optional(),
     })
 
     // Valida os dados com o schema
@@ -66,7 +66,7 @@ export async function POST(request: NextRequest) {
     const [newUser] = await db
       .insert(tableUsers)
       .values({
-        name: name || email.split('@')[0], // Se não for fornecido um nome, usa parte do email
+        name,
         email,
         role,
         active: true,

@@ -29,7 +29,7 @@ import {
 
 interface User {
   id: string
-  name: string | null
+  name: string
   email: string
   role: string
   createdAt: string
@@ -37,6 +37,7 @@ interface User {
 }
 
 const permissionSchema = z.object({
+  name: z.string().min(1, 'Nome é obrigatório'),
   email: z.string().email('Email inválido'),
   role: z.enum(['admin', 'planner', 'guest'], {
     required_error: 'Selecione um perfil',
@@ -54,6 +55,7 @@ export default function UsuariosPage() {
   const form = useForm<FormValues>({
     resolver: zodResolver(permissionSchema),
     defaultValues: {
+      name: '',
       email: '',
       role: 'guest',
     },
@@ -102,6 +104,7 @@ export default function UsuariosPage() {
   const handleEdit = (user: User) => {
     setIsEditingUser(user)
     form.reset({
+      name: user.name,
       email: user.email,
       role: user.role as 'admin' | 'planner' | 'guest',
     })
@@ -113,6 +116,7 @@ export default function UsuariosPage() {
     setIsDialogOpen(false)
     setIsEditingUser(null)
     form.reset({
+      name: '',
       email: '',
       role: 'guest',
     })
@@ -136,10 +140,7 @@ export default function UsuariosPage() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          name: isEditingUser?.name || data.email.split('@')[0], // Nome provisório baseado no email
-          ...data,
-        }),
+        body: JSON.stringify(data),
       })
 
       if (!response.ok) {
@@ -185,12 +186,28 @@ export default function UsuariosPage() {
   return (
     <AdminProtected>
       <Dialog open={isDialogOpen} onOpenChange={handleCloseDialog}>
-        <DialogContent className="sm:max-w-md">
+        <DialogContent className="sm:max-w-md md:max-w-lg">
           <DialogHeader>
             <DialogTitle>{isEditingUser ? 'Editar Permissão' : 'Gerenciar Permissões'}</DialogTitle>
           </DialogHeader>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+              <FormField
+                control={form.control}
+                name="name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Nome</FormLabel>
+                    <FormControl>
+                      <Input {...field} />
+                    </FormControl>
+                    <FormDescription>
+                      O nome do usuário será exibido no sistema
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
               <FormField
                 control={form.control}
                 name="email"
@@ -221,11 +238,11 @@ export default function UsuariosPage() {
                     <FormLabel>Nível de Acesso</FormLabel>
                     <Select onValueChange={field.onChange} defaultValue={field.value || 'guest'}>
                       <FormControl>
-                        <SelectTrigger>
+                        <SelectTrigger className="w-full">
                           <SelectValue placeholder="Selecione um nível de acesso" />
                         </SelectTrigger>
                       </FormControl>
-                      <SelectContent>
+                      <SelectContent className="w-full">
                         <SelectItem value="admin">Administrador</SelectItem>
                         <SelectItem value="planner">Cerimonialista</SelectItem>
                         <SelectItem value="guest">Visitante</SelectItem>

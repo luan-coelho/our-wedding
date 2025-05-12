@@ -7,7 +7,7 @@ const Footer = () => {
   const currentYear = new Date().getFullYear()
 
   return (
-    <footer className="bg-wedding-primary text-wedding-secondary py-8">
+    <footer className="bg-wedding-accent text-white py-8">
       <div className="wedding-container">
         <div className="flex flex-col md:flex-row justify-between items-center">
           <div className="mb-6 md:mb-0">
@@ -48,9 +48,9 @@ const Footer = () => {
           </div>
         </div>
 
-        <div className="mt-8 pt-4 border-t border-wedding-secondary/30 text-center text-xs opacity-70">
+        <div className="mt-8 pt-4 border-t border-white/20 text-center text-xs opacity-70">
           <p className="flex items-center justify-center">
-            Feito com <FaHeart className="mx-1 text-wedding-accent" /> para nosso grande dia
+            Feito com <FaHeart className="mx-1 text-wedding-secondary" /> para nosso grande dia
           </p>
           <p className="mt-1">&copy; {currentYear} Ester & Luan. Todos os direitos reservados.</p>
         </div>
