@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/db'
-import { tableMessages } from '@/db/schema'
+import { tableMessages } from '@/db/schema/messages'
 import { desc } from 'drizzle-orm'
 
 export async function GET() {
@@ -9,7 +9,13 @@ export async function GET() {
       orderBy: [desc(tableMessages.createdAt)],
     })
 
-    return NextResponse.json(messagesList, { status: 200 })
+    // Garantir que todas as datas sejam strings ISO
+    const messagesWithFormattedDates = messagesList.map(message => ({
+      ...message,
+      createdAt: message.createdAt?.toISOString() || new Date().toISOString()
+    }))
+
+    return NextResponse.json(messagesWithFormattedDates, { status: 200 })
   } catch (error) {
     console.error('Erro ao buscar mensagens:', error)
     return NextResponse.json({ error: 'Erro ao buscar mensagens' }, { status: 500 })
@@ -27,12 +33,18 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Nome e mensagem são obrigatórios' }, { status: 400 })
     }
 
-    const newMessage = await db.insert(tableMessages).values({
+    const [newMessage] = await db.insert(tableMessages).values({
       name,
       content: message,
-    })
+    }).returning()
 
-    return NextResponse.json(newMessage, { status: 201 })
+    // Garantir que createdAt seja uma string ISO
+    const messageWithFormattedDate = {
+      ...newMessage,
+      createdAt: newMessage.createdAt?.toISOString() || new Date().toISOString()
+    }
+
+    return NextResponse.json(messageWithFormattedDate, { status: 201 })
   } catch (error) {
     return NextResponse.json({ error: 'Erro ao enviar mensagem' }, { status: 500 })
   }

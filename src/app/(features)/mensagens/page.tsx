@@ -16,7 +16,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert'
 import { messageFormSchema, MessageFormValues } from './message-schema'
 
 interface Message {
-  id: number
+  id: string
   name: string
   content: string
   createdAt: string
@@ -36,7 +36,10 @@ async function createMessage(values: MessageFormValues): Promise<Message> {
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({ ...values, email: '' }),
+    body: JSON.stringify({
+      name: values.name,
+      message: values.message,
+    }),
   })
 
   if (!response.ok) {
@@ -44,7 +47,8 @@ async function createMessage(values: MessageFormValues): Promise<Message> {
     throw new Error(errorData.error || 'Erro ao enviar mensagem')
   }
 
-  return response.json()
+  const result = await response.json()
+  return result
 }
 
 export default function MensagensPage() {
@@ -68,7 +72,14 @@ export default function MensagensPage() {
   const messageMutation = useMutation({
     mutationFn: createMessage,
     onSuccess: newMessage => {
-      queryClient.setQueryData(['messages'], (oldData: Message[] = []) => [newMessage, ...oldData])
+      // Atualiza o cache com a nova mensagem
+      queryClient.setQueryData(['messages'], (oldData: Message[] = []) => {
+        return [newMessage, ...oldData]
+      })
+      
+      // Invalida e refetch para garantir sincronização
+      queryClient.invalidateQueries({ queryKey: ['messages'] })
+      
       form.reset()
       setSubmitted(true)
       setTimeout(() => setSubmitted(false), 3000)
@@ -84,7 +95,13 @@ export default function MensagensPage() {
   }
 
   function formatDate(dateString: string) {
+    if (!dateString) return ''
+    
     const date = new Date(dateString)
+    
+    // Verifica se a data é válida
+    if (isNaN(date.getTime())) return ''
+    
     return date.toLocaleDateString('pt-BR', {
       day: '2-digit',
       month: '2-digit',
@@ -187,17 +204,17 @@ export default function MensagensPage() {
             </Card>
           ) : (
             <div className="space-y-6">
-              {messages.map((message, index) => (
-                <Card key={index} className="py-2">
-                  <CardContent className="px-3 py-1">
+              {messages.map((message) => (
+                <Card key={message.id} className="py-2">
+                  <CardContent className="px-6 py-4">
                     <div className="flex">
-                      <div className="w-10 h-10 bg-wedding-primary/20 rounded-full flex items-center justify-center mr-4 mt-1">
+                      <div className="w-10 h-10 bg-wedding-primary/20 rounded-full flex items-center justify-center mr-4 mt-1 flex-shrink-0">
                         <FaHeart className="text-wedding-primary" />
                       </div>
-                      <div>
-                        <div className="flex justify-between items-center space-y-1">
+                      <div className="flex-1">
+                        <div className="flex justify-between items-start mb-2">
                           <h3 className="text-lg font-medium text-wedding-dark">{message.name}</h3>
-                          <span className="text-xs text-gray-500">{formatDate(message.createdAt)}</span>
+                          <span className="text-xs text-gray-500 ml-2">{formatDate(message.createdAt)}</span>
                         </div>
                         <p className="text-wedding-accent">{message.content}</p>
                       </div>

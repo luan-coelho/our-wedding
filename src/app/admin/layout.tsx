@@ -11,26 +11,34 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   // Mostra um indicador de carregamento enquanto verifica a sessão
   if (status === 'loading') {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-wedding-primary"></div>
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-wedding-light/20 to-wedding-lavender/30">
+        <div className="flex flex-col items-center gap-4">
+          <div className="animate-spin rounded-full h-12 w-12 border-4 border-wedding-primary/20 border-t-wedding-primary"></div>
+          <p className="text-wedding-primary font-medium">Carregando...</p>
+        </div>
       </div>
     )
   }
 
   return (
     <SidebarProvider
+      defaultOpen={true}
       style={
         {
-          '--sidebar-width': 'calc(var(--spacing) * 72)',
-          '--header-height': 'calc(var(--spacing) * 12)',
+          '--sidebar-width': '18rem',
+          '--sidebar-width-mobile': '20rem',
         } as React.CSSProperties
       }>
-      <AppSidebar variant="inset" />
+      <AppSidebar />
       <SidebarInset>
         <SiteHeader />
-        <div className="flex flex-1 flex-col">
-          <div className="@container/main flex flex-1 flex-col gap-2 bg-zinc-100">
-            <main className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">{children}</main>
+        <div className="flex flex-1 flex-col min-h-0">
+          <div className="flex flex-1 flex-col bg-gradient-to-br from-wedding-light/10 via-white to-wedding-sage/5">
+            <main className="flex-1 p-6 space-y-6 overflow-auto">
+              <div className="max-w-7xl mx-auto">
+                {children}
+              </div>
+            </main>
           </div>
         </div>
       </SidebarInset>

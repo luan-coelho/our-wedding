@@ -16,7 +16,6 @@ export default function Header() {
     { name: 'Início', path: routes.frontend.home },
     { name: 'Localização', path: routes.frontend.localizacao },
     { name: 'Presentes', path: routes.frontend.presentes },
-    { name: 'Galeria', path: routes.frontend.galeria },
     { name: 'Mensagens', path: routes.frontend.mensagens },
   ]
 

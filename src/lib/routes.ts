@@ -8,7 +8,6 @@ export const routes = {
     home: '/',
     localizacao: '/localizacao',
     presentes: '/presentes',
-    galeria: '/galeria',
     mensagens: '/mensagens',
     confirmacao: '/confirmacao',
     // Área administrativa
@@ -51,7 +50,6 @@ export const routes = {
       confirm: (token: string) => `/api/guests/${token}/confirm`,
     },
     messages: '/api/messages',
-    photos: '/api/photos',
     confirmacao: {
       byToken: (token: string) => `/api/confirmacao/${token}`,
     },

@@ -1,14 +1,7 @@
 @import 'tailwindcss';
 @import 'tw-animate-css';
 
-@custom-variant dark (&:is(.dark *));
-
 :root {
-  /* --wedding-primary: #004aad;
-  --wedding-secondary: #99ccf8;
-  --wedding-accent: #6d2190;
-  --wedding-dark: #6d2190;
-  --wedding-light: #a586a6; */
   --radius: 0.5rem;
   --background: oklch(1 0 0);
   --foreground: oklch(0.141 0.005 285.823);
@@ -16,8 +9,8 @@
   --card-foreground: oklch(0.141 0.005 285.823);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.141 0.005 285.823);
-  --primary: oklch(0.623 0.214 259.815);
-  --primary-foreground: oklch(0.97 0.014 254.604);
+  --primary: oklch(0.606 0.25 292.717);
+  --primary-foreground: oklch(0.969 0.016 293.756);
   --secondary: oklch(0.967 0.001 286.375);
   --secondary-foreground: oklch(0.21 0.006 285.885);
   --muted: oklch(0.967 0.001 286.375);
@@ -27,7 +20,7 @@
   --destructive: oklch(0.577 0.245 27.325);
   --border: oklch(0.92 0.004 286.32);
   --input: oklch(0.92 0.004 286.32);
-  --ring: oklch(0.623 0.214 259.815);
+  --ring: oklch(0.606 0.25 292.717);
   --chart-1: oklch(0.646 0.222 41.116);
   --chart-2: oklch(0.6 0.118 184.704);
   --chart-3: oklch(0.398 0.07 227.392);
@@ -35,12 +28,33 @@
   --chart-5: oklch(0.769 0.188 70.08);
   --sidebar: oklch(0.985 0 0);
   --sidebar-foreground: oklch(0.141 0.005 285.823);
-  --sidebar-primary: oklch(0.623 0.214 259.815);
-  --sidebar-primary-foreground: oklch(0.97 0.014 254.604);
+  --sidebar-primary: oklch(0.606 0.25 292.717);
+  --sidebar-primary-foreground: oklch(0.969 0.016 293.756);
   --sidebar-accent: oklch(0.967 0.001 286.375);
   --sidebar-accent-foreground: oklch(0.21 0.006 285.885);
   --sidebar-border: oklch(0.92 0.004 286.32);
-  --sidebar-ring: oklch(0.623 0.214 259.815);
+  --sidebar-ring: oklch(0.606 0.25 292.717);
+
+  /* Paleta de cores customizada do casamento */
+  --wedding-lavender: #d3cfe4;     /* Lavanda suave */
+  --wedding-purple-light: #a59dcc; /* Roxo claro */
+  --wedding-sage: #b9cebb;         /* Verde sálvia */
+  --wedding-purple-deep: #5f5597;  /* Roxo profundo */
+  --wedding-charcoal: #20222f;     /* Carvão escuro */
+  --wedding-lilac: #b7a0d8;        /* Lilás */
+  --wedding-forest: #67877a;       /* Verde floresta */
+  --wedding-mint: #B1C095;         /* Verde menta */
+  --wedding-sky: #678EBB;          /* Azul céu */
+  --wedding-olive: #A4B99B;        /* Verde oliva */
+  --wedding-amethyst: #776BA8;     /* Ametista */
+  --wedding-teal: #67877A;         /* Verde azulado */
+
+  /* Cores principais para uso geral */
+  --wedding-primary: #5f5597;      /* Roxo profundo */
+  --wedding-secondary: #b7a0d8;    /* Lilás */
+  --wedding-accent: #678EBB;       /* Azul céu */
+  --wedding-light: #d3cfe4;        /* Lavanda suave */
+  --wedding-dark: #20222f;         /* Carvão escuro */
 }
 
 .dark {
@@ -50,8 +64,8 @@
   --card-foreground: oklch(0.985 0 0);
   --popover: oklch(0.21 0.006 285.885);
   --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.546 0.245 262.881);
-  --primary-foreground: oklch(0.379 0.146 265.522);
+  --primary: oklch(0.541 0.281 293.009);
+  --primary-foreground: oklch(0.969 0.016 293.756);
   --secondary: oklch(0.274 0.006 286.033);
   --secondary-foreground: oklch(0.985 0 0);
   --muted: oklch(0.274 0.006 286.033);
@@ -61,7 +75,7 @@
   --destructive: oklch(0.704 0.191 22.216);
   --border: oklch(1 0 0 / 10%);
   --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.488 0.243 264.376);
+  --ring: oklch(0.541 0.281 293.009);
   --chart-1: oklch(0.488 0.243 264.376);
   --chart-2: oklch(0.696 0.17 162.48);
   --chart-3: oklch(0.769 0.188 70.08);
@@ -69,12 +83,12 @@
   --chart-5: oklch(0.645 0.246 16.439);
   --sidebar: oklch(0.21 0.006 285.885);
   --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.546 0.245 262.881);
-  --sidebar-primary-foreground: oklch(0.379 0.146 265.522);
-  --sidebar-accent: oklch(0.274 0.006 286.033);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
+  --sidebar-primary: oklch(0.541 0.281 293.009);
+  --sidebar-primary-foreground: oklch(0.969 0.016 293.756);
+  --sidebar-accent: transparent;
+  --sidebar-accent-foreground: oklch(0.705 0.015 286.067);
   --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.488 0.243 264.376);
+  --sidebar-ring: oklch(0.541 0.281 293.009);
 }
 
 @theme inline {
@@ -115,39 +129,61 @@
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
+
+  /* Cores customizadas do casamento */
+  --color-wedding-lavender: var(--wedding-lavender);
+  --color-wedding-purple-light: var(--wedding-purple-light);
+  --color-wedding-sage: var(--wedding-sage);
+  --color-wedding-purple-deep: var(--wedding-purple-deep);
+  --color-wedding-charcoal: var(--wedding-charcoal);
+  --color-wedding-lilac: var(--wedding-lilac);
+  --color-wedding-forest: var(--wedding-forest);
+  --color-wedding-mint: var(--wedding-mint);
+  --color-wedding-sky: var(--wedding-sky);
+  --color-wedding-olive: var(--wedding-olive);
+  --color-wedding-amethyst: var(--wedding-amethyst);
+  --color-wedding-teal: var(--wedding-teal);
+  --color-wedding-primary: var(--wedding-primary);
+  --color-wedding-secondary: var(--wedding-secondary);
+  --color-wedding-accent: var(--wedding-accent);
+  --color-wedding-light: var(--wedding-light);
+  --color-wedding-dark: var(--wedding-dark);
 }
 
-body {
-  font-family: var(--font-sans);
-}
-
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-  font-family: var(--font-sans);
-  color: var(--wedding-dark);
-}
-
+/* Classes utilitárias customizadas do casamento */
 .wedding-container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 1rem;
+  @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
 }
 
-@media (max-width: 768px) {
-  .wedding-container {
-    padding: 0 0.75rem;
-  }
+.wedding-card {
+  @apply bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-all duration-300 border border-gray-100;
 }
 
-@layer base {
-  * {
-    @apply border-border outline-ring/50;
-  }
-  body {
-    @apply bg-background text-foreground;
-  }
+.wedding-button {
+  @apply bg-gradient-to-r text-white px-6 py-3 rounded-full font-medium transition-all duration-300 shadow-lg hover:shadow-xl;
+}
+
+.wedding-info-box {
+  @apply block p-6 bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100 hover:-translate-y-1;
+}
+
+/* Gradientes personalizados usando a paleta */
+.gradient-lavender-sage {
+  background: linear-gradient(135deg, #d3cfe4 0%, #b9cebb 100%);
+}
+
+.gradient-purple-lilac {
+  background: linear-gradient(135deg, #5f5597 0%, #b7a0d8 100%);
+}
+
+.gradient-sky-mint {
+  background: linear-gradient(135deg, #678EBB 0%, #B1C095 100%);
+}
+
+.gradient-forest-olive {
+  background: linear-gradient(135deg, #67877a 0%, #A4B99B 100%);
+}
+
+.gradient-amethyst-teal {
+  background: linear-gradient(135deg, #776BA8 0%, #67877A 100%);
 }
