@@ -1,14 +1,14 @@
 # Product Context - Site de Casamento
 
 ## Por que este projeto existe?
-O site de casamento resolve a necessidade de centralizar todas as informações e interações relacionadas ao casamento de Ester & Luan em uma plataforma digital elegante e funcional. Substitui métodos tradicionais como convites físicos, listas de presentes em lojas e comunicação fragmentada.
+O site de casamento resolve a necessidade de centralizar todas as informações e interações relacionadas ao casamento de Luan & Ester em uma plataforma digital elegante e funcional. Substitui métodos tradicionais como convites físicos, listas de presentes em lojas e comunicação fragmentada.
 
 ## Problemas que resolve
 1. **Gestão de Convites**: Elimina a necessidade de convites físicos e facilita o controle de confirmações
-2. **Lista de Presentes Digital**: Moderniza o processo de presentes com opções de PIX
+2. **Lista de Presentes Digital**: Moderniza o processo de presentes com opções de PIX e sugestões de presentes
 3. **Comunicação Centralizada**: Concentra todas as informações do casamento em um local
-4. **Experiência Personalizada**: Cada convidado tem acesso via link único
-5. **Administração Eficiente**: Painel para os noivos gerenciarem tudo digitalmente
+4. **Experiência Personalizada**: Cada convidado confirma sua presença via link único
+5. **Administração Eficiente**: Painel para os noivos e colaboradores gerenciarem tudo digitalmente
 
 ## Como deve funcionar
 
@@ -33,7 +33,7 @@ O site de casamento resolve a necessidade de centralizar todas as informações 
 - **Facilidade**: Navegação clara sem necessidade de cadastro
 - **Emoção**: Design que transmite a alegria e elegância do evento
 - **Praticidade**: Informações importantes facilmente encontráveis
-- **Engajamento**: Incentivo para participar (confirmar presença, ver fotos, deixar mensagens)
+- **Engajamento**: Incentivo para participar (deixar mensagens) e nos dar presentes
 
 ### Administradores
 - **Controle Total**: Acesso a todas as funcionalidades administrativas
@@ -57,11 +57,4 @@ O site de casamento resolve a necessidade de centralizar todas as informações 
 4. Atualiza informações de presentes
 5. Modera conteúdo enviado pelos convidados
 6. Acompanha confirmações em tempo real
-
-## Métricas de Sucesso
-- Taxa de confirmação de presença
-- Engajamento com diferentes seções do site
-- Número de mensagens deixadas
-- Contribuições para presentes
-- Tempo de permanência no site
-- Taxa de retorno de visitantes 
+7. Cria chaves PIX para inserir no cadastro de presentes, pois os presentes são sugestões, mas os convidados podem contribuir com qualquer valor
