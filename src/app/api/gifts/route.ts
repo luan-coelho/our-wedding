@@ -2,14 +2,16 @@ import { db } from '@/db'
 import { tableGifts, tablePixKeys } from '@/db/schema'
 import { asc, eq } from 'drizzle-orm'
 import { NextResponse } from 'next/server'
+import { validate as isValidUUID } from 'uuid'
 
 export async function GET() {
   try {
-    const giftsList = await db
-      .select()
-      .from(tableGifts)
-      .orderBy(asc(tableGifts.name))
-      .leftJoin(tablePixKeys, eq(tableGifts.pixKeyId, tablePixKeys.id))
+    const giftsList = await db.query.tableGifts.findMany({
+      orderBy: asc(tableGifts.name),
+      with: {
+        selectedPixKey: true,
+      },
+    })
 
     return NextResponse.json(giftsList, { status: 200 })
   } catch (error) {
@@ -22,14 +24,27 @@ export async function POST(request: Request) {
   try {
     const body = await request.json()
 
-    const newGift = await db.insert(tableGifts).values({
+    // Sanitizar dados - converter strings vazias para null em campos UUID opcionais
+    const sanitizedData = {
       name: body.name,
       description: body.description,
       price: body.price,
-      pixKey: body.pixKey,
-      pixKeyId: body.pixKeyId,
+      pixKey: body.pixKey || null,
+      pixKeyId: body.pixKeyId && body.pixKeyId.trim() !== '' ? body.pixKeyId : null,
       imageUrl: body.imageUrl,
+    }
+
+    // Validar pixKeyId se fornecido
+    if (sanitizedData.pixKeyId && !isValidUUID(sanitizedData.pixKeyId)) {
+      return NextResponse.json({ error: 'pixKeyId inválido' }, { status: 400 })
+    }
+
+    console.log('Dados sanitizados para criação:', {
+      pixKeyId: sanitizedData.pixKeyId,
+      pixKey: sanitizedData.pixKey,
     })
+
+    const newGift = await db.insert(tableGifts).values(sanitizedData)
 
     return NextResponse.json(newGift, { status: 201 })
   } catch (error) {
@@ -38,45 +53,4 @@ export async function POST(request: Request) {
   }
 }
 
-export async function PUT(request: Request, { params }: { params: Promise<{ id: string }> }) {
-  try {
-    const body = await request.json()
-    const id: string = (await params).id
 
-    if (!id) {
-      return NextResponse.json({ error: 'ID não fornecido' }, { status: 400 })
-    }
-
-    const updatedGift = await db
-      .update(tableGifts)
-      .set({
-        name: body.name,
-        description: body.description,
-        price: body.price,
-        pixKey: body.pixKey,
-        pixKeyId: body.pixKeyId,
-        imageUrl: body.imageUrl,
-      })
-      .where(eq(tableGifts.id, id))
-
-    return NextResponse.json(updatedGift, { status: 200 })
-  } catch (error) {
-    return NextResponse.json({ error: 'Erro ao atualizar presente' }, { status: 500 })
-  }
-}
-
-export async function DELETE(_: Request, { params }: { params: Promise<{ id: string }> }) {
-  try {
-    const id: string = (await params).id
-
-    if (!id) {
-      return NextResponse.json({ error: 'ID não fornecido' }, { status: 400 })
-    }
-
-    await db.delete(tableGifts).where(eq(tableGifts.id, id))
-
-    return NextResponse.json({ success: true }, { status: 200 })
-  } catch (error) {
-    return NextResponse.json({ error: 'Erro ao excluir presente' }, { status: 500 })
-  }
-}

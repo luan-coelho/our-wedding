@@ -19,22 +19,93 @@ import { Input } from '@/components/ui/input'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { useState } from 'react'
+import { useMutation, useQuery } from '@tanstack/react-query'
+import { queryClient } from '@/lib/query-client'
+import { pixKeysService } from '@/services'
+import { PixKey } from '@/types'
+import { useState, useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import { PixKeyFormData, pixKeySchema } from '../presentes/schema'
 
-type PixKey = {
-  id: number
-  name: string
-  key: string
-  type: string
-  createdAt: string
+// Funções utilitárias para formatação de máscaras
+const formatCPF = (value: string) => {
+  const numericValue = value.replace(/\D/g, '')
+  if (numericValue.length <= 11) {
+    return numericValue
+      .replace(/(\d{3})(\d)/, '$1.$2')
+      .replace(/(\d{3})(\d)/, '$1.$2')
+      .replace(/(\d{3})(\d{1,2})$/, '$1-$2')
+  }
+  return numericValue.slice(0, 11)
+    .replace(/(\d{3})(\d)/, '$1.$2')
+    .replace(/(\d{3})(\d)/, '$1.$2')
+    .replace(/(\d{3})(\d{1,2})$/, '$1-$2')
+}
+
+const formatCNPJ = (value: string) => {
+  const numericValue = value.replace(/\D/g, '')
+  if (numericValue.length <= 14) {
+    return numericValue
+      .replace(/(\d{2})(\d)/, '$1.$2')
+      .replace(/(\d{3})(\d)/, '$1.$2')
+      .replace(/(\d{3})(\d)/, '$1/$2')
+      .replace(/(\d{4})(\d{1,2})$/, '$1-$2')
+  }
+  return numericValue.slice(0, 14)
+    .replace(/(\d{2})(\d)/, '$1.$2')
+    .replace(/(\d{3})(\d)/, '$1.$2')
+    .replace(/(\d{3})(\d)/, '$1/$2')
+    .replace(/(\d{4})(\d{1,2})$/, '$1-$2')
+}
+
+const formatPhone = (value: string) => {
+  const numericValue = value.replace(/\D/g, '')
+  if (numericValue.length <= 11) {
+    return numericValue
+      .replace(/(\d{2})(\d)/, '($1) $2')
+      .replace(/(\d{5})(\d{1,4})$/, '$1-$2')
+  }
+  return numericValue.slice(0, 11)
+    .replace(/(\d{2})(\d)/, '($1) $2')
+    .replace(/(\d{5})(\d{1,4})$/, '$1-$2')
+}
+
+// Função para aplicar máscara baseada no tipo
+const applyMask = (value: string, type: string) => {
+  switch (type) {
+    case 'CPF':
+      return formatCPF(value)
+    case 'CNPJ':
+      return formatCNPJ(value)
+    case 'TELEFONE':
+      return formatPhone(value)
+    case 'EMAIL':
+    case 'ALEATORIA':
+    default:
+      return value
+  }
+}
+
+// Função para obter placeholder baseado no tipo
+const getPlaceholder = (type: string) => {
+  switch (type) {
+    case 'CPF':
+      return '000.000.000-00'
+    case 'CNPJ':
+      return '00.000.000/0000-00'
+    case 'TELEFONE':
+      return '(00) 00000-0000'
+    case 'EMAIL':
+      return 'exemplo@email.com'
+    case 'ALEATORIA':
+      return 'Chave aleatória gerada pelo banco'
+    default:
+      return 'Digite a chave PIX'
+  }
 }
 
 export default function ChavesPixPage() {
-  const queryClient = useQueryClient()
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false)
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
@@ -58,36 +129,35 @@ export default function ChavesPixPage() {
     },
   })
 
+  // Watch para mudanças no tipo de chave no formulário de criação
+  const watchedType = form.watch('type')
+  const watchedEditType = editForm.watch('type')
+
+  // Limpar o campo de chave quando o tipo mudar no formulário de criação
+  useEffect(() => {
+    form.setValue('key', '')
+  }, [watchedType, form])
+
+  // Limpar o campo de chave quando o tipo mudar no formulário de edição
+  useEffect(() => {
+    if (isEditDialogOpen) {
+      const currentKey = editForm.getValues('key')
+      const maskedKey = applyMask(currentKey, watchedEditType)
+      if (currentKey !== maskedKey) {
+        editForm.setValue('key', maskedKey)
+      }
+    }
+  }, [watchedEditType, editForm, isEditDialogOpen])
+
   // Consulta para buscar as chaves PIX
   const { data: pixKeys = [], isLoading } = useQuery<PixKey[]>({
     queryKey: ['pixKeys'],
-    queryFn: async () => {
-      const response = await fetch('/api/pixkeys')
-      if (!response.ok) {
-        throw new Error('Erro ao buscar chaves PIX')
-      }
-      return response.json()
-    },
+    queryFn: pixKeysService.getAll,
   })
 
   // Mutação para criar nova chave PIX
   const createPixKeyMutation = useMutation({
-    mutationFn: async (data: PixKeyFormData) => {
-      const response = await fetch('/api/pixkeys', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
-      })
-
-      if (!response.ok) {
-        const errorData = await response.json()
-        throw new Error(errorData.error || 'Erro ao criar chave PIX')
-      }
-
-      return response.json()
-    },
+    mutationFn: pixKeysService.create,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['pixKeys'] })
       setIsAddDialogOpen(false)
@@ -101,22 +171,8 @@ export default function ChavesPixPage() {
 
   // Mutação para atualizar chave PIX
   const updatePixKeyMutation = useMutation({
-    mutationFn: async (data: PixKeyFormData & { id: number }) => {
-      const response = await fetch('/api/pixkeys', {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
-      })
-
-      if (!response.ok) {
-        const errorData = await response.json()
-        throw new Error(errorData.error || 'Erro ao atualizar chave PIX')
-      }
-
-      return response.json()
-    },
+    mutationFn: (data: PixKeyFormData & { id: string | number }) =>
+      pixKeysService.update(data.id, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['pixKeys'] })
       setIsEditDialogOpen(false)
@@ -131,18 +187,7 @@ export default function ChavesPixPage() {
 
   // Mutação para excluir chave PIX
   const deletePixKeyMutation = useMutation({
-    mutationFn: async (id: number) => {
-      const response = await fetch(`/api/pixkeys?id=${id}`, {
-        method: 'DELETE',
-      })
-
-      if (!response.ok) {
-        const errorData = await response.json()
-        throw new Error(errorData.error || 'Erro ao excluir chave PIX')
-      }
-
-      return response.json()
-    },
+    mutationFn: pixKeysService.delete,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['pixKeys'] })
       setIsDeleteDialogOpen(false)
@@ -235,7 +280,14 @@ export default function ChavesPixPage() {
                         <FormItem>
                           <FormLabel>Chave PIX *</FormLabel>
                           <FormControl>
-                            <Input placeholder="Digite a chave PIX" {...field} />
+                            <Input
+                              placeholder={getPlaceholder(form.watch('type'))}
+                              {...field}
+                              onChange={(e) => {
+                                const maskedValue = applyMask(e.target.value, form.watch('type'))
+                                field.onChange(maskedValue)
+                              }}
+                            />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -352,7 +404,14 @@ export default function ChavesPixPage() {
                   <FormItem>
                     <FormLabel>Chave PIX *</FormLabel>
                     <FormControl>
-                      <Input placeholder="Digite a chave PIX" {...field} />
+                      <Input
+                        placeholder={getPlaceholder(editForm.watch('type'))}
+                        {...field}
+                        onChange={(e) => {
+                          const maskedValue = applyMask(e.target.value, editForm.watch('type'))
+                          field.onChange(maskedValue)
+                        }}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>

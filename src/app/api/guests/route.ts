@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/db'
 import { tableGuests } from '@/db/schema'
-import { asc } from 'drizzle-orm'
+import { asc, eq } from 'drizzle-orm'
 
 export async function GET() {
   try {
@@ -20,8 +20,21 @@ export async function POST(request: NextRequest) {
   try {
     const { name } = await request.json()
 
+    if (!name || typeof name !== 'string' || name.trim().length === 0) {
+      return NextResponse.json({ error: 'Nome é obrigatório' }, { status: 400 })
+    }
+
+    // Verificar se já existe um convidado com o mesmo nome
+    const existingGuest = await db.query.tableGuests.findFirst({
+      where: eq(tableGuests.name, name.trim()),
+    })
+
+    if (existingGuest) {
+      return NextResponse.json({ error: 'Já existe um convidado com este nome' }, { status: 409 })
+    }
+
     const newGuest = await db.insert(tableGuests).values({
-      name,
+      name: name.trim(),
     })
 
     return NextResponse.json(newGuest, { status: 201 })

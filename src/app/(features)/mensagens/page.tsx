@@ -5,7 +5,10 @@ import { FaHeart, FaCheck } from 'react-icons/fa'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { Loader2 } from 'lucide-react'
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import { useQuery, useMutation } from '@tanstack/react-query'
+import { queryClient } from '@/lib/query-client'
+import { messagesService } from '@/services'
+import { Message } from '@/types'
 
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -15,50 +18,15 @@ import { Textarea } from '@/components/ui/textarea'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { messageFormSchema, MessageFormValues } from './message-schema'
 
-interface Message {
-  id: string
-  name: string
-  content: string
-  createdAt: string
-}
 
-async function fetchMessages(): Promise<Message[]> {
-  const response = await fetch('/api/messages')
-  if (!response.ok) {
-    throw new Error('Erro ao carregar mensagens')
-  }
-  return response.json()
-}
-
-async function createMessage(values: MessageFormValues): Promise<Message> {
-  const response = await fetch('/api/messages', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      name: values.name,
-      message: values.message,
-    }),
-  })
-
-  if (!response.ok) {
-    const errorData = await response.json()
-    throw new Error(errorData.error || 'Erro ao enviar mensagem')
-  }
-
-  const result = await response.json()
-  return result
-}
 
 export default function MensagensPage() {
   const [submitted, setSubmitted] = useState(false)
   const [error, setError] = useState('')
-  const queryClient = useQueryClient()
 
   const { data: messages = [], isLoading } = useQuery({
     queryKey: ['messages'],
-    queryFn: fetchMessages,
+    queryFn: messagesService.getAll,
   })
 
   const form = useForm<MessageFormValues>({
@@ -70,16 +38,19 @@ export default function MensagensPage() {
   })
 
   const messageMutation = useMutation({
-    mutationFn: createMessage,
+    mutationFn: (values: MessageFormValues) => messagesService.create({
+      name: values.name,
+      message: values.message,
+    }),
     onSuccess: newMessage => {
       // Atualiza o cache com a nova mensagem
       queryClient.setQueryData(['messages'], (oldData: Message[] = []) => {
         return [newMessage, ...oldData]
       })
-      
+
       // Invalida e refetch para garantir sincronização
       queryClient.invalidateQueries({ queryKey: ['messages'] })
-      
+
       form.reset()
       setSubmitted(true)
       setTimeout(() => setSubmitted(false), 3000)

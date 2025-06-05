@@ -16,7 +16,7 @@ export async function middleware(request: NextRequest) {
 
   // Visitantes não têm acesso às rotas administrativas
   if (token.role === 'guest') {
-    return NextResponse.redirect(new URL('/', request.url))
+    return NextResponse.redirect(new URL(routes.frontend.home, request.url))
   }
 
   // Planner só pode visualizar a lista de convidados

@@ -1,7 +1,10 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
-import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { useMutation } from '@tanstack/react-query'
+import { queryClient } from '@/lib/query-client'
+import { guestsService } from '@/services'
+import { routes } from '@/lib/routes'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { toast } from 'sonner'
@@ -14,7 +17,7 @@ import { GuestFormData, guestSchema } from './schema'
 
 interface GuestFormProps {
   guest?: {
-    id: number
+    id: string
     name: string
     isConfirmed: boolean
   }
@@ -22,7 +25,6 @@ interface GuestFormProps {
 
 export default function GuestForm({ guest }: GuestFormProps) {
   const router = useRouter()
-  const queryClient = useQueryClient()
   const isEditing = !!guest
 
   const form = useForm<GuestFormData>({
@@ -34,32 +36,36 @@ export default function GuestForm({ guest }: GuestFormProps) {
 
   const saveMutation = useMutation({
     mutationFn: async (data: GuestFormData) => {
-      const url = isEditing ? `/api/guests/${guest.id}` : '/api/guests'
-      const method = isEditing ? 'PUT' : 'POST'
-
-      const response = await fetch(url, {
-        method,
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
-      })
-
-      if (!response.ok) {
-        const errorData = await response.json()
-        throw new Error(errorData.error || 'Ocorreu um erro ao salvar o convidado')
+      try {
+        if (isEditing && guest?.id) {
+          return await guestsService.update(guest.id, data)
+        } else {
+          return await guestsService.create(data)
+        }
+      } catch (error: any) {
+        // Se for erro de nome duplicado (409), definir erro no campo específico
+        if (error.status === 409) {
+          form.setError('name', {
+            type: 'manual',
+            message: error.error,
+          })
+          throw new Error('Nome duplicado')
+        }
+        throw error
       }
-
-      return response.json()
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['guests'] })
+      queryClient.invalidateQueries({ queryKey: ['guest'] })
       toast.success(isEditing ? 'Convidado atualizado com sucesso' : 'Convidado adicionado com sucesso')
-      router.push('/admin/convidados')
+      router.push(routes.frontend.admin.convidados.index)
       router.refresh()
     },
     onError: error => {
-      toast.error(error instanceof Error ? error.message : 'Ocorreu um erro inesperado')
+      // Só mostrar toast se não for erro de nome duplicado (que já é mostrado no campo)
+      if (error instanceof Error && error.message !== 'Nome duplicado') {
+        toast.error(error.message)
+      }
     },
   })
 
@@ -91,7 +97,7 @@ export default function GuestForm({ guest }: GuestFormProps) {
 
             <div className="flex justify-between pt-4">
               <Button asChild variant="outline">
-                <Link href="/admin/convidados">Cancelar</Link>
+                <Link href={routes.frontend.admin.convidados.index}>Cancelar</Link>
               </Button>
               <Button type="submit" disabled={saveMutation.isPending}>
                 {saveMutation.isPending ? 'Salvando...' : isEditing ? 'Atualizar' : 'Adicionar'}

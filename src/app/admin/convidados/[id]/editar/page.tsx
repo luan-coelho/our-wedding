@@ -6,16 +6,16 @@ import { useQuery } from '@tanstack/react-query'
 import { AdminProtected } from '@/components/roles'
 
 interface Guest {
-  id: number
+  id: string
   name: string
   isConfirmed: boolean
 }
 
 export default function EditGuestPage() {
   const params = useParams()
-  const id = parseInt(params.id as string)
+  const id = params.id as string
 
-  if (isNaN(id)) {
+  if (!id) {
     notFound()
   }
 

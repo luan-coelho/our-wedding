@@ -4,31 +4,15 @@ import { AdminProtected } from '@/components/roles'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { queryClient } from '@/lib/query-client'
+import { giftsService } from '@/services'
+import { useMutation, useQuery } from '@tanstack/react-query'
 import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
-
-interface Gift {
-  id: number
-  name: string
-  description: string
-  price: number | null
-  pixKey: string | null
-  imageUrl: string | null
-}
+import { routes } from '@/lib/routes'
 
 export default function AdminGiftsPage() {
   const router = useRouter()
-  const queryClient = useQueryClient()
-
-  // Função para buscar presentes
-  const fetchGifts = async (): Promise<Gift[]> => {
-    const response = await fetch('/api/gifts')
-    if (!response.ok) {
-      throw new Error('Falha ao buscar presentes')
-    }
-    return response.json()
-  }
 
   // Query para buscar presentes
   const {
@@ -37,20 +21,12 @@ export default function AdminGiftsPage() {
     error,
   } = useQuery({
     queryKey: ['gifts'],
-    queryFn: fetchGifts,
+    queryFn: giftsService.getAll,
   })
 
   // Mutation para excluir presentes
   const deleteMutation = useMutation({
-    mutationFn: async (id: number) => {
-      const response = await fetch(`/api/gifts/${id}`, {
-        method: 'DELETE',
-      })
-      if (!response.ok) {
-        throw new Error('Falha ao excluir presente')
-      }
-      return id
-    },
+    mutationFn: giftsService.delete,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['gifts'] })
       toast.success('Presente excluído com sucesso')
@@ -60,19 +36,19 @@ export default function AdminGiftsPage() {
     },
   })
 
-  const handleDelete = async (id: number) => {
+  const handleDelete = async (id: string) => {
     if (!confirm('Tem certeza que deseja excluir este presente?')) {
       return
     }
     deleteMutation.mutate(id)
   }
 
-  const handleEdit = (id: number) => {
-    router.push(`/admin/presentes/${id}/editar`)
+  const handleEdit = (id: string) => {
+    router.push(routes.frontend.admin.presentes.edit(id))
   }
 
   const handleAdd = () => {
-    router.push('/admin/presentes/novo')
+    router.push(routes.frontend.admin.presentes.create)
   }
 
   return (

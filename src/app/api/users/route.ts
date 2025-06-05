@@ -25,7 +25,7 @@ export async function POST(request: NextRequest) {
   const session = await auth()
 
   // Verifica se o usuário está autenticado e é um administrador
-  if (!session || !(await isAdmin(session))) {
+  if (!session || !isAdmin(session)) {
     return new NextResponse(JSON.stringify({ error: 'Não autorizado' }), {
       status: 403,
     })
@@ -47,11 +47,12 @@ export async function POST(request: NextRequest) {
     // Verifica se já existe um usuário com este email
     const existingUser = await db.select().from(tableUsers).where(eq(tableUsers.email, email))
 
-    if (existingUser) {
+    if (existingUser.length > 0) {
       // Atualiza a role do usuário existente e ativa a conta se estiver inativa
-      await db
+      const [updatedUser] = await db
         .update(tableUsers)
         .set({
+          name,
           role,
           active: true,
           updatedAt: new Date(),
@@ -59,7 +60,7 @@ export async function POST(request: NextRequest) {
         .where(eq(tableUsers.email, email))
         .returning()
 
-      return NextResponse.json({ message: 'Permissão atualizada' }, { status: 200 })
+      return NextResponse.json({ ...updatedUser, message: 'Permissão atualizada' }, { status: 200 })
     }
 
     // Insere o novo usuário com permissão pré-definida
@@ -97,7 +98,7 @@ export async function DELETE(request: NextRequest) {
   const session = await auth()
 
   // Verifica se o usuário está autenticado e é um administrador
-  if (!session || !(await isAdmin(session))) {
+  if (!session || !isAdmin(session)) {
     return new NextResponse(JSON.stringify({ error: 'Não autorizado' }), {
       status: 403,
     })
@@ -124,7 +125,7 @@ export async function DELETE(request: NextRequest) {
     // Verifica se o usuário existe
     const existingUser = await db.select().from(tableUsers).where(eq(tableUsers.email, email))
 
-    if (!existingUser) {
+    if (existingUser.length === 0) {
       return new NextResponse(JSON.stringify({ error: 'Usuário não encontrado' }), {
         status: 404,
       })

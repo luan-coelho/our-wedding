@@ -2,10 +2,10 @@
 
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
-import { 
-  IconGift, 
-  IconUsers, 
-  IconCreditCard, 
+import {
+  IconGift,
+  IconUsers,
+  IconCreditCard,
   IconMessageCircle,
   IconTrendingUp,
   IconCalendar,
@@ -13,9 +13,11 @@ import {
 } from '@tabler/icons-react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
+import { giftsService, guestsService, messagesService } from '@/services'
+import { DashboardStats } from '@/types'
 
 export default function AdminPage() {
-  const [stats, setStats] = useState({
+  const [stats, setStats] = useState<DashboardStats>({
     gifts: 0,
     guests: 0,
     messages: 0,
@@ -28,15 +30,15 @@ export default function AdminPage() {
       try {
         setIsLoading(true)
 
-        // Em uma implementação real, você buscaria os dados de uma API
+        // Buscar dados usando os services
         const [giftsRes, guestsRes, messagesRes] = await Promise.all([
-          fetch('/api/gifts').then(res => res.json()).catch(() => []),
-          fetch('/api/guests').then(res => res.json()).catch(() => []),
-          fetch('/api/messages').then(res => res.json()).catch(() => []),
+          giftsService.getAll().catch(() => []),
+          guestsService.getAll().catch(() => []),
+          messagesService.getAll().catch(() => []),
         ])
 
-        const confirmedGuests = Array.isArray(guestsRes) 
-          ? guestsRes.filter((guest: any) => guest.confirmed).length 
+        const confirmedGuests = Array.isArray(guestsRes)
+          ? guestsRes.filter((guest: any) => guest.isConfirmed).length
           : 0
 
         setStats({

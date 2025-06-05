@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import { FaHeart, FaInstagram } from 'react-icons/fa'
+import { routes } from '@/lib/routes'
 
 const Footer = () => {
   const currentYear = new Date().getFullYear()
@@ -16,22 +17,22 @@ const Footer = () => {
           </div>
 
           <div className="grid grid-cols-2 gap-x-12 gap-y-4 text-sm mb-6 md:mb-0">
-            <Link href="/" className="hover:text-wedding-light transition-colors">
+            <Link href={routes.frontend.home} className="hover:text-wedding-light transition-colors">
               Home
             </Link>
-            <Link href="/nossa-historia" className="hover:text-wedding-light transition-colors">
+            <Link href={routes.frontend.nossamistoria} className="hover:text-wedding-light transition-colors">
               Nossa História
             </Link>
-            <Link href="/confirmacao" className="hover:text-wedding-light transition-colors">
+            <Link href={routes.frontend.confirmacao} className="hover:text-wedding-light transition-colors">
               Confirmação
             </Link>
-            <Link href="/presentes" className="hover:text-wedding-light transition-colors">
+            <Link href={routes.frontend.presentes} className="hover:text-wedding-light transition-colors">
               Presentes
             </Link>
-            <Link href="/localizacao" className="hover:text-wedding-light transition-colors">
+            <Link href={routes.frontend.localizacao} className="hover:text-wedding-light transition-colors">
               Localização
             </Link>
-            <Link href="/mensagens" className="hover:text-wedding-light transition-colors">
+            <Link href={routes.frontend.mensagens} className="hover:text-wedding-light transition-colors">
               Mensagens
             </Link>
           </div>

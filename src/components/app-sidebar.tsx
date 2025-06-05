@@ -1,39 +1,24 @@
 'use client'
 
 import {
+  IconChevronRight,
   IconCreditCard,
   IconDashboard,
   IconGift,
   IconHeart,
-  IconMessageCircle,
-  IconUsers,
-  IconUserPlus,
   IconHome,
-  IconChevronRight,
+  IconMessageCircle,
   IconSparkles,
+  IconUserPlus,
+  IconUsers,
 } from '@tabler/icons-react'
-import * as React from 'react'
 import { useSession } from 'next-auth/react'
-import { usePathname } from 'next/navigation'
 import Link from 'next/link'
+import { usePathname } from 'next/navigation'
+import * as React from 'react'
 
-import {
-  Sidebar,
-  SidebarContent,
-  SidebarFooter,
-  SidebarHeader,
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-  SidebarGroup,
-  SidebarGroupLabel,
-  SidebarGroupContent,
-  SidebarSeparator,
-} from '@/components/ui/sidebar'
-import { routes } from '@/lib/routes'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -42,6 +27,20 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarGroup,
+  SidebarGroupContent,
+  SidebarGroupLabel,
+  SidebarHeader,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  SidebarSeparator,
+} from '@/components/ui/sidebar'
+import { routes } from '@/lib/routes'
 import { signOut } from 'next-auth/react'
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
@@ -62,7 +61,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       icon: IconGift,
       description: 'Gerenciar presentes',
       requireAdmin: true,
-      badge: 'Novo',
+      badge: null as string | null,
     },
     {
       title: 'Convidados',
@@ -122,11 +121,10 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   }
 
   return (
-    <Sidebar 
-      className="border-r border-gray-800 bg-gradient-to-b from-gray-900 via-gray-900 to-gray-950 overflow-hidden" 
-      collapsible="icon" 
-      {...props}
-    >
+    <Sidebar
+      className="border-r border-gray-800 bg-gradient-to-b from-gray-900 via-gray-900 to-gray-950 overflow-hidden"
+      collapsible="icon"
+      {...props}>
       <SidebarHeader className="border-b border-gray-800 bg-gradient-to-r from-wedding-primary to-wedding-secondary p-4 flex-shrink-0 group-data-[collapsible=icon]:p-2">
         <div className="flex items-center gap-3 text-white h-14 w-full group-data-[collapsible=icon]:h-10 group-data-[collapsible=icon]:justify-center">
           <div className="flex aspect-square size-10 items-center justify-center rounded-lg bg-white/20 text-white group-data-[collapsible=icon]:size-8 group-data-[collapsible=icon]:bg-transparent flex-shrink-0">
@@ -151,13 +149,14 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             <SidebarMenu className="space-y-1">
               {filteredAdminItems.map(item => (
                 <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton 
+                  <SidebarMenuButton
                     asChild
                     isActive={isActiveRoute(item.url)}
                     tooltip={item.description}
-                    className="group relative data-[active=true]:bg-wedding-primary data-[active=true]:text-white text-gray-300 h-12 px-3 rounded-lg w-full group-data-[collapsible=icon]:h-10 group-data-[collapsible=icon]:w-10 group-data-[collapsible=icon]:p-0 group-data-[collapsible=icon]:justify-center"
-                  >
-                    <Link href={item.url} className="flex items-center gap-3 w-full min-w-0 group-data-[collapsible=icon]:justify-center">
+                    className="group relative data-[active=true]:bg-wedding-primary data-[active=true]:text-white text-gray-300 h-12 px-3 rounded-lg w-full group-data-[collapsible=icon]:h-10 group-data-[collapsible=icon]:w-10 group-data-[collapsible=icon]:p-0 group-data-[collapsible=icon]:justify-center">
+                    <Link
+                      href={item.url}
+                      className="flex items-center gap-3 w-full min-w-0 group-data-[collapsible=icon]:justify-center">
                       <item.icon className="size-5 group-data-[active=true]:text-white flex-shrink-0 group-data-[collapsible=icon]:size-5" />
                       <div className="flex flex-1 flex-col min-w-0 overflow-hidden group-data-[collapsible=icon]:hidden">
                         <span className="font-medium text-sm truncate">{item.title}</span>
@@ -166,7 +165,9 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                         </span>
                       </div>
                       {item.badge && (
-                        <Badge variant="secondary" className="bg-wedding-accent text-white text-xs flex-shrink-0 group-data-[collapsible=icon]:hidden">
+                        <Badge
+                          variant="secondary"
+                          className="bg-wedding-accent text-white text-xs flex-shrink-0 group-data-[collapsible=icon]:hidden">
                           {item.badge}
                         </Badge>
                       )}
@@ -191,13 +192,14 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             <SidebarMenu className="space-y-1">
               {publicItems.map(item => (
                 <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton 
+                  <SidebarMenuButton
                     asChild
                     isActive={isActiveRoute(item.url)}
                     tooltip={item.description}
-                    className="group relative data-[active=true]:bg-wedding-secondary data-[active=true]:text-white text-gray-300 h-12 px-3 rounded-lg w-full group-data-[collapsible=icon]:h-10 group-data-[collapsible=icon]:w-10 group-data-[collapsible=icon]:p-0 group-data-[collapsible=icon]:justify-center"
-                  >
-                    <Link href={item.url} className="flex items-center gap-3 w-full min-w-0 group-data-[collapsible=icon]:justify-center">
+                    className="group relative data-[active=true]:bg-wedding-secondary data-[active=true]:text-white text-gray-300 h-12 px-3 rounded-lg w-full group-data-[collapsible=icon]:h-10 group-data-[collapsible=icon]:w-10 group-data-[collapsible=icon]:p-0 group-data-[collapsible=icon]:justify-center">
+                    <Link
+                      href={item.url}
+                      className="flex items-center gap-3 w-full min-w-0 group-data-[collapsible=icon]:justify-center">
                       <item.icon className="size-5 group-data-[active=true]:text-white flex-shrink-0 group-data-[collapsible=icon]:size-5" />
                       <div className="flex flex-1 flex-col min-w-0 overflow-hidden group-data-[collapsible=icon]:hidden">
                         <span className="font-medium text-sm truncate">{item.title}</span>
@@ -222,23 +224,20 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               <DropdownMenuTrigger asChild>
                 <SidebarMenuButton
                   size="lg"
-                  className="data-[state=open]:bg-gray-800/80 group text-gray-300 h-16 px-3 rounded-lg w-full group-data-[collapsible=icon]:h-10 group-data-[collapsible=icon]:w-10 group-data-[collapsible=icon]:p-0 group-data-[collapsible=icon]:justify-center"
-                >
+                  className="data-[state=open]:bg-gray-800/80 group text-gray-300 h-16 px-3 rounded-lg w-full group-data-[collapsible=icon]:h-10 group-data-[collapsible=icon]:w-10 group-data-[collapsible=icon]:p-0 group-data-[collapsible=icon]:justify-center">
                   <Avatar className="size-10 border-2 border-wedding-primary/50 flex-shrink-0 group-data-[collapsible=icon]:size-8">
                     <AvatarFallback className="bg-wedding-primary text-white font-semibold text-sm group-data-[collapsible=icon]:text-xs">
                       {getUserInitials(session?.user?.name)}
                     </AvatarFallback>
                   </Avatar>
                   <div className="grid flex-1 text-left text-sm leading-tight min-w-0 overflow-hidden group-data-[collapsible=icon]:hidden">
-                    <span className="truncate font-semibold text-white">
-                      {session?.user?.name || 'Usuário'}
-                    </span>
-                    <span className="truncate text-xs text-gray-400">
-                      {session?.user?.email}
-                    </span>
+                    <span className="truncate font-semibold text-white">{session?.user?.name || 'Usuário'}</span>
+                    <span className="truncate text-xs text-gray-400">{session?.user?.email}</span>
                   </div>
                   {isAdmin && (
-                    <Badge variant="outline" className="border-wedding-primary text-wedding-primary text-xs bg-wedding-primary/10 flex-shrink-0 group-data-[collapsible=icon]:hidden">
+                    <Badge
+                      variant="outline"
+                      className="border-wedding-primary text-wedding-primary text-xs bg-wedding-primary/10 flex-shrink-0 group-data-[collapsible=icon]:hidden">
                       Admin
                     </Badge>
                   )}
@@ -248,8 +247,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg bg-gray-900 border-gray-700"
                 side="bottom"
                 align="end"
-                sideOffset={4}
-              >
+                sideOffset={4}>
                 <DropdownMenuLabel className="p-0 font-normal">
                   <div className="flex items-center gap-3 px-2 py-3 text-left text-sm">
                     <Avatar className="size-10 border border-wedding-primary/50 flex-shrink-0">
@@ -259,17 +257,14 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                     </Avatar>
                     <div className="grid flex-1 text-left text-sm leading-tight min-w-0">
                       <span className="truncate font-semibold text-white">{session?.user?.name}</span>
-                      <span className="truncate text-xs text-gray-400">
-                        {session?.user?.email}
-                      </span>
+                      <span className="truncate text-xs text-gray-400">{session?.user?.email}</span>
                     </div>
                   </div>
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator className="bg-gray-700" />
-                <DropdownMenuItem 
+                <DropdownMenuItem
                   className="cursor-pointer text-gray-300 py-3 px-2"
-                  onClick={() => signOut({ redirectTo: routes.frontend.auth.login })}
-                >
+                  onClick={() => signOut({ redirectTo: routes.frontend.auth.login })}>
                   Sair da conta
                 </DropdownMenuItem>
               </DropdownMenuContent>

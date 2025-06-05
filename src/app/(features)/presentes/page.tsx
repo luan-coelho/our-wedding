@@ -7,28 +7,13 @@ import { Skeleton } from '@/components/ui/skeleton'
 import Image from 'next/image'
 import { useEffect, useState } from 'react'
 import { FaCheck, FaClipboard, FaGift, FaQrcode } from 'react-icons/fa'
-
-interface Gift {
-  id: number
-  name: string
-  description: string
-  price: number | null
-  pixKey: string | null
-  imageUrl: string | null
-  pixKeyId: number | null
-  selectedPixKey?: {
-    id: number
-    name: string
-    key: string
-    type: string
-  } | null
-}
+import { Gift } from '@/types'
 
 export default function PresentesPage() {
   const [gifts, setGifts] = useState<Gift[]>([])
   const [isLoading, setIsLoading] = useState(true)
-  const [copiedId, setCopiedId] = useState<number | null>(null)
-  const [showQRCode, setShowQRCode] = useState<number | null>(null)
+  const [copiedId, setCopiedId] = useState<string | null>(null)
+  const [showQRCode, setShowQRCode] = useState<string | null>(null)
 
   useEffect(() => {
     fetchGifts()
@@ -72,7 +57,7 @@ export default function PresentesPage() {
   }
 
   // Função para copiar a chave PIX para o clipboard
-  const copyToClipboard = (gift: Gift, id: number) => {
+  const copyToClipboard = (gift: Gift, id: string) => {
     const pixKey = getEffectivePixKey(gift)
     if (!pixKey) return
 

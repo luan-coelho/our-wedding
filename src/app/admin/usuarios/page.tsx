@@ -1,7 +1,8 @@
 'use client'
 
 import { AdminProtected } from '@/components/roles'
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { useMutation, useQuery } from '@tanstack/react-query'
+import { queryClient } from '@/lib/query-client'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { Button } from '@/components/ui/button'
@@ -26,15 +27,8 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog'
-
-interface User {
-  id: string
-  name: string
-  email: string
-  role: string
-  createdAt: string
-  active: boolean
-}
+import { usersService } from '@/services'
+import { User, UserFormData } from '@/types'
 
 const permissionSchema = z.object({
   name: z.string().min(1, 'Nome é obrigatório'),
@@ -47,7 +41,6 @@ const permissionSchema = z.object({
 type FormValues = z.infer<typeof permissionSchema>
 
 export default function UsuariosPage() {
-  const queryClient = useQueryClient()
   const [isDialogOpen, setIsDialogOpen] = useState(false)
   const [isEditingUser, setIsEditingUser] = useState<User | null>(null)
   const [userToRemove, setUserToRemove] = useState<User | null>(null)
@@ -61,19 +54,51 @@ export default function UsuariosPage() {
     },
   })
 
-  // Função para buscar usuários
-  const fetchUsers = async (): Promise<User[]> => {
-    const response = await fetch('/api/users')
-    if (!response.ok) {
-      throw new Error('Falha ao buscar usuários')
-    }
-    return response.json()
-  }
-
   // Query para buscar usuários
   const { data: users = [], isLoading } = useQuery({
     queryKey: ['users'],
-    queryFn: fetchUsers,
+    queryFn: usersService.getAll,
+  })
+
+  // Mutation para criar usuário
+  const createUserMutation = useMutation({
+    mutationFn: usersService.create,
+    onSuccess: () => {
+      toast.success('Permissão concedida com sucesso')
+      queryClient.invalidateQueries({ queryKey: ['users'] })
+      handleCloseDialog()
+    },
+    onError: (error: any) => {
+      toast.error(error.error || 'Erro ao conceder permissão')
+    },
+  })
+
+  // Mutation para atualizar usuário (usando a API atual)
+  const updateUserMutation = useMutation({
+    mutationFn: async (data: UserFormData) => {
+      const response = await fetch('/api/users', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      })
+
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.error || 'Erro ao atualizar permissão')
+      }
+
+      return response.json()
+    },
+    onSuccess: () => {
+      toast.success('Permissão atualizada com sucesso')
+      queryClient.invalidateQueries({ queryKey: ['users'] })
+      handleCloseDialog()
+    },
+    onError: (error: Error) => {
+      toast.error(error.message)
+    },
   })
 
   // Mutation para remover acesso
@@ -104,8 +129,8 @@ export default function UsuariosPage() {
   const handleEdit = (user: User) => {
     setIsEditingUser(user)
     form.reset({
-      name: user.name,
-      email: user.email,
+      name: user.name || '',
+      email: user.email || '',
       role: user.role as 'admin' | 'planner' | 'guest',
     })
     setIsDialogOpen(true)
@@ -128,35 +153,16 @@ export default function UsuariosPage() {
   }
 
   const confirmRemoveAccess = () => {
-    if (userToRemove) {
+    if (userToRemove && userToRemove.email) {
       removeAccessMutation.mutate(userToRemove.email)
     }
   }
 
-  async function onSubmit(data: FormValues) {
-    try {
-      const response = await fetch('/api/users', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
-      })
-
-      if (!response.ok) {
-        const errorData = await response.json()
-        throw new Error(errorData.error || 'Erro ao configurar permissão')
-      }
-
-      toast.success(isEditingUser ? 'Permissão atualizada com sucesso' : 'Permissão concedida com sucesso')
-      queryClient.invalidateQueries({ queryKey: ['users'] })
-      handleCloseDialog()
-    } catch (error) {
-      if (error instanceof Error) {
-        toast.error(error.message)
-      } else {
-        toast.error('Ocorreu um erro ao configurar a permissão')
-      }
+  function onSubmit(data: FormValues) {
+    if (isEditingUser) {
+      updateUserMutation.mutate(data)
+    } else {
+      createUserMutation.mutate(data)
     }
   }
 
@@ -236,7 +242,7 @@ export default function UsuariosPage() {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Nível de Acesso</FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value || 'guest'}>
+                    <Select onValueChange={field.onChange} value={field.value}>
                       <FormControl>
                         <SelectTrigger className="w-full">
                           <SelectValue placeholder="Selecione um nível de acesso" />
@@ -275,7 +281,7 @@ export default function UsuariosPage() {
           <AlertDialogHeader>
             <AlertDialogTitle>Remover acesso</AlertDialogTitle>
             <AlertDialogDescription>
-              Tem certeza que deseja remover o acesso de <strong>{userToRemove?.email}</strong>? O usuário não poderá
+              Tem certeza que deseja remover o acesso de <strong>{userToRemove?.email || 'este usuário'}</strong>? O usuário não poderá
               mais acessar o sistema.
             </AlertDialogDescription>
           </AlertDialogHeader>
@@ -315,7 +321,7 @@ export default function UsuariosPage() {
                     {users.map(user => (
                       <TableRow key={user.id} className={!user.active ? 'opacity-60' : ''}>
                         <TableCell>{user.name || '-'}</TableCell>
-                        <TableCell>{user.email}</TableCell>
+                        <TableCell>{user.email || '-'}</TableCell>
                         <TableCell>{getRoleName(user.role)}</TableCell>
                         <TableCell>{user.createdAt ? formatDateTime(user.createdAt) : '-'}</TableCell>
                         <TableCell className="text-center">

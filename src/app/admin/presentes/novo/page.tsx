@@ -8,7 +8,11 @@ import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { useMutation, useQuery } from '@tanstack/react-query'
+import { queryClient } from '@/lib/query-client'
+import { giftsService, pixKeysService } from '@/services'
+import { routes } from '@/lib/routes'
+
 import { Eye, X } from 'lucide-react'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
@@ -17,16 +21,8 @@ import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import { GiftFormData, giftSchema } from '../schema'
 
-type PixKey = {
-  id: number
-  name: string
-  key: string
-  type: string
-}
-
 export default function AddGiftPage() {
   const router = useRouter()
-  const queryClient = useQueryClient()
   const [imagePreview, setImagePreview] = useState<string | null>(null)
 
   const form = useForm<GiftFormData>({
@@ -36,7 +32,7 @@ export default function AddGiftPage() {
       description: '',
       price: '',
       pixKey: '',
-      selectedPixKeyId: undefined,
+      selectedPixKeyId: null,
       imageUrl: '',
     },
   })
@@ -46,39 +42,18 @@ export default function AddGiftPage() {
   // Consulta para buscar as chaves PIX
   const { data: pixKeys = [], isLoading: isLoadingPixKeys } = useQuery({
     queryKey: ['pixKeys'],
-    queryFn: async () => {
-      const response = await fetch('/api/pixkeys')
-      if (!response.ok) {
-        throw new Error('Erro ao buscar chaves PIX')
-      }
-      return response.json() as Promise<PixKey[]>
-    },
+    queryFn: pixKeysService.getAll,
   })
 
   // Mutação para criar um novo presente
   const createGiftMutation = useMutation({
-    mutationFn: async (data: GiftFormData) => {
-      const response = await fetch('/api/gifts', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
-      })
-
-      if (!response.ok) {
-        const errorData = await response.json()
-        throw new Error(errorData.error || 'Erro ao criar presente')
-      }
-
-      return response.json()
-    },
+    mutationFn: giftsService.create,
     onSuccess: () => {
       // Invalidar queries para forçar recarregamento de dados
       queryClient.invalidateQueries({ queryKey: ['gifts'] })
       // Redirecionar para a página de gerenciamento após sucesso
       toast.success('Presente criado com sucesso')
-      router.push('/admin/presentes')
+      router.push(routes.frontend.admin.presentes.index)
     },
     onError: error => {
       console.error('Erro ao criar presente:', error)
@@ -109,7 +84,12 @@ export default function AddGiftPage() {
       ...formData,
       price: formData.price ? parseFloat(formData.price.replace(/\./g, '').replace(',', '.')) : null,
       // Se estiver usando chave personalizada, limpar o ID de chave selecionada
-      pixKeyId: formData.pixKey ? null : formData.selectedPixKeyId,
+      // Garantir que pixKeyId seja null se for string vazia ou undefined
+      pixKeyId: formData.pixKey
+        ? null
+        : (formData.selectedPixKeyId && formData.selectedPixKeyId.trim() !== ''
+          ? formData.selectedPixKeyId
+          : null),
     }
 
     createGiftMutation.mutate(processedData as unknown as GiftFormData)
@@ -118,12 +98,30 @@ export default function AddGiftPage() {
   // Função para exibir a prévia da imagem
   const handleShowImagePreview = () => {
     const imageUrl = form.getValues('imageUrl')
-    if (imageUrl) {
-      setImagePreview(imageUrl)
-    } else {
+    const fieldError = form.formState.errors.imageUrl
+
+    if (!imageUrl) {
       toast.error('Por favor, insira uma URL de imagem para visualizar')
       setImagePreview(null)
+      return
     }
+
+    if (fieldError) {
+      toast.error('Por favor, corrija os erros na URL antes de visualizar')
+      setImagePreview(null)
+      return
+    }
+
+    // Trigger validation before showing preview
+    form.trigger('imageUrl').then((isValid) => {
+      if (isValid) {
+        setImagePreview(imageUrl)
+        toast.success('Carregando prévia da imagem...')
+      } else {
+        toast.error('URL de imagem inválida')
+        setImagePreview(null)
+      }
+    })
   }
 
   // Função para limpar a prévia da imagem
@@ -134,7 +132,7 @@ export default function AddGiftPage() {
   // Função para lidar com erros de carregamento de imagem
   const handleImageError = () => {
     if (imagePreview) {
-      toast.error('Não foi possível carregar a imagem a partir da URL fornecida')
+      toast.error('Não foi possível carregar a imagem. Verifique se a URL está correta e acessível.')
       setImagePreview(null)
     }
   }
@@ -144,7 +142,7 @@ export default function AddGiftPage() {
       <div className="container mx-auto p-4">
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-2xl font-bold">Adicionar Novo Presente</h1>
-          <Button variant="secondary" onClick={() => router.push('/admin/presentes')}>
+          <Button variant="secondary" onClick={() => router.push(routes.frontend.admin.presentes.index)}>
             Voltar
           </Button>
         </div>
@@ -215,7 +213,17 @@ export default function AddGiftPage() {
                     render={({ field }) => (
                       <FormItem className="flex items-center gap-2 space-y-0">
                         <FormControl>
-                          <Input placeholder="Informar chave PIX personalizada" {...field} />
+                          <Input
+                            placeholder="Informar chave PIX personalizada"
+                            {...field}
+                            onChange={(e) => {
+                              field.onChange(e)
+                              // Clear selected PIX key when custom key is entered
+                              if (e.target.value) {
+                                form.setValue('selectedPixKeyId', null)
+                              }
+                            }}
+                          />
                         </FormControl>
                       </FormItem>
                     )}
@@ -231,7 +239,7 @@ export default function AddGiftPage() {
                       ) : pixKeys.length === 0 ? (
                         <p className="text-sm text-muted-foreground">
                           Nenhuma chave PIX cadastrada.{' '}
-                          <a href="/admin/chaves-pix" className="text-primary hover:underline">
+                          <a href={routes.frontend.admin.chavesPix.index} className="text-primary hover:underline">
                             Cadastrar Chaves PIX
                           </a>
                         </p>
@@ -243,14 +251,18 @@ export default function AddGiftPage() {
                             <FormItem>
                               <FormControl>
                                 <Select
-                                  onValueChange={value => field.onChange(parseInt(value))}
-                                  value={field.value?.toString()}>
+                                  onValueChange={value => {
+                                    field.onChange(value)
+                                    // Clear custom PIX key when a PIX key is selected
+                                    form.setValue('pixKey', '')
+                                  }}
+                                  value={field.value || undefined}>
                                   <SelectTrigger className="w-full">
                                     <SelectValue placeholder="Selecione uma chave PIX" />
                                   </SelectTrigger>
                                   <SelectContent>
                                     {pixKeys.map(pixKey => (
-                                      <SelectItem key={pixKey.id} value={pixKey.id.toString()}>
+                                      <SelectItem key={pixKey.id} value={String(pixKey.id)}>
                                         {pixKey.name} ({pixKey.key})
                                       </SelectItem>
                                     ))}
@@ -269,54 +281,86 @@ export default function AddGiftPage() {
                 <FormField
                   control={form.control}
                   name="imageUrl"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>URL da Imagem</FormLabel>
-                      <div className="flex gap-2">
-                        <FormControl>
-                          <Input {...field} />
-                        </FormControl>
-                        <Button
-                          type="button"
-                          variant="outline"
-                          size="icon"
-                          onClick={handleShowImagePreview}
-                          title="Visualizar imagem">
-                          <Eye className="h-4 w-4" />
-                        </Button>
-                      </div>
-                      <FormMessage />
-                      {imagePreview && (
-                        <div className="mt-2 border rounded-md p-2 relative">
+                  render={({ field }) => {
+                    const fieldError = form.formState.errors.imageUrl
+                    const hasError = !!fieldError
+                    const isValid = field.value && !hasError && field.value.length > 0
+
+                    return (
+                      <FormItem>
+                        <FormLabel>URL da Imagem *</FormLabel>
+                        <div className="flex gap-2">
+                          <FormControl>
+                            <Input
+                              {...field}
+                              placeholder="https://exemplo.com/imagem.jpg"
+                              className={hasError ? 'border-red-500' : isValid ? 'border-green-500' : ''}
+                            />
+                          </FormControl>
                           <Button
                             type="button"
-                            variant="ghost"
+                            variant="outline"
                             size="icon"
-                            className="absolute top-1 right-1 z-10"
-                            onClick={handleClearImagePreview}>
-                            <X className="h-4 w-4" />
+                            onClick={handleShowImagePreview}
+                            disabled={!field.value || hasError}
+                            title="Visualizar imagem">
+                            <Eye className="h-4 w-4" />
                           </Button>
-                          <div className="relative w-full h-48">
-                            <Image
-                              src={imagePreview}
-                              alt="Prévia da imagem"
-                              className="rounded-md object-contain w-full h-full"
-                              onError={handleImageError}
-                              width={100}
-                              height={100}
-                            />
-                          </div>
                         </div>
-                      )}
-                    </FormItem>
-                  )}
+
+                        {/* Validation feedback */}
+                        <div className="text-sm space-y-1">
+                          {hasError ? (
+                            <FormMessage />
+                          ) : field.value && field.value.length > 0 ? (
+                            <p className="text-green-600 flex items-center gap-1">
+                              <span className="w-1 h-1 bg-green-600 rounded-full"></span>
+                              URL válida
+                            </p>
+                          ) : (
+                            <div className="text-gray-500 space-y-1">
+                              <p>A URL deve:</p>
+                              <ul className="text-xs space-y-0.5 ml-4">
+                                <li>• Começar com http:// ou https://</li>
+                                <li>• Apontar para um arquivo de imagem (.jpg, .jpeg, .png, .gif, .webp, .svg)</li>
+                                <li>• Exemplo: https://exemplo.com/imagem.jpg</li>
+                              </ul>
+                            </div>
+                          )}
+                        </div>
+
+                        {imagePreview && (
+                          <div className="mt-2 border rounded-md p-2 relative">
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              size="icon"
+                              className="absolute top-1 right-1 z-10"
+                              onClick={handleClearImagePreview}>
+                              <X className="h-4 w-4" />
+                            </Button>
+                            <div className="relative w-full h-48">
+                              <Image
+                                src={imagePreview}
+                                alt="Prévia da imagem"
+                                className="rounded-md object-contain w-full h-full"
+                                onError={handleImageError}
+                                width={1920}
+                                height={1080}
+                              />
+                            </div>
+                          </div>
+                        )}
+                      </FormItem>
+                    )
+                  }}
                 />
 
                 <div className="flex justify-end gap-2">
                   <Button
                     type="button"
                     variant="secondary"
-                    onClick={() => router.push('/admin/presentes')}
+                    onClick={() => router.push(routes.frontend.admin.presentes.index)}
                     disabled={createGiftMutation.isPending}>
                     Cancelar
                   </Button>

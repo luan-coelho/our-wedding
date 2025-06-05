@@ -1,8 +1,11 @@
 'use client'
 
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { useMutation, useQuery } from '@tanstack/react-query'
 import Link from 'next/link'
 import { useState } from 'react'
+import { queryClient } from '@/lib/query-client'
+import { guestsService } from '@/services'
+import { Guest } from '@/types'
 
 import { CopyToClipboard } from '@/components/copy-to-clipboard'
 import { AdminProtected } from '@/components/roles'
@@ -20,16 +23,9 @@ import {
 import { Input } from '@/components/ui/input'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { toast } from 'sonner'
-
-interface Guest {
-  id: number
-  name: string
-  isConfirmed: boolean
-  token: string
-}
+import { routes } from '@/lib/routes'
 
 export default function AdminGuestsPage() {
-  const queryClient = useQueryClient()
   const [guestToDelete, setGuestToDelete] = useState<Guest | null>(null)
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
 
@@ -38,31 +34,12 @@ export default function AdminGuestsPage() {
   // Query to fetch guests
   const { data: guests = [], isLoading } = useQuery({
     queryKey: ['guests'],
-    queryFn: async () => {
-      const response = await fetch('/api/guests')
-      if (!response.ok) {
-        const errorData = await response.json()
-        throw new Error(errorData.error || 'Failed to fetch guests')
-      }
-      return response.json() as Promise<Guest[]>
-    },
+    queryFn: guestsService.getAll,
   })
 
   // Mutation to delete a guest
   const deleteGuestMutation = useMutation({
-    mutationFn: async (guestId: number) => {
-      const response = await fetch(`/api/guests/${guestId}`, {
-        method: 'DELETE',
-      })
-
-      const data = await response.json()
-
-      if (!response.ok) {
-        throw new Error(data.error || 'Failed to delete guest')
-      }
-
-      return data
-    },
+    mutationFn: guestsService.delete,
     onSuccess: data => {
       toast.success(data.message || 'Convidado excluído com sucesso')
       queryClient.invalidateQueries({ queryKey: ['guests'] })
@@ -163,7 +140,7 @@ export default function AdminGuestsPage() {
             <CardTitle className="text-2xl font-bold">Convidados</CardTitle>
             <AdminProtected>
               <Button asChild>
-                <Link href="/admin/convidados/novo">Adicionar Convidado</Link>
+                <Link href={routes.frontend.admin.convidados.create}>Adicionar Convidado</Link>
               </Button>
             </AdminProtected>
           </CardHeader>
@@ -208,7 +185,7 @@ export default function AdminGuestsPage() {
                           <AdminProtected>
                             <TableCell className="text-center flex gap-2 justify-center">
                               <Button asChild variant="outline" size="sm">
-                                <Link href={`/admin/convidados/${guest.id}/editar`}>Editar</Link>
+                                <Link href={routes.frontend.admin.convidados.edit(guest.id)}>Editar</Link>
                               </Button>
                               <Button onClick={() => handleDeleteClick(guest)} variant="destructive" size="sm">
                                 Excluir

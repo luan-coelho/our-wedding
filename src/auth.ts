@@ -22,6 +22,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   },
   pages: {
     signIn: routes.frontend.auth.login,
+    signOut: routes.frontend.home,
+    newUser: routes.frontend.auth.login,
     error: routes.frontend.auth.login,
   },
   callbacks: {
