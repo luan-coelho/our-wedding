@@ -19,9 +19,6 @@ const Footer = () => {
             <Link href="/" className="hover:text-wedding-light transition-colors">
               Home
             </Link>
-            <Link href="/nossa-historia" className="hover:text-wedding-light transition-colors">
-              Nossa História
-            </Link>
             <Link href="/confirmacao" className="hover:text-wedding-light transition-colors">
               Confirmação
             </Link>

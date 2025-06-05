@@ -1,4 +1,3 @@
-
 import AuthProvider from '@/components/auth-provider'
 import { Ban, CircleCheckBig, CircleEllipsis, Info, TriangleAlert } from 'lucide-react'
 import type { Metadata } from 'next'
@@ -46,7 +45,6 @@ export default function RootLayout({
               loading: <CircleEllipsis />,
             }}
             position="top-right"
-            theme="dark"
           />
         </Providers>
       </body>
