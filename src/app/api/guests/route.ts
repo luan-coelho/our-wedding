@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/db'
 import { tableGuests } from '@/db/schema'
-import { asc } from 'drizzle-orm'
+import { asc, eq } from 'drizzle-orm'
 
 export async function GET() {
   try {
@@ -18,11 +18,30 @@ export async function GET() {
 
 export async function POST(request: NextRequest) {
   try {
-    const { name } = await request.json()
+    const { name, spouse, children, companions } = await request.json()
 
-    const newGuest = await db.insert(tableGuests).values({
-      name,
+    if (!name || typeof name !== 'string' || name.trim().length === 0) {
+      return NextResponse.json({ error: 'Nome é obrigatório' }, { status: 400 })
+    }
+
+    // Verificar se já existe um convidado com o mesmo nome
+    const existingGuest = await db.query.tableGuests.findFirst({
+      where: eq(tableGuests.name, name.trim()),
     })
+
+    if (existingGuest) {
+      return NextResponse.json({ error: 'Já existe um convidado com este nome' }, { status: 409 })
+    }
+
+    // Prepare data for insertion
+    const guestData = {
+      name: name.trim(),
+      spouse: spouse && spouse.trim() ? spouse.trim() : null,
+      children: Array.isArray(children) ? children.filter(child => child && child.trim()) : [], // filhos
+      companions: Array.isArray(companions) ? companions.filter(companion => companion && companion.trim()) : [],
+    }
+
+    const [newGuest] = await db.insert(tableGuests).values(guestData).returning()
 
     return NextResponse.json(newGuest, { status: 201 })
   } catch (error) {
