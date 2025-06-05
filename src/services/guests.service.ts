@@ -1,10 +1,11 @@
-import { Guest, GuestFormData, ApiError } from '@/types/index'
+import { Guest, GuestFormData } from '@/types'
+import { routes } from '@/lib/routes'
 
 // ============================================================================
 // GUESTS SERVICE - Centralized API calls for guests domain
 // ============================================================================
 
-const BASE_URL = '/api/guests'
+const BASE_URL = routes.api.guests.base
 
 /**
  * Tratamento de erro padronizado para todas as chamadas de API
@@ -12,11 +13,10 @@ const BASE_URL = '/api/guests'
 async function handleApiResponse<T>(response: Response): Promise<T> {
   if (!response.ok) {
     const errorData = await response.json().catch(() => ({}))
-    const error: ApiError = {
+    throw {
       error: errorData.error || `HTTP Error: ${response.status}`,
       status: response.status,
     }
-    throw error
   }
   return response.json()
 }
