@@ -1,8 +1,9 @@
+
 'use client'
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import Link from 'next/link'
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 
 import { CopyToClipboard } from '@/components/copy-to-clipboard'
 import { AdminProtected } from '@/components/roles'
@@ -35,8 +36,12 @@ export default function AdminGuestsPage() {
 
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'
 
+  // Filter states
+  const [nameFilter, setNameFilter] = useState('')
+  const [confirmationFilter, setConfirmationFilter] = useState<'all' | 'confirmed' | 'unconfirmed'>('all')
+
   // Query to fetch guests
-  const { data: guests = [], isLoading } = useQuery({
+  const { data: allGuests = [], isLoading } = useQuery({
     queryKey: ['guests'],
     queryFn: async () => {
       const response = await fetch('/api/guests')
@@ -47,6 +52,22 @@ export default function AdminGuestsPage() {
       return response.json() as Promise<Guest[]>
     },
   })
+
+  // Filter guests based on search criteria
+  const filteredGuests = useMemo(() => {
+    return allGuests.filter(guest => {
+      // Name filter (case-insensitive partial match)
+      const matchesName = guest.name.toLowerCase().includes(nameFilter.toLowerCase())
+      
+      // Confirmation status filter
+      const matchesConfirmation = 
+        confirmationFilter === 'all' ||
+        (confirmationFilter === 'confirmed' && guest.isConfirmed) ||
+        (confirmationFilter === 'unconfirmed' && !guest.isConfirmed)
+      
+      return matchesName && matchesConfirmation
+    })
+  }, [allGuests, nameFilter, confirmationFilter])
 
   // Mutation to delete a guest
   const deleteGuestMutation = useMutation({
@@ -75,8 +96,8 @@ export default function AdminGuestsPage() {
   })
 
   // Guest statistics
-  const totalGuests = guests.length
-  const confirmedGuests = guests.filter(guest => guest.isConfirmed).length
+  const totalGuests = filteredGuests.length
+  const confirmedGuests = filteredGuests.filter(guest => guest.isConfirmed).length
   const pendingGuests = totalGuests - confirmedGuests
   const confirmationRate = totalGuests > 0 ? Math.round((confirmedGuests / totalGuests) * 100) : 0
 
@@ -185,8 +206,8 @@ export default function AdminGuestsPage() {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {guests.length > 0 ? (
-                      guests.map(guest => (
+                    {filteredGuests.length > 0 ? (
+                      filteredGuests.map(guest => (
                         <TableRow key={guest.id}>
                           <TableCell>{guest.name}</TableCell>
                           <TableCell className="text-center">

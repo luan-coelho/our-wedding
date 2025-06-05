@@ -1,3 +1,4 @@
+
 'use client'
 
 import {
@@ -222,7 +223,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               <DropdownMenuTrigger asChild>
                 <SidebarMenuButton
                   size="lg"
-                  className="data-[state=open]:bg-gray-800/80 group text-gray-300 h-16 px-3 rounded-lg w-full group-data-[collapsible=icon]:h-10 group-data-[collapsible=icon]:w-10 group-data-[collapsible=icon]:p-0 group-data-[collapsible=icon]:justify-center"
+                  className="data-[state=open]:bg-gray-800/80 group text-gray-300 h-16 px-3 rounded-lg w-full group-data-[collapsible=icon]:h-10 group-data-[collapsible=icon]:w-10 group-data-[collapsible=icon]:p-0 group-data-[collapsible=icon]:justify-center hover:!bg-transparent hover:!text-gray-300"
                 >
                   <Avatar className="size-10 border-2 border-wedding-primary/50 flex-shrink-0 group-data-[collapsible=icon]:size-8">
                     <AvatarFallback className="bg-wedding-primary text-white font-semibold text-sm group-data-[collapsible=icon]:text-xs">
