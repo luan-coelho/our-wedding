@@ -1,7 +1,7 @@
 import { auth } from '@/auth'
 import { db } from '@/db'
-import { tableGifts, tablePixKeys } from '@/db/schema'
-import { asc, eq } from 'drizzle-orm'
+import { tablePixKeys } from '@/db/schema'
+import { asc } from 'drizzle-orm'
 import { NextRequest, NextResponse } from 'next/server'
 import { isAdmin } from '@/lib/auth-types'
 
@@ -49,79 +49,4 @@ export async function POST(request: NextRequest) {
   }
 }
 
-// PUT /api/pixkeys - Atualizar uma chave PIX existente
-export async function PUT(request: NextRequest) {
-  try {
-    const session = await auth()
 
-    // Verificar autorização
-    if (!session?.user || !(await isAdmin(session))) {
-      return NextResponse.json({ error: 'Não autorizado' }, { status: 403 })
-    }
-
-    const data = await request.json()
-
-    if (!data.id) {
-      return NextResponse.json({ error: 'ID da chave PIX não fornecido' }, { status: 400 })
-    }
-
-    // Verificar se a chave PIX existe
-    const existingKey = await db.select().from(tablePixKeys).where(eq(tablePixKeys.id, data.id))
-
-    if (!existingKey) {
-      return NextResponse.json({ error: 'Chave PIX não encontrada' }, { status: 404 })
-    }
-
-    // Atualizar chave PIX
-    const updatedPixKey = await db
-      .update(tablePixKeys)
-      .set({
-        name: data.name,
-        key: data.key,
-        type: data.type,
-      })
-      .where(eq(tablePixKeys.id, data.id))
-
-    return NextResponse.json(updatedPixKey)
-  } catch (error) {
-    console.error('Erro ao atualizar chave PIX:', error)
-    return NextResponse.json({ error: 'Erro ao atualizar chave PIX' }, { status: 500 })
-  }
-}
-
-// DELETE /api/pixkeys - Remover uma chave PIX
-export async function DELETE(request: Request, { params }: { params: Promise<{ id: string }> }) {
-  try {
-    const id = (await params).id
-    const session = await auth()
-
-    // Verificar autorização
-    if (!session?.user || !(await isAdmin(session))) {
-      return NextResponse.json({ error: 'Não autorizado' }, { status: 403 })
-    }
-
-    if (!id) {
-      return NextResponse.json({ error: 'ID da chave PIX não fornecido' }, { status: 400 })
-    }
-
-    // Verificar se a chave está sendo usada em algum presente
-    const giftsUsingPixKey = await db.select().from(tableGifts).where(eq(tableGifts.pixKeyId, id))
-
-    if (giftsUsingPixKey.length > 0) {
-      return NextResponse.json(
-        {
-          error: 'Esta chave PIX está sendo usada em presentes e não pode ser excluída',
-          giftsCount: giftsUsingPixKey.length,
-        },
-        { status: 400 },
-      )
-    }
-
-    // Remover chave PIX
-    await db.delete(tablePixKeys).where(eq(tablePixKeys.id, id))
-
-    return NextResponse.json({ success: true })
-  } catch (error) {
-    return NextResponse.json({ error: 'Erro ao excluir chave PIX' }, { status: 500 })
-  }
-}

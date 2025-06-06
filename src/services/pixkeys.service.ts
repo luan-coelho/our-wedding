@@ -55,12 +55,12 @@ export async function createPixKey(data: PixKeyFormData): Promise<PixKey> {
  * Atualiza uma chave PIX existente
  */
 export async function updatePixKey(id: string, data: PixKeyFormData): Promise<PixKey> {
-  const response = await fetch(BASE_URL, {
+  const response = await fetch(`${BASE_URL}/${id}`, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({ ...data, id }),
+    body: JSON.stringify(data),
   })
   return handleApiResponse<PixKey>(response)
 }
@@ -69,7 +69,7 @@ export async function updatePixKey(id: string, data: PixKeyFormData): Promise<Pi
  * Exclui uma chave PIX
  */
 export async function deletePixKey(id: string): Promise<{ message: string }> {
-  const response = await fetch(`${BASE_URL}?id=${id}`, {
+  const response = await fetch(`${BASE_URL}/${id}`, {
     method: 'DELETE',
   })
   return handleApiResponse<{ message: string }>(response)

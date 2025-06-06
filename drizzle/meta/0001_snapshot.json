@@ -1,6 +1,6 @@
 {
-  "id": "8b70a866-28e9-4d40-abd3-0088f9f309d1",
-  "prevId": "d3d42893-af4d-4e47-9a3f-cc2b3051ea4d",
+  "id": "c15c7325-4dc8-45e2-8a54-7fb0f7b18396",
+  "prevId": "8b70a866-28e9-4d40-abd3-0088f9f309d1",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -93,6 +93,26 @@
           "type": "text",
           "primaryKey": false,
           "notNull": true
+        },
+        "spouse": {
+          "name": "spouse",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "children": {
+          "name": "children",
+          "type": "json",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "'[]'::json"
+        },
+        "companions": {
+          "name": "companions",
+          "type": "json",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "'[]'::json"
         },
         "isConfirmed": {
           "name": "isConfirmed",

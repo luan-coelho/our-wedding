@@ -13,8 +13,8 @@ const geist = Geist({
 })
 
 export const metadata: Metadata = {
-  title: 'Ester & Luan - Nosso Casamento',
-  description: 'Site do casamento de Ester e Luan - Venha celebrar conosco!',
+  title: 'Luan & Ester - Nosso Casamento',
+  description: 'Site do casamento de Luan e Ester - Venha celebrar conosco!',
 }
 
 export default function RootLayout({
@@ -30,12 +30,6 @@ export default function RootLayout({
           <Toaster
             toastOptions={{
               duration: 5000,
-              classNames: {
-                error: 'bg-red-500 text-white border border-red-500',
-                success: 'bg-green-500 text-white border border-green-500',
-                warning: 'bg-yellow-400 text-black border border-yellow-400',
-                info: 'bg-blue-500 text-white border border-blue-500',
-              },
             }}
             icons={{
               success: <CircleCheckBig />,
@@ -44,7 +38,10 @@ export default function RootLayout({
               error: <Ban />,
               loading: <CircleEllipsis />,
             }}
+            theme={'light'}
             position="top-right"
+            expand
+            richColors
           />
         </Providers>
       </body>

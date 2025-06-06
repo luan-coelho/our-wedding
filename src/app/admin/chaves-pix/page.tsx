@@ -37,7 +37,8 @@ const formatCPF = (value: string) => {
       .replace(/(\d{3})(\d)/, '$1.$2')
       .replace(/(\d{3})(\d{1,2})$/, '$1-$2')
   }
-  return numericValue.slice(0, 11)
+  return numericValue
+    .slice(0, 11)
     .replace(/(\d{3})(\d)/, '$1.$2')
     .replace(/(\d{3})(\d)/, '$1.$2')
     .replace(/(\d{3})(\d{1,2})$/, '$1-$2')
@@ -52,7 +53,8 @@ const formatCNPJ = (value: string) => {
       .replace(/(\d{3})(\d)/, '$1/$2')
       .replace(/(\d{4})(\d{1,2})$/, '$1-$2')
   }
-  return numericValue.slice(0, 14)
+  return numericValue
+    .slice(0, 14)
     .replace(/(\d{2})(\d)/, '$1.$2')
     .replace(/(\d{3})(\d)/, '$1.$2')
     .replace(/(\d{3})(\d)/, '$1/$2')
@@ -62,11 +64,10 @@ const formatCNPJ = (value: string) => {
 const formatPhone = (value: string) => {
   const numericValue = value.replace(/\D/g, '')
   if (numericValue.length <= 11) {
-    return numericValue
-      .replace(/(\d{2})(\d)/, '($1) $2')
-      .replace(/(\d{5})(\d{1,4})$/, '$1-$2')
+    return numericValue.replace(/(\d{2})(\d)/, '($1) $2').replace(/(\d{5})(\d{1,4})$/, '$1-$2')
   }
-  return numericValue.slice(0, 11)
+  return numericValue
+    .slice(0, 11)
     .replace(/(\d{2})(\d)/, '($1) $2')
     .replace(/(\d{5})(\d{1,4})$/, '$1-$2')
 }
@@ -171,8 +172,7 @@ export default function ChavesPixPage() {
 
   // Mutação para atualizar chave PIX
   const updatePixKeyMutation = useMutation({
-    mutationFn: (data: PixKeyFormData & { id: string | number }) =>
-      pixKeysService.update(data.id, data),
+    mutationFn: (data: PixKeyFormData & { id: string }) => pixKeysService.update(data.id, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['pixKeys'] })
       setIsEditDialogOpen(false)
@@ -188,8 +188,8 @@ export default function ChavesPixPage() {
   // Mutação para excluir chave PIX
   const deletePixKeyMutation = useMutation({
     mutationFn: pixKeysService.delete,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['pixKeys'] })
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ['pixKeys'] })
       setIsDeleteDialogOpen(false)
       setSelectedPixKey(null)
       toast.success('Chave PIX excluída com sucesso')
@@ -283,7 +283,7 @@ export default function ChavesPixPage() {
                             <Input
                               placeholder={getPlaceholder(form.watch('type'))}
                               {...field}
-                              onChange={(e) => {
+                              onChange={e => {
                                 const maskedValue = applyMask(e.target.value, form.watch('type'))
                                 field.onChange(maskedValue)
                               }}
@@ -407,7 +407,7 @@ export default function ChavesPixPage() {
                       <Input
                         placeholder={getPlaceholder(editForm.watch('type'))}
                         {...field}
-                        onChange={(e) => {
+                        onChange={e => {
                           const maskedValue = applyMask(e.target.value, editForm.watch('type'))
                           field.onChange(maskedValue)
                         }}
