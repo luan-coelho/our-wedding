@@ -5,6 +5,7 @@ import { Geist } from 'next/font/google'
 import { Toaster } from 'sonner'
 import './globals.css'
 import Providers from './Providers'
+import { SpeedInsights } from '@vercel/speed-insights/next'
 
 const geist = Geist({
   variable: '--font-geist-sans',
@@ -43,6 +44,7 @@ export default function RootLayout({
             expand
             richColors
           />
+          <SpeedInsights />
         </Providers>
       </body>
     </html>
