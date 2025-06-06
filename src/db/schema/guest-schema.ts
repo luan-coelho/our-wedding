@@ -1,6 +1,6 @@
 import { boolean, pgTable, text, timestamp, uuid, json } from 'drizzle-orm/pg-core'
 
-export const tableGuests = pgTable('guest', {
+export const guestsTable = pgTable('guest', {
   id: uuid('id').primaryKey().defaultRandom(),
   name: text('name').notNull().unique(),
   spouse: text('spouse'),

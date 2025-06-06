@@ -79,11 +79,11 @@ export default {
 ```
 src/db/schema/
 ├── index.ts          # Exportações centralizadas
-├── users.ts          # Usuários administrativos
-├── guests.ts         # Convidados com tokens
-├── gifts.ts          # Lista de presentes
-├── messages.ts       # Mensagens dos convidados
-└── pix-keys.ts       # Chaves PIX para pagamentos
+├── user-schema.ts          # Usuários administrativos
+├── guest-schema.ts         # Convidados com tokens
+├── gift-schema.ts          # Lista de presentes
+├── message-schema.ts       # Mensagens dos convidados
+└── pix-key-schema.ts       # Chaves PIX para pagamentos
 ```
 
 ## Autenticação e Segurança

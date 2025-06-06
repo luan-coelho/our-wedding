@@ -1,4 +1,3 @@
-import AuthProvider from '@/components/auth-provider'
 import { Ban, CircleCheckBig, CircleEllipsis, Info, TriangleAlert } from 'lucide-react'
 import type { Metadata } from 'next'
 import { Geist } from 'next/font/google'
@@ -27,7 +26,7 @@ export default function RootLayout({
     <html lang="pt-BR">
       <body className={geist.variable}>
         <Providers>
-          <AuthProvider>{children}</AuthProvider>
+          {children}
           <Toaster
             toastOptions={{
               duration: 5000,

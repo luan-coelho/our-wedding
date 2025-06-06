@@ -1,8 +1,8 @@
 'use client'
 
-import { useSession } from 'next-auth/react'
 import { ReactNode } from 'react'
 import { UserRoleType } from '@/lib/auth-types'
+import { authClient } from '@/lib/auth-client'
 
 interface RoleCheckProps {
   children: ReactNode
@@ -18,7 +18,7 @@ interface RoleCheckProps {
  * @param fallback Optional content to show if user doesn't have permission
  */
 export default function RoleCheck({ children, allowedRoles, fallback = null }: RoleCheckProps) {
-  const { data: session } = useSession()
+  const { data: session } = authClient.useSession()
 
   // Verifica se o usuário está autenticado e tem uma das roles permitidas
   const hasPermission = session?.user && allowedRoles.includes(session.user.role)

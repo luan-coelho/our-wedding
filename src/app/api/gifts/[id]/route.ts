@@ -1,6 +1,6 @@
 import { auth } from '@/auth'
 import { db } from '@/db'
-import { tableGifts } from '@/db/schema'
+import { giftsTable } from '@/db/schema'
 import { isAdmin } from '@/lib/auth-types'
 import { eq } from 'drizzle-orm'
 import { NextRequest, NextResponse } from 'next/server'
@@ -14,8 +14,8 @@ export async function GET(_: NextRequest, { params }: { params: Promise<{ id: st
   }
 
   try {
-    const gift = await db.query.tableGifts.findFirst({
-      where: eq(tableGifts.id, id),
+    const gift = await db.query.giftsTable.findFirst({
+      where: eq(giftsTable.id, id),
       with: {
         selectedPixKey: true,
       },
@@ -71,9 +71,9 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
     })
 
     const updatedGift = await db
-      .update(tableGifts)
+      .update(giftsTable)
       .set(sanitizedData)
-      .where(eq(tableGifts.id, id))
+      .where(eq(giftsTable.id, id))
 
     return NextResponse.json(updatedGift, { status: 200 })
   } catch (error) {
@@ -97,7 +97,7 @@ export async function DELETE(_: NextRequest, { params }: { params: Promise<{ id:
       return NextResponse.json({ error: 'Não autorizado' }, { status: 403 })
     }
 
-    await db.delete(tableGifts).where(eq(tableGifts.id, id))
+    await db.delete(giftsTable).where(eq(giftsTable.id, id))
 
     return NextResponse.json({ success: true }, { status: 200 })
   } catch (error) {

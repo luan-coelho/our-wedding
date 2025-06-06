@@ -1,1 +1,0 @@
-ALTER TABLE "guest" ADD CONSTRAINT "guest_name_unique" UNIQUE("name");

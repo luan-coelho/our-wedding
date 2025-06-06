@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/db'
-import { tableGuests } from '@/db/schema'
+import { guestsTable } from '@/db/schema'
 import { asc, eq } from 'drizzle-orm'
 
 export async function GET() {
   try {
-    const guestsList = await db.query.tableGuests.findMany({
-      orderBy: [asc(tableGuests.name)],
+    const guestsList = await db.query.guestsTable.findMany({
+      orderBy: [asc(guestsTable.name)],
     })
 
     return NextResponse.json(guestsList)
@@ -25,8 +25,8 @@ export async function POST(request: NextRequest) {
     }
 
     // Verificar se já existe um convidado com o mesmo nome
-    const existingGuest = await db.query.tableGuests.findFirst({
-      where: eq(tableGuests.name, name.trim()),
+    const existingGuest = await db.query.guestsTable.findFirst({
+      where: eq(guestsTable.name, name.trim()),
     })
 
     if (existingGuest) {
@@ -41,7 +41,7 @@ export async function POST(request: NextRequest) {
       companions: Array.isArray(companions) ? companions.filter(companion => companion && companion.trim()) : [],
     }
 
-    const [newGuest] = await db.insert(tableGuests).values(guestData).returning()
+    const [newGuest] = await db.insert(guestsTable).values(guestData).returning()
 
     return NextResponse.json(newGuest, { status: 201 })
   } catch (error) {

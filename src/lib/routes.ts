@@ -64,8 +64,8 @@ export const routes = {
 
     // Autenticação
     auth: {
-      login: '/auth/login',
-      logout: '/auth/logout',
+      signin: '/auth/signin',
+      //signout: '/auth/signin',
     },
   },
 

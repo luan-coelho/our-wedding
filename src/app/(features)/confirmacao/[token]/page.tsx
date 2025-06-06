@@ -1,6 +1,6 @@
 import { notFound } from 'next/navigation'
 import { db } from '@/db'
-import { tableGuests } from '@/db/schema'
+import { guestsTable } from '@/db/schema'
 import { eq } from 'drizzle-orm'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Heart, Sparkles } from 'lucide-react'
@@ -13,8 +13,8 @@ export default async function ConfirmacaoTokenPage({ params }: { params: Promise
     notFound()
   }
 
-  const guest = await db.query.tableGuests.findFirst({
-    where: eq(tableGuests.token, token),
+  const guest = await db.query.guestsTable.findFirst({
+    where: eq(guestsTable.token, token),
   })
 
   if (!guest) {

@@ -1,4 +1,3 @@
-
 'use client'
 
 import {
@@ -13,9 +12,9 @@ import {
   IconUserPlus,
   IconUsers,
 } from '@tabler/icons-react'
-import { useSession } from 'next-auth/react'
+import { usePathname, useRouter } from 'next/navigation'
+
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
 import * as React from 'react'
 
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
@@ -42,11 +41,15 @@ import {
   SidebarSeparator,
 } from '@/components/ui/sidebar'
 import { routes } from '@/lib/routes'
-import { signOut } from 'next-auth/react'
+import { authClient } from '@/lib/auth-client'
+import { signOut } from '@/auth-actions'
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-  const { data: session } = useSession()
+  const { data: session } = authClient.useSession()
+  const router = useRouter()
   const pathname = usePathname()
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-expect-error
   const isAdmin = session?.user?.role === 'admin'
 
   const adminItems = [
@@ -108,7 +111,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     if (url === routes.frontend.admin.home) {
       return pathname === url
     }
-    return pathname.startsWith(url)
+    return pathname?.startsWith(url)
   }
 
   const getUserInitials = (name?: string | null) => {
@@ -263,9 +266,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                   </div>
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator className="bg-gray-700" />
-                <DropdownMenuItem
-                  className="cursor-pointer text-gray-300 py-3 px-2"
-                  onClick={() => signOut({ redirectTo: routes.frontend.auth.login })}>
+                <DropdownMenuItem className="cursor-pointer text-gray-300 py-3 px-2" onClick={signOut}>
                   Sair da conta
                 </DropdownMenuItem>
               </DropdownMenuContent>

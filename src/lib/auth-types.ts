@@ -1,29 +1,31 @@
-import { Session } from 'next-auth';
+import { authClient } from '@/lib/auth-client'
 
 export enum UserRole {
   ADMIN = 'admin',
   PLANNER = 'planner',
-  GUEST = 'guest'
+  GUEST = 'guest',
 }
 
-export const userRolesList: string[] = Object.values(UserRole);
+export const userRolesList: string[] = Object.values(UserRole)
 
-export type UserRoleType = `${UserRole}`;
+export type UserRoleType = `${UserRole}`
 
 // Funções utilitárias para verificação de roles
-export function isAdmin(session: Session): boolean {
-  return session?.user.role === UserRole.ADMIN;
+export async function isAdmin(): Promise<boolean> {
+  const { data: session } = authClient.useSession()
+  return session?.user.role === UserRole.ADMIN
 }
 
-export function isPlanner(session: Session): boolean {
-  return session?.user.role === UserRole.PLANNER;
+export async function isPlanner(): Promise<boolean> {
+  const { data: session } = authClient.useSession()
+  return session?.user.role === UserRole.PLANNER
 }
 
-export function isAdminOrPlanner(session: Session): boolean {
-  return isAdmin(session) || isPlanner(session);
+export async function isAdminOrPlanner(): Promise<boolean> {
+  return (await isAdmin()) || isPlanner()
 }
 
-export function isGuest(session: Session): boolean {
-  return session?.user.role === UserRole.GUEST;
-} 
-
+export async function isGuest(): Promise<boolean> {
+  const { data: session } = authClient.useSession()
+  return session?.user.role === UserRole.GUEST
+}

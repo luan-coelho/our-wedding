@@ -1,6 +1,6 @@
 import { auth } from '@/auth'
 import { db } from '@/db'
-import { tablePixKeys } from '@/db/schema'
+import { pixKeysTable } from '@/db/schema'
 import { asc } from 'drizzle-orm'
 import { NextRequest, NextResponse } from 'next/server'
 import { isAdmin } from '@/lib/auth-types'
@@ -15,7 +15,7 @@ export async function GET() {
       return NextResponse.json({ error: 'Não autorizado' }, { status: 403 })
     }
 
-    const pixKeysList = await db.select().from(tablePixKeys).orderBy(asc(tablePixKeys.name))
+    const pixKeysList = await db.select().from(pixKeysTable).orderBy(asc(pixKeysTable.name))
 
     return NextResponse.json(pixKeysList)
   } catch (error) {
@@ -37,7 +37,7 @@ export async function POST(request: NextRequest) {
     const data = await request.json()
 
     // Criar nova chave PIX
-    const pixKey = await db.insert(tablePixKeys).values({
+    const pixKey = await db.insert(pixKeysTable).values({
       name: data.name,
       key: data.key,
       type: data.type,

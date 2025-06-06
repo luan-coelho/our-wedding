@@ -1,6 +1,6 @@
 import { auth } from '@/auth'
 import { db } from '@/db'
-import { tableUsers } from '@/db/schema'
+import { usersTable } from '@/db/schema'
 import { isAdmin } from '@/lib/auth-types'
 import { asc, eq, not } from 'drizzle-orm'
 import { NextRequest, NextResponse } from 'next/server'
@@ -13,9 +13,9 @@ export async function GET() {
   // Busca todos os usuários
   const allUsers = await db
     .select()
-    .from(tableUsers)
-    .where(not(eq(tableUsers.id, session?.user.id!)))
-    .orderBy(asc(tableUsers.name))
+    .from(usersTable)
+    .where(not(eq(usersTable.id, session?.user.id!)))
+    .orderBy(asc(usersTable.name))
 
   return NextResponse.json(allUsers)
 }
@@ -45,19 +45,19 @@ export async function POST(request: NextRequest) {
     const { email, role, name } = permissionSchema.parse(body)
 
     // Verifica se já existe um usuário com este email
-    const existingUser = await db.select().from(tableUsers).where(eq(tableUsers.email, email))
+    const existingUser = await db.select().from(usersTable).where(eq(usersTable.email, email))
 
     if (existingUser.length > 0) {
       // Atualiza a role do usuário existente e ativa a conta se estiver inativa
       const [updatedUser] = await db
-        .update(tableUsers)
+        .update(usersTable)
         .set({
           name,
           role,
           active: true,
           updatedAt: new Date(),
         })
-        .where(eq(tableUsers.email, email))
+        .where(eq(usersTable.email, email))
         .returning()
 
       return NextResponse.json({ ...updatedUser, message: 'Permissão atualizada' }, { status: 200 })
@@ -65,7 +65,7 @@ export async function POST(request: NextRequest) {
 
     // Insere o novo usuário com permissão pré-definida
     const [newUser] = await db
-      .insert(tableUsers)
+      .insert(usersTable)
       .values({
         name,
         email,
@@ -74,9 +74,9 @@ export async function POST(request: NextRequest) {
         updatedAt: new Date(),
       })
       .returning({
-        id: tableUsers.id,
-        email: tableUsers.email,
-        role: tableUsers.role,
+        id: usersTable.id,
+        email: usersTable.email,
+        role: usersTable.role,
       })
 
     return NextResponse.json({ ...newUser, message: 'Permissão concedida' }, { status: 201 })
@@ -123,7 +123,7 @@ export async function DELETE(request: NextRequest) {
     removeAccessSchema.parse({ email })
 
     // Verifica se o usuário existe
-    const existingUser = await db.select().from(tableUsers).where(eq(tableUsers.email, email))
+    const existingUser = await db.select().from(usersTable).where(eq(usersTable.email, email))
 
     if (existingUser.length === 0) {
       return new NextResponse(JSON.stringify({ error: 'Usuário não encontrado' }), {
@@ -140,12 +140,12 @@ export async function DELETE(request: NextRequest) {
 
     // Desativa o usuário em vez de remover
     await db
-      .update(tableUsers)
+      .update(usersTable)
       .set({
         active: false,
         updatedAt: new Date(),
       })
-      .where(eq(tableUsers.email, email))
+      .where(eq(usersTable.email, email))
 
     return NextResponse.json({ message: 'Acesso removido com sucesso' })
   } catch (error) {

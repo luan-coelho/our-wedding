@@ -3,13 +3,15 @@
 import { AppSidebar } from '@/components/app-sidebar'
 import { SiteHeader } from '@/components/site-header'
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar'
-import { useSession } from 'next-auth/react'
+import { authClient } from '@/lib/auth-client' // import the auth client
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
-  const { status } = useSession()
+  const {
+    isPending, //loading state
+  } = authClient.useSession()
 
   // Mostra um indicador de carregamento enquanto verifica a sessão
-  if (status === 'loading') {
+  if (isPending) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-wedding-light/20 to-wedding-lavender/30">
         <div className="flex flex-col items-center gap-4">
@@ -35,9 +37,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         <div className="flex flex-1 flex-col min-h-0">
           <div className="flex flex-1 flex-col bg-gradient-to-br from-wedding-light/10 via-white to-wedding-sage/5">
             <main className="flex-1 p-6 space-y-6 overflow-auto">
-              <div className="max-w-7xl mx-auto">
-                {children}
-              </div>
+              <div className="max-w-7xl mx-auto">{children}</div>
             </main>
           </div>
         </div>

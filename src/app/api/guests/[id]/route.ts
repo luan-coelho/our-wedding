@@ -1,5 +1,5 @@
 import { db } from '@/db'
-import { tableGuests } from '@/db/schema'
+import { guestsTable } from '@/db/schema'
 import { eq, and, ne } from 'drizzle-orm'
 import { NextRequest, NextResponse } from 'next/server'
 import { validate as isValidUUID } from 'uuid'
@@ -12,8 +12,8 @@ export async function GET(_: NextRequest, { params }: { params: Promise<{ id: st
       return NextResponse.json({ error: 'ID inválido' }, { status: 400 })
     }
 
-    const guest = await db.query.tableGuests.findFirst({
-      where: eq(tableGuests.id, id),
+    const guest = await db.query.guestsTable.findFirst({
+      where: eq(guestsTable.id, id),
     })
 
     if (!guest) {
@@ -35,15 +35,15 @@ export async function DELETE(_: Request, { params }: { params: Promise<{ id: str
       return NextResponse.json({ error: 'ID inválido' }, { status: 400 })
     }
 
-    const existingGuest = await db.query.tableGuests.findFirst({
-      where: eq(tableGuests.id, id),
+    const existingGuest = await db.query.guestsTable.findFirst({
+      where: eq(guestsTable.id, id),
     })
 
     if (!existingGuest) {
       return NextResponse.json({ error: 'Convidado não encontrado' }, { status: 404 })
     }
 
-    await db.delete(tableGuests).where(eq(tableGuests.id, id))
+    await db.delete(guestsTable).where(eq(guestsTable.id, id))
 
     return NextResponse.json({ success: true }, { status: 200 })
   } catch (error) {
@@ -62,8 +62,8 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
 
     const data = await request.json()
 
-    const existingGuest = await db.query.tableGuests.findFirst({
-      where: eq(tableGuests.id, id),
+    const existingGuest = await db.query.guestsTable.findFirst({
+      where: eq(guestsTable.id, id),
     })
 
     if (!existingGuest) {
@@ -78,10 +78,10 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
         return NextResponse.json({ error: 'Nome é obrigatório' }, { status: 400 })
       }
 
-      const duplicateGuest = await db.query.tableGuests.findFirst({
+      const duplicateGuest = await db.query.guestsTable.findFirst({
         where: and(
-          eq(tableGuests.name, nameToCheck),
-          ne(tableGuests.id, id)
+          eq(guestsTable.name, nameToCheck),
+          ne(guestsTable.id, id)
         ),
       })
 
@@ -92,10 +92,10 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
       data.name = nameToCheck
     }
 
-    await db.update(tableGuests).set(data).where(eq(tableGuests.id, id))
+    await db.update(guestsTable).set(data).where(eq(guestsTable.id, id))
 
-    const updatedGuest = await db.query.tableGuests.findFirst({
-      where: eq(tableGuests.id, id),
+    const updatedGuest = await db.query.guestsTable.findFirst({
+      where: eq(guestsTable.id, id),
     })
 
     return NextResponse.json(updatedGuest)
@@ -115,8 +115,8 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
 
     const { name, spouse, children, companions } = await request.json()
 
-    const existingGuest = await db.query.tableGuests.findFirst({
-      where: eq(tableGuests.id, id),
+    const existingGuest = await db.query.guestsTable.findFirst({
+      where: eq(guestsTable.id, id),
     })
 
     if (!existingGuest) {
@@ -130,10 +130,10 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
 
     // Check for duplicate name (excluding current guest)
     const nameToCheck = name.trim()
-    const duplicateGuest = await db.query.tableGuests.findFirst({
+    const duplicateGuest = await db.query.guestsTable.findFirst({
       where: and(
-        eq(tableGuests.name, nameToCheck),
-        ne(tableGuests.id, id)
+        eq(guestsTable.name, nameToCheck),
+        ne(guestsTable.id, id)
       ),
     })
 
@@ -150,10 +150,10 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
       updatedAt: new Date(),
     }
 
-    await db.update(tableGuests).set(updateData).where(eq(tableGuests.id, id))
+    await db.update(guestsTable).set(updateData).where(eq(guestsTable.id, id))
 
-    const updatedGuest = await db.query.tableGuests.findFirst({
-      where: eq(tableGuests.id, id),
+    const updatedGuest = await db.query.guestsTable.findFirst({
+      where: eq(guestsTable.id, id),
     })
 
     return NextResponse.json(updatedGuest)

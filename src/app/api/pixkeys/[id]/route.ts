@@ -1,6 +1,6 @@
 import { auth } from '@/auth'
 import { db } from '@/db'
-import { tableGifts, tablePixKeys } from '@/db/schema'
+import { giftsTable, pixKeysTable } from '@/db/schema'
 import { eq } from 'drizzle-orm'
 import { NextRequest, NextResponse } from 'next/server'
 import { isAdmin } from '@/lib/auth-types'
@@ -23,7 +23,7 @@ export async function GET(_: NextRequest, { params }: { params: Promise<{ id: st
     }
 
     const pixKey = await db.query.tablePixKeys.findFirst({
-      where: eq(tablePixKeys.id, id),
+      where: eq(pixKeysTable.id, id),
     })
 
     if (!pixKey) {
@@ -57,7 +57,7 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
 
     // Verificar se a chave PIX existe
     const existingKey = await db.query.tablePixKeys.findFirst({
-      where: eq(tablePixKeys.id, id),
+      where: eq(pixKeysTable.id, id),
     })
 
     if (!existingKey) {
@@ -66,13 +66,13 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
 
     // Atualizar chave PIX
     const updatedPixKey = await db
-      .update(tablePixKeys)
+      .update(pixKeysTable)
       .set({
         name: data.name,
         key: data.key,
         type: data.type,
       })
-      .where(eq(tablePixKeys.id, id))
+      .where(eq(pixKeysTable.id, id))
 
     return NextResponse.json(updatedPixKey)
   } catch (error) {
@@ -98,7 +98,7 @@ export async function DELETE(_: NextRequest, { params }: { params: Promise<{ id:
     }
 
     // Verificar se a chave está sendo usada nalgum presente
-    const giftsUsingPixKey = await db.select().from(tableGifts).where(eq(tableGifts.pixKeyId, id))
+    const giftsUsingPixKey = await db.select().from(giftsTable).where(eq(giftsTable.pixKeyId, id))
 
     if (giftsUsingPixKey.length > 0) {
       return NextResponse.json(
@@ -112,7 +112,7 @@ export async function DELETE(_: NextRequest, { params }: { params: Promise<{ id:
 
     // Verificar se a chave PIX existe
     const existingKey = await db.query.tablePixKeys.findFirst({
-      where: eq(tablePixKeys.id, id),
+      where: eq(pixKeysTable.id, id),
     })
 
     if (!existingKey) {
@@ -120,7 +120,7 @@ export async function DELETE(_: NextRequest, { params }: { params: Promise<{ id:
     }
 
     // Remover chave PIX
-    await db.delete(tablePixKeys).where(eq(tablePixKeys.id, id))
+    await db.delete(pixKeysTable).where(eq(pixKeysTable.id, id))
 
     return NextResponse.json({ success: true })
   } catch (error) {

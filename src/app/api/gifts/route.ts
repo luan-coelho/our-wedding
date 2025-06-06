@@ -1,13 +1,13 @@
 import { db } from '@/db'
-import { tableGifts, tablePixKeys } from '@/db/schema'
-import { asc, eq } from 'drizzle-orm'
+import { giftsTable } from '@/db/schema'
+import { asc } from 'drizzle-orm'
 import { NextResponse } from 'next/server'
 import { validate as isValidUUID } from 'uuid'
 
 export async function GET() {
   try {
-    const giftsList = await db.query.tableGifts.findMany({
-      orderBy: asc(tableGifts.name),
+    const giftsList = await db.query.giftsTable.findMany({
+      orderBy: asc(giftsTable.name),
       with: {
         selectedPixKey: true,
       },
@@ -44,7 +44,7 @@ export async function POST(request: Request) {
       pixKey: sanitizedData.pixKey,
     })
 
-    const newGift = await db.insert(tableGifts).values(sanitizedData)
+    const newGift = await db.insert(giftsTable).values(sanitizedData)
 
     return NextResponse.json(newGift, { status: 201 })
   } catch (error) {
@@ -52,5 +52,3 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Erro ao criar presente' }, { status: 500 })
   }
 }
-
-

@@ -4,13 +4,13 @@ import Link from 'next/link'
 import { useState, useEffect } from 'react'
 import { usePathname } from 'next/navigation'
 import { IoMenuOutline, IoCloseOutline } from 'react-icons/io5'
-import { useSession } from 'next-auth/react'
+// import { useSession } from 'next-auth/react'
 import { routes } from '@/lib/routes'
 
 export default function Header() {
   const pathname = usePathname()
   const [isMenuOpen, setIsMenuOpen] = useState(false)
-  const { data: session } = useSession()
+  // const { data: session } = useSession()
 
   const navItems = [
     { name: 'Início', path: routes.frontend.home },
@@ -83,7 +83,7 @@ export default function Header() {
                   </Link>
                 </li>
               ))}
-              {session && (
+              {/* {session && (
                 <li className="pt-2 border-t border-wedding-light/30">
                   <Link
                     href={routes.frontend.admin.home}
@@ -91,7 +91,7 @@ export default function Header() {
                     Área Administrativa
                   </Link>
                 </li>
-              )}
+              )} */}
             </ul>
           </nav>
         )}

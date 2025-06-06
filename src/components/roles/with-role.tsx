@@ -1,22 +1,19 @@
 'use client'
 
-import { useSession } from 'next-auth/react'
 import { ComponentType, ReactNode } from 'react'
 import { UserRoleType } from '@/lib/auth-types'
+import { authClient } from '@/lib/auth-client'
 
 interface WithRoleProps {
   children: ReactNode
   allowedRoles: UserRoleType[]
 }
 
-export default function WithRole({
-  children,
-  allowedRoles,
-}: WithRoleProps) {
-  const { data: session, status } = useSession()
+export default function WithRole({ children, allowedRoles }: WithRoleProps) {
+  const { data: session, isPending } = authClient.useSession()
 
   // Exibe um indicador de carregamento enquanto verifica a sessão
-  if (status === 'loading') {
+  if (isPending) {
     return (
       <div className="flex justify-center items-center py-16">
         <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-500"></div>
@@ -34,10 +31,7 @@ export default function WithRole({
 }
 
 // HOC para criar componentes protegidos por role
-export function withRole<P extends object>(
-  Component: ComponentType<P>,
-  allowedRoles: UserRoleType[]
-) {
+export function withRole<P extends object>(Component: ComponentType<P>, allowedRoles: UserRoleType[]) {
   return function WithRoleComponent(props: P) {
     return (
       <WithRole allowedRoles={allowedRoles}>
@@ -45,4 +39,4 @@ export function withRole<P extends object>(
       </WithRole>
     )
   }
-} 
+}

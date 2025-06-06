@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/db'
-import { tableGuests } from '@/db/schema'
+import { guestsTable } from '@/db/schema'
 import { sql } from 'drizzle-orm'
 
 export async function POST(request: NextRequest) {
@@ -49,9 +49,9 @@ export async function POST(request: NextRequest) {
     }
 
     // Check for duplicates against existing guests (case-insensitive)
-    const existingGuests = await db.query.tableGuests.findMany({
+    const existingGuests = await db.query.guestsTable.findMany({
       columns: { name: true },
-      where: sql`LOWER(${tableGuests.name}) IN (${sql.join(
+      where: sql`LOWER(${guestsTable.name}) IN (${sql.join(
         cleanedNames.map(name => sql`LOWER(${name})`),
         sql`, `
       )})`
@@ -79,7 +79,7 @@ export async function POST(request: NextRequest) {
         companions: [],
       }))
 
-      const newGuests = await db.insert(tableGuests).values(guestData).returning()
+      const newGuests = await db.insert(guestsTable).values(guestData).returning()
       imported.push(...newGuests)
     }
 
