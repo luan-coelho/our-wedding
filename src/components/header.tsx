@@ -52,15 +52,13 @@ export default function Header() {
                 </li>
               ))}
 
-              {session && (
-                <li>
-                  <Link
-                    href={routes.frontend.admin.home}
-                    className="text-sm text-white bg-wedding-accent px-4 py-1.5 rounded-md hover:bg-wedding-accent/90 transition-colors">
-                    Admin
-                  </Link>
-                </li>
-              )}
+              <li>
+                <Link
+                  href={routes.frontend.admin.home}
+                  className="text-sm text-white bg-wedding-accent px-4 py-1.5 rounded-md hover:bg-wedding-accent/90 transition-colors">
+                  Admin
+                </Link>
+              </li>
             </ul>
           </nav>
 
