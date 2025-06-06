@@ -80,6 +80,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         token.role = user.role
       }
 
+      console.log("JWT CALLBACK", token, user);
       return token
     },
     async session({ session, token }) {
@@ -88,6 +89,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         if (token.id) session.user.id = token.id as string
         if (token.role) session.user.role = token.role as UserRoleType
       }
+      console.log("SESSION CALLBACK", session, token);
       return session
     },
   },
