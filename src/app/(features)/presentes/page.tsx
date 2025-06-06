@@ -80,7 +80,7 @@ export default function PresentesPage() {
   const selectedGift = showQRCode !== null ? gifts.find(g => g.id === showQRCode) : null
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-wedding-light/20 via-white to-wedding-secondary/10">
+    <div className="min-h-screen bg-wedding-light/10">
       <div className="wedding-container py-12 sm:py-16 lg:py-20">
         {/* Hero Section */}
         <div className="text-center mb-16 lg:mb-20">

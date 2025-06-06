@@ -11,7 +11,7 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import { GuestFormData, guestSchema } from './schema'
+import { guestSchema, GuestFormData } from './schema'
 import { Plus, Minus, Users, Heart, User, UserPlus } from 'lucide-react'
 import { useMemo } from 'react'
 import { guestsService } from '@/services/guests.service'
@@ -32,7 +32,7 @@ export default function GuestForm({ guest }: GuestFormProps) {
   const queryClient = useQueryClient() 
   const isEditing = !!guest
 
-  const form = useForm<GuestFormData>({
+  const form = useForm<any>({
     resolver: zodResolver(guestSchema),
     defaultValues: {
       name: guest?.name || '',
@@ -54,14 +54,14 @@ export default function GuestForm({ guest }: GuestFormProps) {
   })
 
   // Calculate total guest count
+  const formValues = form.watch()
   const totalGuestCount = useMemo(() => {
-    const formValues = form.watch()
     let count = 1 // Main guest
     if (formValues.spouse && formValues.spouse.trim()) count += 1
-    count += formValues.children.filter(child => child.trim()).length // filhos
-    count += formValues.companions.filter(companion => companion.trim()).length
+    count += formValues.children.filter((child: string) => child && child.trim()).length // filhos
+    count += formValues.companions.filter((companion: string) => companion && companion.trim()).length
     return count
-  }, [form.watch()])
+  }, [formValues.spouse, formValues.children, formValues.companions])
 
   const saveMutation = useMutation({
     mutationFn: async (data: GuestFormData) => {
@@ -98,20 +98,26 @@ export default function GuestForm({ guest }: GuestFormProps) {
     },
   })
 
-  const onSubmit = (data: GuestFormData) => {
-    saveMutation.mutate(data)
+  const onSubmit = (data: any) => {
+    // Filter out empty strings from arrays before submission
+    const cleanedData = {
+      ...data,
+      children: data.children.filter((child: string) => child && child.trim()),
+      companions: data.companions.filter((companion: string) => companion && companion.trim()),
+    }
+    saveMutation.mutate(cleanedData)
   }
 
   return (
     <div className="space-y-6">
       {/* Guest Count Summary Card */}
-      <Card className="border-black shadow-sm bg-gradient-to-r from-blue-50 to-indigo-50">
+      <Card className="border-black shadow-sm bg-rose-50">
         <CardContent className="pt-6">
           <div className="flex items-center justify-center gap-3">
-            <Users className="h-6 w-6 text-blue-600" />
+            <Users className="h-6 w-6 text-rose-600" />
             <div className="text-center">
-              <h3 className="text-2xl font-bold text-blue-900">{totalGuestCount}</h3>
-              <p className="text-sm font-medium text-blue-700">
+              <h3 className="text-2xl font-bold text-rose-900">{totalGuestCount}</h3>
+              <p className="text-sm font-medium text-rose-700">
                 {totalGuestCount === 1 ? 'Pessoa' : 'Pessoas'} no grupo
               </p>
             </div>
@@ -158,7 +164,7 @@ export default function GuestForm({ guest }: GuestFormProps) {
               {/* Spouse/Partner Information */}
               <div className="space-y-4 border-t border-gray-200 pt-6">
                 <div className="flex items-center gap-2 mb-4">
-                  <Heart className="h-5 w-5 text-pink-600" />
+                  <Heart className="h-5 w-5 text-rose-600" />
                   <h3 className="text-lg font-semibold text-gray-900">Cônjuge/Parceiro(a)</h3>
                 </div>
 
@@ -185,7 +191,7 @@ export default function GuestForm({ guest }: GuestFormProps) {
               <div className="space-y-4 border-t border-gray-200 pt-6">
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center gap-2">
-                    <User className="h-5 w-5 text-green-600" />
+                    <User className="h-5 w-5 text-emerald-600" />
                     <h3 className="text-lg font-semibold text-gray-900">Filhos</h3>
                   </div>
                   <Button
@@ -248,7 +254,7 @@ export default function GuestForm({ guest }: GuestFormProps) {
               <div className="space-y-4 border-t border-gray-200 pt-6">
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center gap-2">
-                    <UserPlus className="h-5 w-5 text-purple-600" />
+                    <UserPlus className="h-5 w-5 text-amber-600" />
                     <h3 className="text-lg font-semibold text-gray-900">Outros Acompanhantes</h3>
                   </div>
                   <Button

@@ -13,15 +13,12 @@ export const guestSchema = z.object({
     .or(z.literal('')),
   children: z.array(z.string()
     .trim()
-    .min(1, 'Nome do filho não pode estar vazio')
     .max(100, 'Nome do filho deve ter no máximo 100 caracteres')
-  ).default([]),
+  ),
   companions: z.array(z.string()
     .trim()
-    .min(1, 'Nome do acompanhante não pode estar vazio')
     .max(100, 'Nome do acompanhante deve ter no máximo 100 caracteres')
-  ).default([]),
-
+  ),
 })
 
 export type GuestFormData = z.infer<typeof guestSchema>
