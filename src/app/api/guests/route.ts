@@ -18,7 +18,7 @@ export async function GET() {
 
 export async function POST(request: NextRequest) {
   try {
-    const { name } = await request.json()
+    const { name, spouse, children, companions } = await request.json()
 
     if (!name || typeof name !== 'string' || name.trim().length === 0) {
       return NextResponse.json({ error: 'Nome é obrigatório' }, { status: 400 })
@@ -33,9 +33,15 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Já existe um convidado com este nome' }, { status: 409 })
     }
 
-    const newGuest = await db.insert(tableGuests).values({
+    // Prepare data for insertion
+    const guestData = {
       name: name.trim(),
-    })
+      spouse: spouse && spouse.trim() ? spouse.trim() : null,
+      children: Array.isArray(children) ? children.filter(child => child && child.trim()) : [], // filhos
+      companions: Array.isArray(companions) ? companions.filter(companion => companion && companion.trim()) : [],
+    }
+
+    const [newGuest] = await db.insert(tableGuests).values(guestData).returning()
 
     return NextResponse.json(newGuest, { status: 201 })
   } catch (error) {

@@ -1,13 +1,13 @@
 import AuthProvider from '@/components/auth-provider'
 import { Ban, CircleCheckBig, CircleEllipsis, Info, TriangleAlert } from 'lucide-react'
 import type { Metadata } from 'next'
-import { Poppins } from 'next/font/google'
+import { Geist } from 'next/font/google'
 import { Toaster } from 'sonner'
 import './globals.css'
 import Providers from './Providers'
 
-const poppins = Poppins({
-  variable: '--font-sans',
+const geist = Geist({
+  variable: '--font-geist-sans',
   subsets: ['latin'],
   weight: ['400', '500', '600', '700'],
 })
@@ -24,7 +24,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="pt-BR">
-      <body className={poppins.variable}>
+      <body className={geist.variable}>
         <Providers>
           <AuthProvider>{children}</AuthProvider>
           <Toaster
@@ -45,7 +45,6 @@ export default function RootLayout({
               loading: <CircleEllipsis />,
             }}
             position="top-right"
-            theme="dark"
           />
         </Providers>
       </body>

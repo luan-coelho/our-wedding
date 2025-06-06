@@ -8,6 +8,9 @@ import { AdminProtected } from '@/components/roles'
 interface Guest {
   id: string
   name: string
+  spouse?: string | null
+  children: string[]
+  companions: string[]
   isConfirmed: boolean
 }
 

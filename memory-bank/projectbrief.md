@@ -12,14 +12,14 @@ Site de casamento personalizado para Ester & Luan, desenvolvido com Next.js 15, 
 ## Informações do Evento
 - **Noivos**: Ester & Luan
 - **Data**: 12 de Setembro de 2025 (Sexta-feira)
-- **Horário**: Cerimônia às 16:00, Recepção às 18:00
-- **Local**: Espaço Villa Jardim, R. das Flores, 123 - Jardim Primavera
+- **Horário**: Cerimônia às 12:00, Sem recepção
+- **Local**: Paróquia Nossa Senhora do Monte do Carmo, Q. 108 Norte Alameda 2, 60 - Plano Diretor Norte, Palmas - TO, 77006-096
 
 ## Funcionalidades Core
 - Página inicial com countdown
 - Confirmação de presença via token único
 - Lista de presentes com PIX
-- Localização com mapas
+- Localização com mapa da paróquia
 - Mensagens para os noivos
 - Painel administrativo completo
 

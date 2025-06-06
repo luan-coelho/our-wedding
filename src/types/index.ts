@@ -18,6 +18,9 @@ export interface User {
 export interface Guest {
   id: string
   name: string
+  spouse?: string | null
+  children: string[]
+  companions: string[]
   isConfirmed: boolean
   token: string
   createdAt: string
@@ -72,6 +75,9 @@ export interface GiftFormData {
 
 export interface GuestFormData {
   name: string
+  spouse?: string
+  children: string[]
+  companions: string[]
 }
 
 export interface PixKeyFormData {

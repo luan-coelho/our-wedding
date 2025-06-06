@@ -5,7 +5,7 @@ O site de casamento resolve a necessidade de centralizar todas as informações 
 
 ## Problemas que resolve
 1. **Gestão de Convites**: Elimina a necessidade de convites físicos e facilita o controle de confirmações
-2. **Lista de Presentes Digital**: Moderniza o processo de presentes com opções de PIX e sugestões de presentes
+2. **Lista de Presentes Digital**: Moderniza o processo de presentes com opções de chaves pix para doações de dinheiro como presentes e sugestões de presentes que os convidados podem contribuir
 3. **Comunicação Centralizada**: Concentra todas as informações do casamento em um local
 4. **Experiência Personalizada**: Cada convidado confirma sua presença via link único
 5. **Administração Eficiente**: Painel para os noivos e colaboradores gerenciarem tudo digitalmente
@@ -23,13 +23,11 @@ O site de casamento resolve a necessidade de centralizar todas as informações 
 1. **Dashboard Centralizado**: Visão geral de confirmações e estatísticas
 2. **Gestão de Convidados**: Adicionar, editar, remover convidados
 3. **Controle de Presentes**: Gerenciar lista e acompanhar contribuições
-4. **Moderação de Conteúdo**: Aprovar fotos e mensagens
-5. **Relatórios**: Exportar dados para planejamento
 
 ## Experiência do Usuário Desejada
 
 ### Convidados
-- **Primeira Impressão**: Página inicial elegante com foto do casal e countdown
+- **Primeira Impressão**: Página inicial elegante e com countdown
 - **Facilidade**: Navegação clara sem necessidade de cadastro
 - **Emoção**: Design que transmite a alegria e elegância do evento
 - **Praticidade**: Informações importantes facilmente encontráveis
@@ -44,17 +42,15 @@ O site de casamento resolve a necessidade de centralizar todas as informações 
 ## Jornada do Usuário
 
 ### Convidado Típico
-1. Recebe link via WhatsApp/Email
+1. Recebe link via WhatsApp a partir de link gerado pelo sistema
 2. Acessa o site e vê página inicial com informações do casamento
-3. Confirma presença
-4. Opcionalmente deixa mensagem ou contribui com presente
-5. Pode retornar ao site para ver atualizações
+3. Opcionalmente deixa mensagem ou contribui com presente
+4. Pode retornar ao site para ver atualizações
 
 ### Administrador
 1. Faz login na área administrativa
 2. Visualiza dashboard com estatísticas
 3. Gerencia lista de convidados
 4. Atualiza informações de presentes
-5. Modera conteúdo enviado pelos convidados
-6. Acompanha confirmações em tempo real
-7. Cria chaves PIX para inserir no cadastro de presentes, pois os presentes são sugestões, mas os convidados podem contribuir com qualquer valor
+5. Acompanha confirmações em tempo real
+6. Cria chaves PIX para inserir no cadastro de presentes, pois os presentes são sugestões, mas os convidados podem contribuir com qualquer valor

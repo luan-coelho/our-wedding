@@ -1,10 +1,11 @@
-import { Guest, GuestFormData, ApiError } from '@/types'
+import { Guest, GuestFormData } from '@/types'
+import { routes } from '@/lib/routes'
 
 // ============================================================================
 // GUESTS SERVICE - Centralized API calls for guests domain
 // ============================================================================
 
-const BASE_URL = '/api/guests'
+const BASE_URL = routes.api.guests.base
 
 /**
  * Tratamento de erro padronizado para todas as chamadas de API
@@ -12,11 +13,10 @@ const BASE_URL = '/api/guests'
 async function handleApiResponse<T>(response: Response): Promise<T> {
   if (!response.ok) {
     const errorData = await response.json().catch(() => ({}))
-    const error: ApiError = {
+    throw {
       error: errorData.error || `HTTP Error: ${response.status}`,
       status: response.status,
     }
-    throw error
   }
   return response.json()
 }
@@ -85,6 +85,28 @@ export async function confirmGuest(token: string): Promise<{ message: string }> 
   return handleApiResponse<{ message: string }>(response)
 }
 
+/**
+ * Importa múltiplos convidados em lote
+ */
+export async function bulkImportGuests(names: string[]): Promise<{
+  imported: Guest[]
+  duplicates: string[]
+  errors: { name: string; error: string }[]
+}> {
+  const response = await fetch(`${BASE_URL}/bulk-import`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ names }),
+  })
+  return handleApiResponse<{
+    imported: Guest[]
+    duplicates: string[]
+    errors: { name: string; error: string }[]
+  }>(response)
+}
+
 // ============================================================================
 // GUESTS SERVICE OBJECT - Exportação organizada de todas as funções
 // ============================================================================
@@ -96,4 +118,5 @@ export const guestsService = {
   update: updateGuest,
   delete: deleteGuest,
   confirm: confirmGuest,
+  bulkImport: bulkImportGuests,
 } as const

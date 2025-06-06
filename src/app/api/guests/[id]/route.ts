@@ -113,7 +113,7 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
       return NextResponse.json({ error: 'ID inválido' }, { status: 400 })
     }
 
-    const data = await request.json()
+    const { name, spouse, children, companions } = await request.json()
 
     const existingGuest = await db.query.tableGuests.findFirst({
       where: eq(tableGuests.id, id),
@@ -123,29 +123,34 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
       return NextResponse.json({ error: 'Convidado não encontrado' }, { status: 404 })
     }
 
-    // Se o nome está sendo atualizado, verificar se já existe outro convidado com o mesmo nome
-    if (data.name && typeof data.name === 'string') {
-      const nameToCheck = data.name.trim()
-
-      if (nameToCheck.length === 0) {
-        return NextResponse.json({ error: 'Nome é obrigatório' }, { status: 400 })
-      }
-
-      const duplicateGuest = await db.query.tableGuests.findFirst({
-        where: and(
-          eq(tableGuests.name, nameToCheck),
-          ne(tableGuests.id, id)
-        ),
-      })
-
-      if (duplicateGuest) {
-        return NextResponse.json({ error: 'Já existe um convidado com este nome' }, { status: 409 })
-      }
-
-      data.name = nameToCheck
+    // Validate required fields
+    if (!name || typeof name !== 'string' || name.trim().length === 0) {
+      return NextResponse.json({ error: 'Nome é obrigatório' }, { status: 400 })
     }
 
-    await db.update(tableGuests).set(data).where(eq(tableGuests.id, id))
+    // Check for duplicate name (excluding current guest)
+    const nameToCheck = name.trim()
+    const duplicateGuest = await db.query.tableGuests.findFirst({
+      where: and(
+        eq(tableGuests.name, nameToCheck),
+        ne(tableGuests.id, id)
+      ),
+    })
+
+    if (duplicateGuest) {
+      return NextResponse.json({ error: 'Já existe um convidado com este nome' }, { status: 409 })
+    }
+
+    // Prepare updated data
+    const updateData = {
+      name: nameToCheck,
+      spouse: spouse && spouse.trim() ? spouse.trim() : null,
+      children: Array.isArray(children) ? children.filter(child => child && child.trim()) : [], // filhos
+      companions: Array.isArray(companions) ? companions.filter(companion => companion && companion.trim()) : [],
+      updatedAt: new Date(),
+    }
+
+    await db.update(tableGuests).set(updateData).where(eq(tableGuests.id, id))
 
     const updatedGuest = await db.query.tableGuests.findFirst({
       where: eq(tableGuests.id, id),

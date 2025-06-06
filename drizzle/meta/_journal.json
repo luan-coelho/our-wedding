@@ -5,15 +5,8 @@
     {
       "idx": 0,
       "version": "7",
-      "when": 1749087135763,
-      "tag": "0000_wooden_centennial",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "7",
-      "when": 1749088401786,
-      "tag": "0001_plain_patch",
+      "when": 1749058906132,
+      "tag": "0000_productive_nomad",
       "breakpoints": true
     }
   ]
