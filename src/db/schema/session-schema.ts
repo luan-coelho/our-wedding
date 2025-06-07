@@ -1,8 +1,8 @@
-import { pgTable, text, timestamp } from 'drizzle-orm/pg-core'
+import { pgTable, text, timestamp, uuid } from 'drizzle-orm/pg-core'
 import { usersTable } from '@/db/schema/user-schema'
 
 export const sessionsTable = pgTable('session', {
-  id: text('id').primaryKey(),
+  id: uuid('id').primaryKey().defaultRandom(),
   expiresAt: timestamp('expires_at').notNull(),
   token: text('token').notNull().unique(),
   createdAt: timestamp('created_at').notNull(),

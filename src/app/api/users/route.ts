@@ -1,14 +1,16 @@
-import { auth } from '@/auth'
 import { db } from '@/db'
 import { usersTable } from '@/db/schema'
 import { isAdmin } from '@/lib/auth-types'
 import { asc, eq, not } from 'drizzle-orm'
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
+import { headers } from 'next/headers'
+import { auth } from '@/lib/auth'
 
-// Schema para remoção de acesso
 export async function GET() {
-  const session = await auth()
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  })
 
   // Busca todos os usuários
   const allUsers = await db
@@ -22,10 +24,12 @@ export async function GET() {
 
 // POST para conceder/atualizar permissão
 export async function POST(request: NextRequest) {
-  const session = await auth()
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  })
 
   // Verifica se o usuário está autenticado e é um administrador
-  if (!session || !isAdmin(session)) {
+  if (!session || !(await isAdmin())) {
     return new NextResponse(JSON.stringify({ error: 'Não autorizado' }), {
       status: 403,
     })
@@ -71,7 +75,6 @@ export async function POST(request: NextRequest) {
         email,
         role,
         active: true,
-        updatedAt: new Date(),
       })
       .returning({
         id: usersTable.id,
@@ -80,74 +83,6 @@ export async function POST(request: NextRequest) {
       })
 
     return NextResponse.json({ ...newUser, message: 'Permissão concedida' }, { status: 201 })
-  } catch (error) {
-    if (error instanceof z.ZodError) {
-      return new NextResponse(JSON.stringify({ error: error.errors }), {
-        status: 400,
-      })
-    }
-
-    return new NextResponse(JSON.stringify({ error: 'Erro interno do servidor' }), {
-      status: 500,
-    })
-  }
-}
-
-// DELETE para remover acesso de um usuário
-export async function DELETE(request: NextRequest) {
-  const session = await auth()
-
-  // Verifica se o usuário está autenticado e é um administrador
-  if (!session || !isAdmin(session)) {
-    return new NextResponse(JSON.stringify({ error: 'Não autorizado' }), {
-      status: 403,
-    })
-  }
-
-  try {
-    // Obtém o email da URL
-    const { searchParams } = new URL(request.url)
-    const email = searchParams.get('email')
-
-    if (!email) {
-      return new NextResponse(JSON.stringify({ error: 'Email é obrigatório' }), {
-        status: 400,
-      })
-    }
-
-    const removeAccessSchema = z.object({
-      email: z.string().email('Email inválido'),
-    })
-
-    // Valida o email
-    removeAccessSchema.parse({ email })
-
-    // Verifica se o usuário existe
-    const existingUser = await db.select().from(usersTable).where(eq(usersTable.email, email))
-
-    if (existingUser.length === 0) {
-      return new NextResponse(JSON.stringify({ error: 'Usuário não encontrado' }), {
-        status: 404,
-      })
-    }
-
-    // Não permitir remover o próprio acesso
-    if (email === session.user.email) {
-      return new NextResponse(JSON.stringify({ error: 'Não é possível remover seu próprio acesso' }), {
-        status: 400,
-      })
-    }
-
-    // Desativa o usuário em vez de remover
-    await db
-      .update(usersTable)
-      .set({
-        active: false,
-        updatedAt: new Date(),
-      })
-      .where(eq(usersTable.email, email))
-
-    return NextResponse.json({ message: 'Acesso removido com sucesso' })
   } catch (error) {
     if (error instanceof z.ZodError) {
       return new NextResponse(JSON.stringify({ error: error.errors }), {

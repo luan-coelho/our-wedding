@@ -46,7 +46,8 @@ import { signOut } from '@/auth-actions'
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { data: session } = authClient.useSession()
-  const router = useRouter()
+  console.log(session)
+
   const pathname = usePathname()
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-expect-error

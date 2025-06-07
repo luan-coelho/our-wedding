@@ -1,6 +1,6 @@
 {
-  "id": "dde4d104-4b39-4f78-8b7e-b5e0230c386b",
-  "prevId": "00000000-0000-0000-0000-000000000000",
+  "id": "ad50b5fd-f1ae-4d05-8928-aa26108deca3",
+  "prevId": "dde4d104-4b39-4f78-8b7e-b5e0230c386b",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -10,9 +10,10 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "text",
+          "type": "uuid",
           "primaryKey": true,
-          "notNull": true
+          "notNull": true,
+          "default": "gen_random_uuid()"
         },
         "name": {
           "name": "name",
@@ -362,9 +363,10 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "text",
+          "type": "uuid",
           "primaryKey": true,
-          "notNull": true
+          "notNull": true,
+          "default": "gen_random_uuid()"
         },
         "account_id": {
           "name": "account_id",
@@ -467,9 +469,10 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "text",
+          "type": "uuid",
           "primaryKey": true,
-          "notNull": true
+          "notNull": true,
+          "default": "gen_random_uuid()"
         },
         "expires_at": {
           "name": "expires_at",
@@ -550,9 +553,10 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "text",
+          "type": "uuid",
           "primaryKey": true,
-          "notNull": true
+          "notNull": true,
+          "default": "gen_random_uuid()"
         },
         "identifier": {
           "name": "identifier",

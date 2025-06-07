@@ -1,9 +1,9 @@
 import { UserRole } from '@/lib/auth-types'
-import { boolean, pgTable, text, timestamp } from 'drizzle-orm/pg-core'
+import { boolean, pgTable, text, timestamp, uuid } from 'drizzle-orm/pg-core'
 import { varchar } from 'drizzle-orm/pg-core/columns/varchar'
 
 export const usersTable = pgTable('user', {
-  id: text('id').primaryKey(),
+  id: uuid('id').primaryKey().defaultRandom(),
   name: text('name').notNull(),
   email: text('email').notNull().unique(),
   emailVerified: boolean('email_verified')
@@ -19,4 +19,3 @@ export const usersTable = pgTable('user', {
   role: varchar('role').notNull().default(UserRole.GUEST),
   active: boolean('active').notNull().default(true),
 })
-

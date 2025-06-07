@@ -6,16 +6,16 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Separator } from '@/components/ui/separator'
 import { routes } from '@/lib/routes'
 import { AlertCircle, HeartHandshake, Loader2 } from 'lucide-react'
-import Image from 'next/image'
 import { useSearchParams } from 'next/navigation'
-import { startTransition, Suspense, useActionState, useEffect, useState } from 'react'
-import { signInWithGoogle } from '@/auth-actions'
+import { Suspense, useEffect, useState } from 'react'
+import { authClient } from '@/lib/auth-client'
+import Image from 'next/image'
 
 function SigninForm() {
   const searchParams = useSearchParams()
   const callbackUrl = searchParams?.get('callbackUrl') || routes.frontend.admin.home
+  const { isPending } = authClient.useSession()
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
-  const [state, formAction, isPending] = useActionState(signInWithGoogle, { success: false })
 
   // Captura erros da URL
   useEffect(() => {
@@ -40,22 +40,6 @@ function SigninForm() {
     }
   }, [searchParams])
 
-  // Captura erros da action
-  useEffect(() => {
-    if (state.error) {
-      setErrorMessage(state.error)
-    }
-  }, [state])
-
-  function handleGoogleLogin() {
-    setErrorMessage(null)
-    startTransition(() => {
-      const formData = new FormData()
-      formData.append('callbackUrl', callbackUrl)
-      formAction(formData)
-    })
-  }
-
   return (
     <div className="space-y-6">
       {errorMessage && (
@@ -67,7 +51,12 @@ function SigninForm() {
 
       <div className="space-y-4">
         <Button
-          onClick={handleGoogleLogin}
+          onClick={async () => {
+            await authClient.signIn.social({
+              provider: 'google',
+              callbackURL: callbackUrl,
+            })
+          }}
           variant="outline"
           size="lg"
           className="w-full h-12 text-base font-medium bg-white hover:bg-gray-50 border-gray-300 hover:border-gray-400 shadow-sm hover:shadow-md transition-all duration-200 group"

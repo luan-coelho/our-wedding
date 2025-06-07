@@ -11,7 +11,15 @@ export async function signInWithGoogle(prevState: any, formData: FormData) {
     callbackURL: callbackUrl,
     errorCallbackURL: routes.frontend.auth.signin,
     newUserCallbackURL: routes.frontend.auth.signin,
-    disableRedirect: false,
+    disableRedirect: true,
+    fetchOptions: {
+      onSuccess: () => {
+        redirect(callbackUrl)
+      },
+      onError: error => {
+        console.error('Error signing in:', error)
+      },
+    },
   })
   return { success: true }
 }

@@ -1,4 +1,4 @@
-import { User, UserFormData, ApiError } from '@/types'
+import { User, UserFormData } from '@/types'
 
 // ============================================================================
 // USERS SERVICE - Centralized API calls for users domain
@@ -12,11 +12,10 @@ const BASE_URL = '/api/users'
 async function handleApiResponse<T>(response: Response): Promise<T> {
   if (!response.ok) {
     const errorData = await response.json().catch(() => ({}))
-    const error: ApiError = {
+    throw {
       error: errorData.error || `HTTP Error: ${response.status}`,
       status: response.status,
     }
-    throw error
   }
   return response.json()
 }
@@ -33,7 +32,9 @@ export async function getUsers(): Promise<User[]> {
  * Busca um usuário específico por ID
  */
 export async function getUserById(id: string): Promise<User> {
-  const response = await fetch(`${BASE_URL}/${id}`)
+  const url = `${BASE_URL}/${id}`
+  console.log('URL:', url)
+  const response = await fetch(url)
   return handleApiResponse<User>(response)
 }
 
@@ -78,7 +79,9 @@ export async function deleteUser(id: string): Promise<{ message: string }> {
 /**
  * Altera a senha de um usuário
  */
-export async function changeUserPassword(data: { currentPassword: string; newPassword: string }): Promise<{ message: string }> {
+export async function changeUserPassword(data: { currentPassword: string; newPassword: string }): Promise<{
+  message: string
+}> {
   const response = await fetch(`${BASE_URL}/change-password`, {
     method: 'POST',
     headers: {
