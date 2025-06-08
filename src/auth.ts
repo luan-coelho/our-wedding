@@ -8,6 +8,7 @@ import { UserRoleType } from './lib/auth-types'
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   //debug: true,
+  trustHost: true,
   providers: [
     Google({
       profile(profile) {
