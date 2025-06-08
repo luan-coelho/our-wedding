@@ -1,4 +1,3 @@
-
 'use client'
 
 import {
@@ -13,7 +12,7 @@ import {
   IconUserPlus,
   IconUsers,
 } from '@tabler/icons-react'
-import { useSession } from 'next-auth/react'
+import { signOut, useSession } from 'next-auth/react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import * as React from 'react'
@@ -42,12 +41,13 @@ import {
   SidebarSeparator,
 } from '@/components/ui/sidebar'
 import { routes } from '@/lib/routes'
-import { signOut } from 'next-auth/react'
+import { AdminProtected } from '@/components/roles'
+import { UserRole } from '@/lib/auth-types'
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { data: session } = useSession()
   const pathname = usePathname()
-  const isAdmin = session?.user?.role === 'admin'
+  const isAdmin = session?.user?.role === UserRole.ADMIN
 
   const adminItems = [
     {
@@ -55,6 +55,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       url: routes.frontend.admin.home,
       icon: IconDashboard,
       description: 'Visão geral do sistema',
+      requireAdmin: true,
     },
     {
       title: 'Lista de Presentes',
@@ -235,13 +236,13 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                     <span className="truncate font-semibold text-white">{session?.user?.name || 'Usuário'}</span>
                     <span className="truncate text-xs text-gray-400">{session?.user?.email}</span>
                   </div>
-                  {isAdmin && (
+                  <AdminProtected>
                     <Badge
                       variant="outline"
                       className="border-wedding-primary text-wedding-primary text-xs bg-wedding-primary/10 flex-shrink-0 group-data-[collapsible=icon]:hidden">
                       Admin
                     </Badge>
-                  )}
+                  </AdminProtected>
                 </SidebarMenuButton>
               </DropdownMenuTrigger>
               <DropdownMenuContent
