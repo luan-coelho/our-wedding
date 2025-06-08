@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getAuthToken } from './lib/auth-helpers'
 import { routes } from './lib/routes'
-import { auth } from '@/auth'
 
 export async function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname
@@ -12,34 +11,35 @@ export async function middleware(request: NextRequest) {
   }
 
   const token = await getAuthToken(request)
-  const session = await auth()
 
   console.log(`TOKEN ${token ? 'EXISTE' : 'NÃO EXISTE'}`)
-  console.log(`SESSION ${session ? 'EXISTE' : 'NÃO EXISTE'}`)
 
-  // Não autenticado → redireciona para login
+  // Se não estiver autenticado, redireciona para login
   if (!token) {
     const loginUrl = new URL(routes.frontend.auth.login, request.url)
-    loginUrl.searchParams.set('callbackUrl', encodeURIComponent(request.url))
+    loginUrl.searchParams.set('callbackUrl', encodeURI(request.url))
     return NextResponse.redirect(loginUrl)
   }
 
-  // Restrição por papel: guest
+  // Visitantes não têm acesso às rotas administrativas
   if (token.role === 'guest') {
     return NextResponse.redirect(new URL(routes.frontend.home, request.url))
   }
 
-  // Restrição por papel: planner
+  // Planner só pode visualizar a lista de convidados
   if (token.role === 'planner') {
+    // Se tentar acessar outra rota além de /admin/convidados, redireciona para a área de convidados
     if (!pathname.startsWith(routes.frontend.admin.convidados.index)) {
       return NextResponse.redirect(new URL(routes.frontend.admin.convidados.index, request.url))
     }
 
+    // Se estiver tentando acessar operações de criação/edição/exclusão, bloqueia acesso
     if (pathname.includes('/novo') || pathname.includes('/editar') || pathname.includes('/excluir')) {
       return NextResponse.redirect(new URL(routes.frontend.admin.convidados.index, request.url))
     }
   }
 
+  // Administrador tem acesso total
   return NextResponse.next()
 }
 
