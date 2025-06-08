@@ -5,6 +5,14 @@ import { routes } from './lib/routes'
 export async function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname
 
+  // Skip middleware for auth-related paths
+  if (
+    pathname.startsWith('/api/auth') ||
+    pathname.startsWith('/auth/login')
+  ) {
+    return NextResponse.next()
+  }
+
   const token = await getAuthToken(request)
 
   // Se não estiver autenticado, redireciona para login
