@@ -15,6 +15,13 @@
       "when": 1749173996867,
       "tag": "0001_broad_epoch",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1751769948740,
+      "tag": "0002_famous_meggan",
+      "breakpoints": true
     }
   ]
 }

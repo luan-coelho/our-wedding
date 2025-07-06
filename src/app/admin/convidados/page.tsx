@@ -5,7 +5,6 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import Link from 'next/link'
 import { useMemo, useState } from 'react'
 
-import { CopyToClipboard } from '@/components/copy-to-clipboard'
 import { AdminProtected } from '@/components/roles'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -20,12 +19,13 @@ import {
 } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { routes } from '@/lib/routes'
 import { guestsService } from '@/services/guests.service'
-import { Search, Upload } from 'lucide-react'
+import { Search, Upload, Check, Users, Heart, Baby, UserPlus, X } from 'lucide-react'
 import { toast } from 'sonner'
 import { ImportGuestsDialog } from './import-guests-dialog'
+import { MobileGuestCard } from './components/mobile-guest-card'
+import { DesktopGuestTable } from './components/desktop-guest-table'
 
 export default function AdminGuestsPage() {
   const queryClient = useQueryClient()
@@ -35,7 +35,7 @@ export default function AdminGuestsPage() {
 
   // Filter states
   const [nameFilter, setNameFilter] = useState('')
-  const [statusFilter, setStatusFilter] = useState<'all' | 'confirmed' | 'unconfirmed'>('all')
+  const [statusFilter, setStatusFilter] = useState<'all' | 'confirmed' | 'unconfirmed' | 'partial'>('all')
 
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'
 
@@ -51,11 +51,29 @@ export default function AdminGuestsPage() {
       // Name filter - case insensitive partial matching
       const matchesName = guest.name.toLowerCase().includes(nameFilter.toLowerCase())
 
+      // Calculate confirmation status for this guest
+      const totalInGroup = 1 + (guest.spouse ? 1 : 0) + (guest.children?.length || 0) + (guest.companions?.length || 0)
+      let confirmedInGroup = 0
+
+      if (guest.isConfirmed) confirmedInGroup += 1
+      if (guest.spouse && guest.spouseConfirmation) confirmedInGroup += 1
+      if (guest.children && guest.childrenConfirmations) {
+        guest.children.forEach(child => {
+          if (guest.childrenConfirmations?.[child]) confirmedInGroup += 1
+        })
+      }
+      if (guest.companions && guest.companionsConfirmations) {
+        guest.companions.forEach(companion => {
+          if (guest.companionsConfirmations?.[companion]) confirmedInGroup += 1
+        })
+      }
+
       // Status filter
       const matchesStatus =
         statusFilter === 'all' ||
-        (statusFilter === 'confirmed' && guest.isConfirmed) ||
-        (statusFilter === 'unconfirmed' && !guest.isConfirmed)
+        (statusFilter === 'confirmed' && confirmedInGroup === totalInGroup) ||
+        (statusFilter === 'unconfirmed' && confirmedInGroup === 0) ||
+        (statusFilter === 'partial' && confirmedInGroup > 0 && confirmedInGroup < totalInGroup)
 
       return matchesName && matchesStatus
     })
@@ -66,9 +84,38 @@ export default function AdminGuestsPage() {
     return filteredGuests.reduce((total, guest) => {
       let guestCount = 1 // Main guest
       if (guest.spouse) guestCount += 1
-      if (guest.children) guestCount += guest.children.length // filhos
+      if (guest.children) guestCount += guest.children.length
       if (guest.companions) guestCount += guest.companions.length
       return total + guestCount
+    }, 0)
+  }, [filteredGuests])
+
+  // Calculate confirmed attendees (considering individual confirmations)
+  const confirmedAttendees = useMemo(() => {
+    return filteredGuests.reduce((total, guest) => {
+      let confirmedCount = 0
+
+      // Main guest
+      if (guest.isConfirmed) confirmedCount += 1
+
+      // Spouse
+      if (guest.spouse && guest.spouseConfirmation) confirmedCount += 1
+
+      // Children
+      if (guest.children && guest.childrenConfirmations) {
+        guest.children.forEach(child => {
+          if (guest.childrenConfirmations?.[child]) confirmedCount += 1
+        })
+      }
+
+      // Companions
+      if (guest.companions && guest.companionsConfirmations) {
+        guest.companions.forEach(companion => {
+          if (guest.companionsConfirmations?.[companion]) confirmedCount += 1
+        })
+      }
+
+      return total + confirmedCount
     }, 0)
   }, [filteredGuests])
 
@@ -86,23 +133,6 @@ export default function AdminGuestsPage() {
     },
   })
 
-  // Guest statistics (based on filtered results)
-  const totalGuests = filteredGuests.length
-  const confirmedGuests = filteredGuests.filter(guest => guest.isConfirmed).length
-
-  // Calculate confirmed attendees
-  const confirmedAttendees = useMemo(() => {
-    return filteredGuests
-      .filter(guest => guest.isConfirmed)
-      .reduce((total, guest) => {
-        let guestCount = 1 // Main guest
-        if (guest.spouse) guestCount += 1
-        if (guest.children) guestCount += guest.children.length // filhos
-        if (guest.companions) guestCount += guest.companions.length
-        return total + guestCount
-      }, 0)
-  }, [filteredGuests])
-
   function handleDeleteClick(guest: Guest) {
     setGuestToDelete(guest)
     setIsDeleteDialogOpen(true)
@@ -113,30 +143,104 @@ export default function AdminGuestsPage() {
     deleteGuestMutation.mutate(guestToDelete.id)
   }
 
+  function handleClearFilters() {
+    setNameFilter('')
+    setStatusFilter('all')
+  }
+
+  // Calculate statistics
+  const fullyConfirmedGuests = useMemo(() => {
+    return filteredGuests.filter(guest => {
+      const totalInGroup = 1 + (guest.spouse ? 1 : 0) + (guest.children?.length || 0) + (guest.companions?.length || 0)
+      let confirmedInGroup = 0
+
+      if (guest.isConfirmed) confirmedInGroup += 1
+      if (guest.spouse && guest.spouseConfirmation) confirmedInGroup += 1
+      if (guest.children && guest.childrenConfirmations) {
+        guest.children.forEach(child => {
+          if (guest.childrenConfirmations?.[child]) confirmedInGroup += 1
+        })
+      }
+      if (guest.companions && guest.companionsConfirmations) {
+        guest.companions.forEach(companion => {
+          if (guest.companionsConfirmations?.[companion]) confirmedInGroup += 1
+        })
+      }
+
+      return confirmedInGroup === totalInGroup
+    }).length
+  }, [filteredGuests])
+
+  const partiallyConfirmedGuests = useMemo(() => {
+    return filteredGuests.filter(guest => {
+      const totalInGroup = 1 + (guest.spouse ? 1 : 0) + (guest.children?.length || 0) + (guest.companions?.length || 0)
+      let confirmedInGroup = 0
+
+      if (guest.isConfirmed) confirmedInGroup += 1
+      if (guest.spouse && guest.spouseConfirmation) confirmedInGroup += 1
+      if (guest.children && guest.childrenConfirmations) {
+        guest.children.forEach(child => {
+          if (guest.childrenConfirmations?.[child]) confirmedInGroup += 1
+        })
+      }
+      if (guest.companions && guest.companionsConfirmations) {
+        guest.companions.forEach(companion => {
+          if (guest.companionsConfirmations?.[companion]) confirmedInGroup += 1
+        })
+      }
+
+      return confirmedInGroup > 0 && confirmedInGroup < totalInGroup
+    }).length
+  }, [filteredGuests])
+
+  const notConfirmedGuests = useMemo(() => {
+    return filteredGuests.filter(guest => {
+      const totalInGroup = 1 + (guest.spouse ? 1 : 0) + (guest.children?.length || 0) + (guest.companions?.length || 0)
+      let confirmedInGroup = 0
+
+      if (guest.isConfirmed) confirmedInGroup += 1
+      if (guest.spouse && guest.spouseConfirmation) confirmedInGroup += 1
+      if (guest.children && guest.childrenConfirmations) {
+        guest.children.forEach(child => {
+          if (guest.childrenConfirmations?.[child]) confirmedInGroup += 1
+        })
+      }
+      if (guest.companions && guest.companionsConfirmations) {
+        guest.companions.forEach(companion => {
+          if (guest.companionsConfirmations?.[companion]) confirmedInGroup += 1
+        })
+      }
+
+      return confirmedInGroup === 0
+    }).length
+  }, [filteredGuests])
+
+  const totalGuests = filteredGuests.length
+
   const statsCards = [
     {
-      title: 'Convidados',
+      title: 'Total de Convidados',
       value: totalGuests,
       bgColor: 'bg-blue-100',
       textColor: 'text-blue-600',
     },
     {
-      title: 'Total de Pessoas',
-      value: totalAttendees,
-      bgColor: 'bg-purple-100',
-      textColor: 'text-purple-600',
-    },
-    {
-      title: 'Confirmados',
-      value: confirmedGuests,
+      title: 'Totalmente Confirmados',
+      value: fullyConfirmedGuests,
       bgColor: 'bg-green-100',
       textColor: 'text-green-600',
     },
     {
-      title: 'Pessoas Confirmadas',
-      value: confirmedAttendees,
-      bgColor: 'bg-emerald-100',
-      textColor: 'text-emerald-600',
+      title: 'Parcialmente Confirmados',
+      value: partiallyConfirmedGuests,
+      bgColor: 'bg-yellow-100',
+      textColor: 'text-yellow-600',
+    },
+    {
+      title: 'Não Confirmados',
+      value: notConfirmedGuests,
+      bgColor: 'bg-red-100',
+      textColor: 'text-red-600',
     },
   ]
 
@@ -168,17 +272,17 @@ export default function AdminGuestsPage() {
         </DialogContent>
       </Dialog>
 
-      <div className="container mx-auto px-4 mt-10">
+      <div className="container mx-auto px-2 sm:px-4 mt-4 sm:mt-10">
         {/* Guest Statistics */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 mb-4 sm:mb-8">
           {statsCards.map((card, index) => (
             <Card
               key={index}
               className={`${card.bgColor} ${card.textColor} border-black shadow-sm hover:shadow-md transition-shadow duration-200`}>
-              <CardContent className="pt-6 pb-6">
+              <CardContent className="pt-3 pb-3 sm:pt-6 sm:pb-6">
                 <div className="text-center">
-                  <h3 className="text-3xl font-bold mb-1">{card.value}</h3>
-                  <p className="text-sm font-medium opacity-80">{card.title}</p>
+                  <h3 className="text-xl sm:text-3xl font-bold mb-1">{card.value}</h3>
+                  <p className="text-xs sm:text-sm font-medium opacity-80">{card.title}</p>
                 </div>
               </CardContent>
             </Card>
@@ -186,27 +290,65 @@ export default function AdminGuestsPage() {
         </div>
 
         <Card className="rounded-lg shadow-sm border-black bg-white">
-          <CardHeader className="flex flex-row items-center justify-between pb-4 border-b border-black">
-            <CardTitle className="text-2xl font-bold text-gray-900">Convidados</CardTitle>
+          <CardHeader className="flex flex-col sm:flex-row sm:items-center sm:justify-between pb-4 border-b border-black space-y-4 sm:space-y-0">
+            <CardTitle className="text-xl sm:text-2xl font-bold text-gray-900">Convidados</CardTitle>
             <AdminProtected>
-              <div className="flex gap-2">
+              <div className="flex flex-col sm:flex-row gap-2">
                 <Button
                   onClick={() => setIsImportDialogOpen(true)}
                   variant="outline"
+                  size="sm"
                   className="shadow-sm hover:shadow-md transition-shadow border-black">
                   <Upload className="h-4 w-4 mr-2" />
-                  Importar Convidados
+                  Importar
                 </Button>
-                <Button asChild className="shadow-sm hover:shadow-md transition-shadow border-black">
-                  <Link href={routes.frontend.admin.convidados.create}>Adicionar Convidado</Link>
+                <Button asChild size="sm" className="shadow-sm hover:shadow-md transition-shadow border-black">
+                  <Link href={routes.frontend.admin.convidados.create}>Adicionar</Link>
                 </Button>
               </div>
             </AdminProtected>
           </CardHeader>
 
+          {/* Legenda do Sistema de Confirmações - Hidden on mobile */}
+          <div className="hidden sm:block px-6 py-4 bg-blue-50 border-b border-gray-200">
+            <div className="space-y-3">
+              <h3 className="font-semibold text-gray-900 text-sm">Sistema de Confirmações</h3>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 text-xs">
+                <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-1">
+                    <Users className="w-3 h-3 text-gray-600" />
+                    <span className="text-gray-700">Principal</span>
+                  </div>
+                  <Heart className="w-3 h-3 text-pink-600" />
+                  <span className="text-gray-700">Cônjuge</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-1">
+                    <Baby className="w-3 h-3 text-blue-600" />
+                    <span className="text-gray-700">Filhos</span>
+                  </div>
+                  <UserPlus className="w-3 h-3 text-purple-600" />
+                  <span className="text-gray-700">Outros</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-1">
+                    <Check className="w-3 h-3 text-green-600" />
+                    <span className="text-gray-700">Confirmado</span>
+                  </div>
+                  <X className="w-3 h-3 text-red-600" />
+                  <span className="text-gray-700">Não confirmado</span>
+                </div>
+              </div>
+              <div className="text-xs text-gray-600">
+                <span className="font-medium">Formato:</span> Confirmados/Total - Cada pessoa do grupo pode confirmar
+                individualmente
+              </div>
+            </div>
+          </div>
+
           {/* Filters Section */}
-          <div className="px-6 py-4 border-b border-black bg-gray-50/50">
-            <div className="flex flex-col sm:flex-row gap-4">
+          <div className="px-3 sm:px-6 py-4 border-b border-black bg-gray-50/50">
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
               {/* Name Filter */}
               <div className="flex-1">
                 <div className="relative">
@@ -224,7 +366,7 @@ export default function AdminGuestsPage() {
               <div className="sm:w-48">
                 <Select
                   value={statusFilter}
-                  onValueChange={(value: 'all' | 'confirmed' | 'unconfirmed') => setStatusFilter(value)}>
+                  onValueChange={(value: 'all' | 'confirmed' | 'unconfirmed' | 'partial') => setStatusFilter(value)}>
                   <SelectTrigger className="bg-white border-black focus:border-gray-900 focus:ring-gray-900/20 shadow-sm">
                     <SelectValue placeholder="Status" />
                   </SelectTrigger>
@@ -233,10 +375,13 @@ export default function AdminGuestsPage() {
                       Todos
                     </SelectItem>
                     <SelectItem value="confirmed" className="hover:bg-green-50 text-green-700">
-                      Confirmados
+                      Totalmente Confirmados
                     </SelectItem>
-                    <SelectItem value="unconfirmed" className="hover:bg-yellow-50 text-yellow-700">
-                      Pendentes
+                    <SelectItem value="partial" className="hover:bg-yellow-50 text-yellow-700">
+                      Parcialmente Confirmados
+                    </SelectItem>
+                    <SelectItem value="unconfirmed" className="hover:bg-red-50 text-red-700">
+                      Não Confirmados
                     </SelectItem>
                   </SelectContent>
                 </Select>
@@ -257,118 +402,54 @@ export default function AdminGuestsPage() {
                 <div className="animate-pulse">Carregando...</div>
               </div>
             ) : (
-              <div className="overflow-x-auto">
-                <Table>
-                  <TableHeader className="bg-gray-50/50">
-                    <TableRow className="border-black">
-                      <TableHead className="font-semibold text-gray-700 px-6">Nome</TableHead>
-                      <TableHead className="text-center font-semibold text-gray-700">Grupo</TableHead>
-                      <TableHead className="text-center font-semibold text-gray-700">Confirmado</TableHead>
-                      <TableHead className="font-semibold text-gray-700">Link de Convite</TableHead>
-                      <AdminProtected>
-                        <TableHead className="text-center font-semibold text-gray-700">Ações</TableHead>
-                      </AdminProtected>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {filteredGuests.length > 0 ? (
-                      filteredGuests.map(guest => {
-                        const partySize =
-                          1 + (guest.spouse ? 1 : 0) + (guest.children?.length || 0) + (guest.companions?.length || 0)
-                        const familyMembers = []
-                        if (guest.spouse) familyMembers.push(guest.spouse)
-                        if (guest.children?.length) familyMembers.push(...guest.children) // filhos
-                        if (guest.companions?.length) familyMembers.push(...guest.companions)
+              <>
+                {/* Mobile View */}
+                <div className="block sm:hidden">
+                  {filteredGuests.length > 0 ? (
+                    <div className="space-y-3 p-3">
+                      {filteredGuests.map(guest => (
+                        <MobileGuestCard
+                          key={guest.id}
+                          guest={guest}
+                          baseUrl={baseUrl}
+                          onDeleteClick={handleDeleteClick}
+                        />
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="text-center text-gray-500 py-12">
+                      <div className="flex flex-col items-center gap-2">
+                        <div className="text-gray-400 text-lg">
+                          {nameFilter || statusFilter !== 'all'
+                            ? 'Nenhum convidado encontrado com os filtros aplicados'
+                            : 'Nenhum convidado cadastrado'}
+                        </div>
+                        {(nameFilter || statusFilter !== 'all') && (
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={handleClearFilters}
+                            className="mt-2 border-black">
+                            Limpar filtros
+                          </Button>
+                        )}
+                      </div>
+                    </div>
+                  )}
+                </div>
 
-                        return (
-                          <TableRow key={guest.id} className="border-black hover:bg-gray-50/50 transition-colors">
-                            <TableCell className="px-6 py-4">
-                              <div>
-                                <div className="font-medium text-gray-900">{guest.name}</div>
-                                {familyMembers.length > 0 && (
-                                  <div className="text-sm text-gray-500 mt-1">{familyMembers.join(', ')}</div>
-                                )}
-                              </div>
-                            </TableCell>
-                            <TableCell className="text-center py-4">
-                              <div className="flex justify-center">
-                                <span className="inline-flex items-center justify-center w-8 h-8 rounded-full text-sm font-medium bg-blue-100 text-blue-700 border border-blue-200">
-                                  {partySize}
-                                </span>
-                              </div>
-                            </TableCell>
-                            <TableCell className="text-center py-4">
-                              <div className="flex justify-center">
-                                <span
-                                  className={`inline-flex items-center justify-center w-6 h-6 rounded-full text-xs font-medium border-black ${
-                                    guest.isConfirmed ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'
-                                  }`}
-                                  aria-label={guest.isConfirmed ? 'Confirmado' : 'Não confirmado'}>
-                                  {guest.isConfirmed ? '✓' : '?'}
-                                </span>
-                              </div>
-                            </TableCell>
-                            <TableCell className="py-4">
-                              <div className="flex items-center gap-2">
-                                <Input
-                                  readOnly
-                                  value={`${baseUrl}/confirmacao/${guest.token}`}
-                                  className="flex-1 text-sm bg-gray-50 border-black text-gray-600"
-                                />
-                                <CopyToClipboard text={`${baseUrl}/confirmacao/${guest.token}`} />
-                              </div>
-                            </TableCell>
-                            <AdminProtected>
-                              <TableCell className="text-center py-4">
-                                <div className="flex gap-2 justify-center">
-                                  <Button
-                                    asChild
-                                    variant="outline"
-                                    size="sm"
-                                    className="shadow-sm hover:shadow-md transition-shadow border-black">
-                                    <Link href={routes.frontend.admin.convidados.edit(guest.id)}>Editar</Link>
-                                  </Button>
-                                  <Button
-                                    onClick={() => handleDeleteClick(guest)}
-                                    variant="destructive"
-                                    size="sm"
-                                    className="shadow-sm hover:shadow-md transition-shadow border-black">
-                                    Excluir
-                                  </Button>
-                                </div>
-                              </TableCell>
-                            </AdminProtected>
-                          </TableRow>
-                        )
-                      })
-                    ) : (
-                      <TableRow>
-                        <TableCell colSpan={5} className="text-center text-gray-500 py-12">
-                          <div className="flex flex-col items-center gap-2">
-                            <div className="text-gray-400 text-lg">
-                              {nameFilter || statusFilter !== 'all'
-                                ? 'Nenhum convidado encontrado com os filtros aplicados'
-                                : 'Nenhum convidado cadastrado'}
-                            </div>
-                            {(nameFilter || statusFilter !== 'all') && (
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => {
-                                  setNameFilter('')
-                                  setStatusFilter('all')
-                                }}
-                                className="mt-2 border-black">
-                                Limpar filtros
-                              </Button>
-                            )}
-                          </div>
-                        </TableCell>
-                      </TableRow>
-                    )}
-                  </TableBody>
-                </Table>
-              </div>
+                {/* Desktop View */}
+                <div className="hidden sm:block">
+                  <DesktopGuestTable
+                    guests={filteredGuests}
+                    baseUrl={baseUrl}
+                    onDeleteClick={handleDeleteClick}
+                    nameFilter={nameFilter}
+                    statusFilter={statusFilter}
+                    onClearFilters={handleClearFilters}
+                  />
+                </div>
+              </>
             )}
           </CardContent>
         </Card>

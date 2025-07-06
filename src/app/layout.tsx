@@ -11,6 +11,7 @@ const geist = Geist({
   variable: '--font-geist-sans',
   subsets: ['latin'],
   weight: ['400', '500', '600', '700'],
+  display: 'swap',
 })
 
 export const metadata: Metadata = {
@@ -25,7 +26,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="pt-BR">
-      <body className={geist.variable}>
+      <body className={`${geist.variable} font-sans antialiased`}>
         <Providers>
           <AuthProvider>{children}</AuthProvider>
           <Toaster

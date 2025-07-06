@@ -22,6 +22,9 @@ export interface Guest {
   children: string[]
   companions: string[]
   isConfirmed: boolean
+  spouseConfirmation?: boolean
+  childrenConfirmations?: Record<string, boolean>
+  companionsConfirmations?: Record<string, boolean>
   token: string
   createdAt: string
   updatedAt: string | null
