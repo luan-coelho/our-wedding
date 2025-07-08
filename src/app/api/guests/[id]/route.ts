@@ -79,10 +79,7 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
       }
 
       const duplicateGuest = await db.query.tableGuests.findFirst({
-        where: and(
-          eq(tableGuests.name, nameToCheck),
-          ne(tableGuests.id, id)
-        ),
+        where: and(eq(tableGuests.name, nameToCheck), ne(tableGuests.id, id)),
       })
 
       if (duplicateGuest) {
@@ -131,10 +128,7 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
     // Check for duplicate name (excluding current guest)
     const nameToCheck = name.trim()
     const duplicateGuest = await db.query.tableGuests.findFirst({
-      where: and(
-        eq(tableGuests.name, nameToCheck),
-        ne(tableGuests.id, id)
-      ),
+      where: and(eq(tableGuests.name, nameToCheck), ne(tableGuests.id, id)),
     })
 
     if (duplicateGuest) {

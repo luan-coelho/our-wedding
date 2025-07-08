@@ -107,6 +107,36 @@ export async function bulkImportGuests(names: string[]): Promise<{
   }>(response)
 }
 
+/**
+ * Busca um convidado por código de confirmação de 6 dígitos
+ */
+export async function getGuestByCode(code: string): Promise<Guest> {
+  const response = await fetch(`/api/confirmacao/code/${code}`)
+  return handleApiResponse<Guest>(response)
+}
+
+/**
+ * Confirma presença de um convidado usando código de confirmação
+ */
+export async function confirmGuestByCode(
+  code: string,
+  data: {
+    isConfirmed: boolean
+    spouseConfirmation?: boolean
+    childrenConfirmations?: Record<string, boolean>
+    companionsConfirmations?: Record<string, boolean>
+  },
+): Promise<Guest> {
+  const response = await fetch(`/api/confirmacao/code/${code}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(data),
+  })
+  return handleApiResponse<Guest>(response)
+}
+
 // ============================================================================
 // GUESTS SERVICE OBJECT - Exportação organizada de todas as funções
 // ============================================================================
@@ -119,4 +149,6 @@ export const guestsService = {
   delete: deleteGuest,
   confirm: confirmGuest,
   bulkImport: bulkImportGuests,
+  getByCode: getGuestByCode,
+  confirmByCode: confirmGuestByCode,
 } as const

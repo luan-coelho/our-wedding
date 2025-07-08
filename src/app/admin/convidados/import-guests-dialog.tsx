@@ -227,11 +227,7 @@ export function ImportGuestsDialog({ open, onOpenChange }: ImportGuestsDialogPro
         </div>
 
         <DialogFooter className="gap-2 flex-shrink-0">
-          <Button
-            variant="outline"
-            onClick={handleClose}
-            disabled={importMutation.isPending}
-            className="border-black">
+          <Button variant="outline" onClick={handleClose} disabled={importMutation.isPending} className="border-black">
             Cancelar
           </Button>
           <Button

@@ -207,9 +207,7 @@ export default function UsuariosPage() {
                     <FormControl>
                       <Input {...field} />
                     </FormControl>
-                    <FormDescription>
-                      O nome do usuário será exibido no sistema
-                    </FormDescription>
+                    <FormDescription>O nome do usuário será exibido no sistema</FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -281,8 +279,8 @@ export default function UsuariosPage() {
           <AlertDialogHeader>
             <AlertDialogTitle>Remover acesso</AlertDialogTitle>
             <AlertDialogDescription>
-              Tem certeza que deseja remover o acesso de <strong>{userToRemove?.email || 'este usuário'}</strong>? O usuário não poderá
-              mais acessar o sistema.
+              Tem certeza que deseja remover o acesso de <strong>{userToRemove?.email || 'este usuário'}</strong>? O
+              usuário não poderá mais acessar o sistema.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

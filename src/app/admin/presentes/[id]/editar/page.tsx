@@ -133,9 +133,9 @@ export default function EditGiftPage() {
       // Garantir que pixKeyId seja null se for string vazia ou undefined
       pixKeyId: formData.pixKey
         ? null
-        : (formData.selectedPixKeyId && formData.selectedPixKeyId.trim() !== ''
+        : formData.selectedPixKeyId && formData.selectedPixKeyId.trim() !== ''
           ? formData.selectedPixKeyId
-          : null),
+          : null,
     }
 
     updateMutation.mutate(processedData as unknown as GiftFormData)
@@ -159,7 +159,7 @@ export default function EditGiftPage() {
     }
 
     // Trigger validation before showing preview
-    form.trigger('imageUrl').then((isValid) => {
+    form.trigger('imageUrl').then(isValid => {
       if (isValid) {
         setImagePreview(imageUrl)
         toast.success('Carregando prévia da imagem...')
@@ -298,9 +298,7 @@ export default function EditGiftPage() {
                           render={({ field }) => (
                             <FormItem>
                               <FormControl>
-                                <Select
-                                  onValueChange={value => field.onChange(value)}
-                                  value={field.value || undefined}>
+                                <Select onValueChange={value => field.onChange(value)} value={field.value || undefined}>
                                   <SelectTrigger className="w-full">
                                     <SelectValue placeholder="Selecione uma chave PIX" />
                                   </SelectTrigger>

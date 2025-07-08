@@ -29,7 +29,7 @@ interface GuestFormProps {
 
 export default function GuestForm({ guest }: GuestFormProps) {
   const router = useRouter()
-  const queryClient = useQueryClient() 
+  const queryClient = useQueryClient()
   const isEditing = !!guest
 
   const form = useForm<any>({
@@ -43,12 +43,20 @@ export default function GuestForm({ guest }: GuestFormProps) {
   })
 
   // Field arrays for dynamic lists
-  const { fields: childrenFields, append: appendChild, remove: removeChild } = useFieldArray({
+  const {
+    fields: childrenFields,
+    append: appendChild,
+    remove: removeChild,
+  } = useFieldArray({
     control: form.control,
     name: 'children',
   })
 
-  const { fields: companionsFields, append: appendCompanion, remove: removeCompanion } = useFieldArray({
+  const {
+    fields: companionsFields,
+    append: appendCompanion,
+    remove: removeCompanion,
+  } = useFieldArray({
     control: form.control,
     name: 'companions',
   })
@@ -199,8 +207,7 @@ export default function GuestForm({ guest }: GuestFormProps) {
                     variant="outline"
                     size="sm"
                     onClick={() => appendChild('')}
-                    className="border-black hover:bg-gray-50"
-                  >
+                    className="border-black hover:bg-gray-50">
                     <Plus className="h-4 w-4 mr-1" />
                     Adicionar Filho
                   </Button>
@@ -221,9 +228,7 @@ export default function GuestForm({ guest }: GuestFormProps) {
                           name={`children.${index}`}
                           render={({ field }) => (
                             <FormItem className="flex-1">
-                              <FormLabel className="text-sm font-medium text-gray-700">
-                                Filho {index + 1}
-                              </FormLabel>
+                              <FormLabel className="text-sm font-medium text-gray-700">Filho {index + 1}</FormLabel>
                               <FormControl>
                                 <Input
                                   {...field}
@@ -240,8 +245,7 @@ export default function GuestForm({ guest }: GuestFormProps) {
                           variant="outline"
                           size="sm"
                           onClick={() => removeChild(index)}
-                          className="border-red-300 text-red-600 hover:bg-red-50 hover:border-red-400"
-                        >
+                          className="border-red-300 text-red-600 hover:bg-red-50 hover:border-red-400">
                           <Minus className="h-4 w-4" />
                         </Button>
                       </div>
@@ -262,8 +266,7 @@ export default function GuestForm({ guest }: GuestFormProps) {
                     variant="outline"
                     size="sm"
                     onClick={() => appendCompanion('')}
-                    className="border-black hover:bg-gray-50"
-                  >
+                    className="border-black hover:bg-gray-50">
                     <Plus className="h-4 w-4 mr-1" />
                     Adicionar Acompanhante
                   </Button>
@@ -273,7 +276,9 @@ export default function GuestForm({ guest }: GuestFormProps) {
                   <div className="text-center py-6 text-gray-500 bg-gray-50 rounded-lg border border-gray-200">
                     <UserPlus className="h-8 w-8 mx-auto mb-2 text-gray-400" />
                     <p>Nenhum acompanhante adicionado</p>
-                    <p className="text-sm">Clique em "Adicionar Acompanhante" para incluir outros familiares ou amigos</p>
+                    <p className="text-sm">
+                      Clique em "Adicionar Acompanhante" para incluir outros familiares ou amigos
+                    </p>
                   </div>
                 ) : (
                   <div className="space-y-3">
@@ -303,8 +308,7 @@ export default function GuestForm({ guest }: GuestFormProps) {
                           variant="outline"
                           size="sm"
                           onClick={() => removeCompanion(index)}
-                          className="border-red-300 text-red-600 hover:bg-red-50 hover:border-red-400"
-                        >
+                          className="border-red-300 text-red-600 hover:bg-red-50 hover:border-red-400">
                           <Minus className="h-4 w-4" />
                         </Button>
                       </div>
@@ -321,8 +325,7 @@ export default function GuestForm({ guest }: GuestFormProps) {
                 <Button
                   type="submit"
                   disabled={saveMutation.isPending}
-                  className="border-black shadow-sm hover:shadow-md transition-shadow"
-                >
+                  className="border-black shadow-sm hover:shadow-md transition-shadow">
                   {saveMutation.isPending ? 'Salvando...' : isEditing ? 'Atualizar Convidado' : 'Adicionar Convidado'}
                 </Button>
               </div>

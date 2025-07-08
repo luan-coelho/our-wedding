@@ -1,7 +1,7 @@
 // Simple test to verify URL validation logic
 // This can be run with: node test-url-validation.js
 
-const isValidImageUrl = (url) => {
+const isValidImageUrl = url => {
   // Check if it's a valid URL format
   try {
     const urlObj = new URL(url)
@@ -15,12 +15,12 @@ const isValidImageUrl = (url) => {
   // Check if URL ends with common image extensions
   const imageExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.svg']
   const lowercaseUrl = url.toLowerCase()
-  
+
   // Check for direct image extensions
   if (imageExtensions.some(ext => lowercaseUrl.endsWith(ext))) {
     return true
   }
-  
+
   // Check for image extensions with query parameters
   const urlWithoutQuery = lowercaseUrl.split('?')[0]
   return imageExtensions.some(ext => urlWithoutQuery.endsWith(ext))
@@ -36,7 +36,7 @@ const testCases = [
   { url: 'https://example.com/image.webp', expected: true, description: 'Valid WebP' },
   { url: 'https://example.com/image.svg', expected: true, description: 'Valid SVG' },
   { url: 'https://example.com/image.jpg?v=123', expected: true, description: 'Valid with query params' },
-  
+
   // Invalid URLs
   { url: 'ftp://example.com/image.jpg', expected: false, description: 'Invalid protocol (FTP)' },
   { url: 'https://example.com/document.pdf', expected: false, description: 'Not an image file' },
@@ -54,7 +54,7 @@ let failed = 0
 testCases.forEach((testCase, index) => {
   const result = isValidImageUrl(testCase.url)
   const success = result === testCase.expected
-  
+
   if (success) {
     console.log(`✅ Test ${index + 1}: ${testCase.description}`)
     passed++

@@ -87,9 +87,9 @@ export default function AddGiftPage() {
       // Garantir que pixKeyId seja null se for string vazia ou undefined
       pixKeyId: formData.pixKey
         ? null
-        : (formData.selectedPixKeyId && formData.selectedPixKeyId.trim() !== ''
+        : formData.selectedPixKeyId && formData.selectedPixKeyId.trim() !== ''
           ? formData.selectedPixKeyId
-          : null),
+          : null,
     }
 
     createGiftMutation.mutate(processedData as unknown as GiftFormData)
@@ -113,7 +113,7 @@ export default function AddGiftPage() {
     }
 
     // Trigger validation before showing preview
-    form.trigger('imageUrl').then((isValid) => {
+    form.trigger('imageUrl').then(isValid => {
       if (isValid) {
         setImagePreview(imageUrl)
         toast.success('Carregando prévia da imagem...')
@@ -216,7 +216,7 @@ export default function AddGiftPage() {
                           <Input
                             placeholder="Informar chave PIX personalizada"
                             {...field}
-                            onChange={(e) => {
+                            onChange={e => {
                               field.onChange(e)
                               // Clear selected PIX key when custom key is entered
                               if (e.target.value) {

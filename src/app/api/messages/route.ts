@@ -12,7 +12,7 @@ export async function GET() {
     // Garantir que todas as datas sejam strings ISO
     const messagesWithFormattedDates = messagesList.map(message => ({
       ...message,
-      createdAt: message.createdAt?.toISOString() || new Date().toISOString()
+      createdAt: message.createdAt?.toISOString() || new Date().toISOString(),
     }))
 
     return NextResponse.json(messagesWithFormattedDates, { status: 200 })
@@ -33,15 +33,18 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Nome e mensagem são obrigatórios' }, { status: 400 })
     }
 
-    const [newMessage] = await db.insert(tableMessages).values({
-      name,
-      content: message,
-    }).returning()
+    const [newMessage] = await db
+      .insert(tableMessages)
+      .values({
+        name,
+        content: message,
+      })
+      .returning()
 
     // Garantir que createdAt seja uma string ISO
     const messageWithFormattedDate = {
       ...newMessage,
-      createdAt: newMessage.createdAt?.toISOString() || new Date().toISOString()
+      createdAt: newMessage.createdAt?.toISOString() || new Date().toISOString(),
     }
 
     return NextResponse.json(messageWithFormattedDate, { status: 201 })

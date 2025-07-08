@@ -1,24 +1,24 @@
 'use client'
 
-import { useState } from 'react'
-import { useRouter } from 'next/navigation'
-import { Button } from '@/components/ui/button'
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { Alert, AlertDescription } from '@/components/ui/alert'
+import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import {
-  CheckCircle,
-  XCircle,
-  Loader2,
-  AlertCircle,
-  PartyPopper,
-  HeartHandshake,
-  Users,
-  Heart,
-  Baby,
-  UserPlus,
-} from 'lucide-react'
 import { Label } from '@/components/ui/label'
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
+import {
+  AlertCircle,
+  Baby,
+  CheckCircle,
+  Heart,
+  HeartHandshake,
+  Loader2,
+  PartyPopper,
+  UserPlus,
+  Users,
+} from 'lucide-react'
+import { useRouter } from 'next/navigation'
+import { useState } from 'react'
+import { toast } from 'sonner'
 
 interface Guest {
   id: string
@@ -111,19 +111,6 @@ export default function ConfirmationForm({ guest }: ConfirmationFormProps) {
     }
   }
 
-  const getPersonTypeLabel = (type: PersonConfirmation['type']) => {
-    switch (type) {
-      case 'main':
-        return 'Convidado Principal'
-      case 'spouse':
-        return 'Cônjuge'
-      case 'child':
-        return 'Filho(a)'
-      case 'companion':
-        return 'Acompanhante'
-    }
-  }
-
   const getPersonTypeColor = (type: PersonConfirmation['type']) => {
     switch (type) {
       case 'main':
@@ -181,6 +168,7 @@ export default function ConfirmationForm({ guest }: ConfirmationFormProps) {
       router.refresh()
     } catch (error) {
       setConfirmationStatus('error')
+      toast.error(error instanceof Error ? error.message : 'Falha ao confirmar presença')
     } finally {
       setIsSubmitting(false)
     }
@@ -217,12 +205,9 @@ export default function ConfirmationForm({ guest }: ConfirmationFormProps) {
           {confirmations.map((person, index) => (
             <Card key={`${person.type}-${person.name}`} className="border-2 transition-all hover:shadow-lg h-full">
               <CardHeader className="pb-2 px-3 sm:px-4">
-                <CardTitle className="text-sm sm:text-base font-semibold flex items-center gap-2">
+                <CardTitle className="text-sm sm:text-base font-semibold flex items-center justify-center gap-2">
                   <span className={getPersonTypeColor(person.type)}>{getPersonIcon(person.type)}</span>
-                  <div className="flex flex-col min-w-0 flex-1">
-                    <span className="text-wedding-charcoal truncate">{person.name}</span>
-                    <span className="text-xs text-muted-foreground font-normal">{getPersonTypeLabel(person.type)}</span>
-                  </div>
+                  <span className="text-wedding-charcoal truncate">{person.name}</span>
                 </CardTitle>
               </CardHeader>
               <CardContent className="pt-0 px-3 sm:px-4 pb-3 sm:pb-4">

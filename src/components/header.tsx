@@ -32,7 +32,7 @@ export default function Header() {
       <div className="wedding-container">
         <div className="flex items-center justify-between py-4">
           <Link href={routes.frontend.home} className="text-2xl font-bold text-wedding-primary">
-            Ester <span className="font-serif italic text-wedding-accent">&</span> Luan
+            Luan <span className="font-serif italic text-wedding-accent">&</span> Ester
           </Link>
 
           {/* Desktop nav */}

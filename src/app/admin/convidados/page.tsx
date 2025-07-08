@@ -311,8 +311,40 @@ export default function AdminGuestsPage() {
 
           {/* Legenda do Sistema de Confirmações - Hidden on mobile */}
           <div className="hidden sm:block px-6 py-4 bg-blue-50 border-b border-gray-200">
-            <div className="space-y-3">
+            <div className="space-y-4">
               <h3 className="font-semibold text-gray-900 text-sm">Sistema de Confirmações</h3>
+
+              {/* Códigos de Confirmação */}
+              <div className="bg-white p-3 rounded-lg border border-blue-200">
+                <h4 className="font-medium text-gray-800 text-xs mb-2">💡 Códigos de Confirmação</h4>
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 text-xs">
+                  <div className="flex items-start gap-2">
+                    <div className="font-mono text-sm bg-blue-100 px-2 py-1 rounded border">123456</div>
+                    <div>
+                      <div className="font-medium text-gray-800">Código de 6 dígitos</div>
+                      <div className="text-gray-600">Para digitar na página inicial</div>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <div className="text-blue-600 font-medium bg-blue-50 px-2 py-1 rounded border">🔗 Link</div>
+                    <div>
+                      <div className="font-medium text-gray-800">URL direta</div>
+                      <div className="text-gray-600">Para enviar por WhatsApp/Email</div>
+                    </div>
+                  </div>
+                </div>
+                <div className="mt-3 p-2 bg-amber-50 rounded border border-amber-200">
+                  <div className="text-xs text-amber-800">
+                    <span className="font-medium">📋 Como funciona:</span> O convidado acessa a página inicial e:
+                    <br />• <strong>Digita o código de 6 dígitos</strong> OU
+                    <br />• <strong>Clica no link direto</strong> (exemplo:{' '}
+                    <span className="font-mono">/?code=123456</span>)
+                    <br />• <strong>Confirma a presença</strong> de cada pessoa individualmente
+                  </div>
+                </div>
+              </div>
+
+              {/* Tipos de Pessoas */}
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 text-xs">
                 <div className="flex items-center gap-2">
                   <div className="flex items-center gap-1">

@@ -1,7 +1,7 @@
 import { auth } from '@/auth'
 import { routes } from './lib/routes'
 
-export default auth((req) => {
+export default auth(req => {
   const pathname = req.nextUrl.pathname
 
   // Ignorar rotas de autenticação

@@ -32,11 +32,8 @@ export const routes = {
     presentes: '/presentes',
     mensagens: '/mensagens',
     confirmacao: '/confirmacao',
-    nossamistoria: '/nossa-historia', // Adicionada rota faltante
-
-    // Confirmação com token
+    nossamistoria: '/nossa-historia',
     confirmacaoToken: (token: string) => `/confirmacao/${validateToken(token)}`,
-
     // Área administrativa
     admin: {
       home: '/admin',
@@ -147,16 +144,16 @@ export const routeUtils = {
    */
   getPageDisplayName: (routeSegment: string): string => {
     const pageMap: Record<string, string> = {
-      'admin': 'Administração',
-      'convidados': 'Convidados',
-      'presentes': 'Lista de Presentes',
+      admin: 'Administração',
+      convidados: 'Convidados',
+      presentes: 'Lista de Presentes',
       'chaves-pix': 'Chaves PIX',
-      'usuarios': 'Usuários',
-      'novo': 'Novo',
-      'editar': 'Editar',
-      'mensagens': 'Mensagens',
-      'localizacao': 'Localização',
-      'confirmacao': 'Confirmação',
+      usuarios: 'Usuários',
+      novo: 'Novo',
+      editar: 'Editar',
+      mensagens: 'Mensagens',
+      localizacao: 'Localização',
+      confirmacao: 'Confirmação',
       'nossa-historia': 'Nossa História',
     }
     return pageMap[routeSegment] || routeSegment

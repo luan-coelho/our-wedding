@@ -26,6 +26,7 @@ export interface Guest {
   childrenConfirmations?: Record<string, boolean>
   companionsConfirmations?: Record<string, boolean>
   token: string
+  confirmationCode: string
   createdAt: string
   updatedAt: string | null
 }

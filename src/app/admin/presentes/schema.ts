@@ -36,7 +36,7 @@ export const giftSchema = z.object({
     .string()
     .min(1, 'URL da imagem é obrigatória')
     .refine(
-      (url) => {
+      url => {
         try {
           new URL(url)
           return true
@@ -46,10 +46,10 @@ export const giftSchema = z.object({
       },
       {
         message: 'URL deve ser válida e começar com http:// ou https://',
-      }
+      },
     )
     .refine(
-      (url) => {
+      url => {
         try {
           const urlObj = new URL(url)
           return ['http:', 'https:'].includes(urlObj.protocol)
@@ -59,14 +59,11 @@ export const giftSchema = z.object({
       },
       {
         message: 'URL deve começar com http:// ou https://',
-      }
+      },
     )
-    .refine(
-      (url) => isValidImageUrl(url),
-      {
-        message: 'URL deve apontar para um arquivo de imagem (.jpg, .jpeg, .png, .gif, .webp, .svg)',
-      }
-    ),
+    .refine(url => isValidImageUrl(url), {
+      message: 'URL deve apontar para um arquivo de imagem (.jpg, .jpeg, .png, .gif, .webp, .svg)',
+    }),
 })
 
 export type GiftFormData = z.infer<typeof giftSchema>

@@ -9,19 +9,7 @@ import { Input } from '@/components/ui/input'
 import { CopyToClipboard } from '@/components/copy-to-clipboard'
 import { AdminProtected } from '@/components/roles'
 import { routes } from '@/lib/routes'
-import {
-  Check,
-  HelpCircle,
-  Users,
-  Heart,
-  Baby,
-  UserPlus,
-  X,
-  ChevronDown,
-  ChevronUp,
-  Eye,
-  EyeOff
-} from 'lucide-react'
+import { Check, HelpCircle, Users, Heart, Baby, UserPlus, X, ChevronDown, ChevronUp, Eye, EyeOff } from 'lucide-react'
 
 interface MobileGuestCardProps {
   guest: Guest
@@ -121,6 +109,20 @@ export function MobileGuestCard({ guest, baseUrl, onDeleteClick }: MobileGuestCa
           </div>
         </div>
 
+        {/* Confirmation Code */}
+        <div className="mb-3 text-center">
+          <div className="inline-flex flex-col items-center gap-1">
+            <div className="font-mono text-lg font-bold text-blue-600 bg-blue-50 px-3 py-1 rounded-lg border border-blue-200">
+              {guest.confirmationCode}
+            </div>
+            <div className="text-xs text-gray-500">Código de confirmação</div>
+            <div className="flex gap-1">
+              <CopyToClipboard text={guest.confirmationCode} />
+              <CopyToClipboard text={`${baseUrl}/?code=${guest.confirmationCode}`} label="Link" />
+            </div>
+          </div>
+        </div>
+
         {/* Main People (always visible) */}
         <div className="space-y-2 mb-3">
           {mainPeople.map((person, index) => (
@@ -130,12 +132,7 @@ export function MobileGuestCard({ guest, baseUrl, onDeleteClick }: MobileGuestCa
                 person.confirmed ? 'bg-green-50 border-green-200' : 'bg-red-50 border-red-200'
               }`}>
               <div className="flex items-center gap-2">
-                <span
-                  className={`${
-                    person.type === 'main' ? 'text-blue-600' : 'text-pink-600'
-                  }`}>
-                  {person.icon}
-                </span>
+                <span className={`${person.type === 'main' ? 'text-blue-600' : 'text-pink-600'}`}>{person.icon}</span>
                 <span
                   className={`font-medium truncate max-w-[150px] ${
                     person.confirmed ? 'text-green-800' : 'text-red-800'
@@ -165,7 +162,8 @@ export function MobileGuestCard({ guest, baseUrl, onDeleteClick }: MobileGuestCa
             <div className="flex items-center justify-center gap-2">
               {isExpanded ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
               <span>
-                {isExpanded ? 'Ocultar' : 'Mostrar'} {additionalPeople.length} {additionalPeople.length === 1 ? 'pessoa adicional' : 'pessoas adicionais'}
+                {isExpanded ? 'Ocultar' : 'Mostrar'} {additionalPeople.length}{' '}
+                {additionalPeople.length === 1 ? 'pessoa adicional' : 'pessoas adicionais'}
               </span>
               {isExpanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
             </div>
@@ -182,10 +180,7 @@ export function MobileGuestCard({ guest, baseUrl, onDeleteClick }: MobileGuestCa
                   person.confirmed ? 'bg-green-50 border-green-200' : 'bg-red-50 border-red-200'
                 }`}>
                 <div className="flex items-center gap-2">
-                  <span
-                    className={`${
-                      person.type === 'child' ? 'text-purple-600' : 'text-amber-600'
-                    }`}>
+                  <span className={`${person.type === 'child' ? 'text-purple-600' : 'text-amber-600'}`}>
                     {person.icon}
                   </span>
                   <span

@@ -9,10 +9,7 @@ interface WithRoleProps {
   allowedRoles: UserRoleType[]
 }
 
-export default function WithRole({
-  children,
-  allowedRoles,
-}: WithRoleProps) {
+export default function WithRole({ children, allowedRoles }: WithRoleProps) {
   const { data: session, status } = useSession()
 
   // Exibe um indicador de carregamento enquanto verifica a sessão
@@ -34,10 +31,7 @@ export default function WithRole({
 }
 
 // HOC para criar componentes protegidos por role
-export function withRole<P extends object>(
-  Component: ComponentType<P>,
-  allowedRoles: UserRoleType[]
-) {
+export function withRole<P extends object>(Component: ComponentType<P>, allowedRoles: UserRoleType[]) {
   return function WithRoleComponent(props: P) {
     return (
       <WithRole allowedRoles={allowedRoles}>
@@ -45,4 +39,4 @@ export function withRole<P extends object>(
       </WithRole>
     )
   }
-} 
+}

@@ -96,9 +96,7 @@ function LoginForm() {
         <div className="relative">
           <Separator className="bg-gray-200" />
           <div className="absolute inset-0 flex items-center justify-center">
-            <span className="bg-white px-3 text-xs text-gray-500 font-medium">
-              Acesso seguro e protegido
-            </span>
+            <span className="bg-white px-3 text-xs text-gray-500 font-medium">Acesso seguro e protegido</span>
           </div>
         </div>
       </div>
@@ -120,21 +118,13 @@ export default function LoginPage() {
           </div>
           <div className="space-y-3">
             <div className="space-y-1">
-              <h1 className="text-3xl lg:text-4xl font-bold text-gray-900 tracking-tight">
-                Luan & Ester
-              </h1>
-              <p className="text-lg text-gray-600 italic font-light">
-                Nosso Casamento
-              </p>
+              <h1 className="text-3xl lg:text-4xl font-bold text-gray-900 tracking-tight">Luan & Ester</h1>
+              <p className="text-lg text-gray-600 italic font-light">Nosso Casamento</p>
             </div>
             <Separator className="bg-gray-200 w-24 mx-auto" />
             <div className="space-y-1">
-              <h2 className="text-xl font-semibold text-gray-800">
-                Área Administrativa
-              </h2>
-              <p className="text-gray-600 text-sm leading-relaxed">
-                Acesse o painel de gerenciamento do casamento
-              </p>
+              <h2 className="text-xl font-semibold text-gray-800">Área Administrativa</h2>
+              <p className="text-gray-600 text-sm leading-relaxed">Acesse o painel de gerenciamento do casamento</p>
             </div>
           </div>
         </div>
@@ -142,20 +132,19 @@ export default function LoginPage() {
         {/* Card do formulário */}
         <Card className="border-gray-200 shadow-lg bg-white">
           <CardHeader className="space-y-3 pb-6">
-            <CardTitle className="text-xl font-semibold text-gray-900 text-center">
-              Fazer Login
-            </CardTitle>
+            <CardTitle className="text-xl font-semibold text-gray-900 text-center">Fazer Login</CardTitle>
             <CardDescription className="text-center text-gray-600">
               Use sua conta Google para acessar o sistema
             </CardDescription>
           </CardHeader>
           <CardContent className="pt-0">
-            <Suspense fallback={
-              <div className="flex items-center justify-center py-12 space-x-2">
-                <Loader2 className="h-5 w-5 animate-spin text-gray-400" />
-                <span className="text-gray-600">Carregando...</span>
-              </div>
-            }>
+            <Suspense
+              fallback={
+                <div className="flex items-center justify-center py-12 space-x-2">
+                  <Loader2 className="h-5 w-5 animate-spin text-gray-400" />
+                  <span className="text-gray-600">Carregando...</span>
+                </div>
+              }>
               <LoginForm />
             </Suspense>
           </CardContent>
@@ -163,9 +152,7 @@ export default function LoginPage() {
 
         {/* Footer informativo */}
         <div className="text-center space-y-3">
-          <p className="text-sm text-gray-500">
-            Sistema protegido por autenticação Google
-          </p>
+          <p className="text-sm text-gray-500">Sistema protegido por autenticação Google</p>
           <div className="flex items-center justify-center space-x-2 text-xs text-gray-400">
             <span>Dados seguros</span>
             <span>•</span>

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/db'
 import { tableGuests } from '@/db/schema'
 import { sql } from 'drizzle-orm'
+import { generateUniqueConfirmationCode } from '@/lib/confirmation-code'
 
 export async function POST(request: NextRequest) {
   try {
@@ -22,7 +23,7 @@ export async function POST(request: NextRequest) {
       }
 
       const trimmedName = name.trim()
-      
+
       if (trimmedName.length === 0) {
         continue // Skip empty names
       }
@@ -41,11 +42,14 @@ export async function POST(request: NextRequest) {
     }
 
     if (cleanedNames.length === 0) {
-      return NextResponse.json({ 
-        imported: [], 
-        duplicates: [], 
-        errors 
-      }, { status: 200 })
+      return NextResponse.json(
+        {
+          imported: [],
+          duplicates: [],
+          errors,
+        },
+        { status: 200 },
+      )
     }
 
     // Check for duplicates against existing guests (case-insensitive)
@@ -53,8 +57,8 @@ export async function POST(request: NextRequest) {
       columns: { name: true },
       where: sql`LOWER(${tableGuests.name}) IN (${sql.join(
         cleanedNames.map(name => sql`LOWER(${name})`),
-        sql`, `
-      )})`
+        sql`, `,
+      )})`,
     })
 
     const existingNamesLower = existingGuests.map(guest => guest.name.toLowerCase())
@@ -72,23 +76,28 @@ export async function POST(request: NextRequest) {
     // Import new guests
     const imported = []
     if (namesToImport.length > 0) {
-      const guestData = namesToImport.map(name => ({
-        name,
-        spouse: null,
-        children: [],
-        companions: [],
-      }))
+      const guestData = await Promise.all(
+        namesToImport.map(async name => ({
+          name,
+          spouse: null,
+          children: [],
+          companions: [],
+          confirmationCode: await generateUniqueConfirmationCode(),
+        })),
+      )
 
       const newGuests = await db.insert(tableGuests).values(guestData).returning()
       imported.push(...newGuests)
     }
 
-    return NextResponse.json({
-      imported,
-      duplicates,
-      errors,
-    }, { status: 200 })
-
+    return NextResponse.json(
+      {
+        imported,
+        duplicates,
+        errors,
+      },
+      { status: 200 },
+    )
   } catch (error) {
     console.error('Erro ao importar convidados:', error)
     return NextResponse.json({ error: 'Erro ao importar convidados' }, { status: 500 })

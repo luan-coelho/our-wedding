@@ -55,6 +55,6 @@ export function useRoleCheck() {
     isAdmin,
     isPlanner,
     isGuest,
-    isAdminOrPlanner
+    isAdminOrPlanner,
   }
-} 
+}

@@ -68,9 +68,7 @@
         "user_email_unique": {
           "name": "user_email_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "email"
-          ]
+          "columns": ["email"]
         }
       },
       "policies": {},
@@ -149,16 +147,12 @@
         "guest_name_unique": {
           "name": "guest_name_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "name"
-          ]
+          "columns": ["name"]
         },
         "guest_token_unique": {
           "name": "guest_token_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "token"
-          ]
+          "columns": ["token"]
         }
       },
       "policies": {},
@@ -260,9 +254,7 @@
         "pix-key_key_unique": {
           "name": "pix-key_key_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "key"
-          ]
+          "columns": ["key"]
         }
       },
       "policies": {},
@@ -336,12 +328,8 @@
           "name": "gift_pixKeyId_pix-key_id_fk",
           "tableFrom": "gift",
           "tableTo": "pix-key",
-          "columnsFrom": [
-            "pixKeyId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["pixKeyId"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }

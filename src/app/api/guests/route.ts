@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/db'
 import { tableGuests } from '@/db/schema'
 import { asc, eq } from 'drizzle-orm'
+import { generateUniqueConfirmationCode } from '@/lib/confirmation-code'
 
 export async function GET() {
   try {
@@ -33,12 +34,16 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Já existe um convidado com este nome' }, { status: 409 })
     }
 
+    // Generate unique confirmation code
+    const confirmationCode = await generateUniqueConfirmationCode()
+
     // Prepare data for insertion
     const guestData = {
       name: name.trim(),
       spouse: spouse && spouse.trim() ? spouse.trim() : null,
       children: Array.isArray(children) ? children.filter(child => child && child.trim()) : [], // filhos
       companions: Array.isArray(companions) ? companions.filter(companion => companion && companion.trim()) : [],
+      confirmationCode,
     }
 
     const [newGuest] = await db.insert(tableGuests).values(guestData).returning()

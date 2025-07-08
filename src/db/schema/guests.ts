@@ -17,6 +17,7 @@ export const tableGuests = pgTable('guest', {
   childrenConfirmations: json('children_confirmations').$type<Record<string, boolean>>().default({}),
   companionsConfirmations: json('companions_confirmations').$type<Record<string, boolean>>().default({}),
   token: uuid('token').notNull().unique().defaultRandom(),
+  confirmationCode: text('confirmation_code').notNull().unique(),
   createdAt: timestamp('createdAt').defaultNow().notNull(),
   updatedAt: timestamp('updatedAt'),
 })

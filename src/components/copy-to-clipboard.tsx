@@ -4,9 +4,10 @@ import { useState } from 'react'
 
 interface CopyToClipboardProps {
   text: string
+  label?: string
 }
 
-export function CopyToClipboard({ text }: CopyToClipboardProps) {
+export function CopyToClipboard({ text, label = 'Copiar' }: CopyToClipboardProps) {
   const [copied, setCopied] = useState(false)
 
   const copyToClipboard = async () => {
@@ -21,7 +22,7 @@ export function CopyToClipboard({ text }: CopyToClipboardProps) {
 
   return (
     <button onClick={copyToClipboard} className="ml-2 p-1 text-blue-600 hover:text-blue-800">
-      {copied ? 'Copiado!' : 'Copiar'}
+      {copied ? 'Copiado!' : label}
     </button>
   )
 }

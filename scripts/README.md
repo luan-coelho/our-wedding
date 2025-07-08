@@ -18,21 +18,25 @@ Script para criar ou atualizar um usuário administrador no sistema.
 ### Como usar
 
 #### Opção 1: Usando npm script (recomendado)
+
 ```bash
 npm run create-admin
 ```
 
 #### Opção 2: Com nome personalizado
+
 ```bash
 npm run create-admin "Luan Administrador"
 ```
 
 #### Opção 3: Executando diretamente
+
 ```bash
 npx tsx scripts/create-admin-user.ts
 ```
 
 #### Opção 4: Com nome personalizado (execução direta)
+
 ```bash
 npx tsx scripts/create-admin-user.ts "Nome Personalizado"
 ```
@@ -78,6 +82,7 @@ npx tsx scripts/create-admin-user.ts "Nome Personalizado"
 ### Autenticação
 
 Após executar o script, o usuário poderá fazer login no sistema usando:
+
 - **Email**: `lumyth.br@gmail.com`
 - **Método**: Login com Google (NextAuth)
 - **Permissões**: Acesso total como administrador
@@ -85,22 +90,28 @@ Após executar o script, o usuário poderá fazer login no sistema usando:
 ### Troubleshooting
 
 #### Erro de conexão com banco
+
 ```
 ❌ Erro ao criar/atualizar usuário administrador:
 Error: connect ECONNREFUSED
 ```
+
 **Solução**: Verifique se a variável `DATABASE_URL` está correta no arquivo `.env`
 
 #### Tabela não existe
+
 ```
 ❌ Erro ao criar/atualizar usuário administrador:
 Error: relation "user" does not exist
 ```
+
 **Solução**: Execute as migrações do banco: `npm run db:migrate`
 
 #### Variável de ambiente não encontrada
+
 ```
 ❌ Erro ao criar/atualizar usuário administrador:
 Error: DATABASE_URL is not defined
 ```
+
 **Solução**: Crie o arquivo `.env` com a variável `DATABASE_URL` configurada

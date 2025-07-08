@@ -9,19 +9,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { CopyToClipboard } from '@/components/copy-to-clipboard'
 import { AdminProtected } from '@/components/roles'
 import { routes } from '@/lib/routes'
-import {
-  Check,
-  HelpCircle,
-  Users,
-  Heart,
-  Baby,
-  UserPlus,
-  X,
-  ChevronDown,
-  ChevronUp,
-  Eye,
-  EyeOff
-} from 'lucide-react'
+import { Check, HelpCircle, Users, Heart, Baby, UserPlus, X, ChevronDown, ChevronUp, Eye, EyeOff } from 'lucide-react'
 
 interface DesktopGuestTableProps {
   guests: Guest[]
@@ -38,7 +26,7 @@ export function DesktopGuestTable({
   onDeleteClick,
   nameFilter,
   statusFilter,
-  onClearFilters
+  onClearFilters,
 }: DesktopGuestTableProps) {
   const [expandedRows, setExpandedRows] = useState<Set<string>>(new Set())
 
@@ -64,11 +52,7 @@ export function DesktopGuestTable({
               : 'Nenhum convidado cadastrado'}
           </div>
           {(nameFilter || statusFilter !== 'all') && (
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={onClearFilters}
-              className="mt-2 border-black">
+            <Button variant="outline" size="sm" onClick={onClearFilters} className="mt-2 border-black">
               Limpar filtros
             </Button>
           )}
@@ -83,6 +67,7 @@ export function DesktopGuestTable({
         <TableHeader className="bg-gray-50/50">
           <TableRow className="border-black">
             <TableHead className="font-semibold text-gray-700 px-6">Convidado</TableHead>
+            <TableHead className="text-center font-semibold text-gray-700">Código</TableHead>
             <TableHead className="text-center font-semibold text-gray-700">Confirmações</TableHead>
             <TableHead className="font-semibold text-gray-700">Link de Convite</TableHead>
             <AdminProtected>
@@ -93,7 +78,8 @@ export function DesktopGuestTable({
         <TableBody>
           {guests.map(guest => {
             const isExpanded = expandedRows.has(guest.id)
-            const partySize = 1 + (guest.spouse ? 1 : 0) + (guest.children?.length || 0) + (guest.companions?.length || 0)
+            const partySize =
+              1 + (guest.spouse ? 1 : 0) + (guest.children?.length || 0) + (guest.companions?.length || 0)
 
             // Calculate confirmed people in this group
             let confirmedInGroup = 0
@@ -172,7 +158,8 @@ export function DesktopGuestTable({
                         <div className="flex items-center gap-1">
                           {isExpanded ? <EyeOff className="w-3 h-3" /> : <Eye className="w-3 h-3" />}
                           <span>
-                            {isExpanded ? 'Ocultar' : 'Mostrar'} {additionalPeople.length} {additionalPeople.length === 1 ? 'pessoa adicional' : 'pessoas adicionais'}
+                            {isExpanded ? 'Ocultar' : 'Mostrar'} {additionalPeople.length}{' '}
+                            {additionalPeople.length === 1 ? 'pessoa adicional' : 'pessoas adicionais'}
                           </span>
                           {isExpanded ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
                         </div>
@@ -192,6 +179,19 @@ export function DesktopGuestTable({
                         ))}
                       </div>
                     )}
+                  </div>
+                </TableCell>
+
+                <TableCell className="text-center py-4">
+                  <div className="flex flex-col items-center gap-2">
+                    <div className="font-mono text-lg font-bold text-blue-600 bg-blue-50 px-3 py-1 rounded-lg border border-blue-200">
+                      {guest.confirmationCode}
+                    </div>
+                    <div className="text-xs text-gray-500">Código de 6 dígitos</div>
+                    <div className="flex gap-1">
+                      <CopyToClipboard text={guest.confirmationCode} />
+                      <CopyToClipboard text={`${baseUrl}/?code=${guest.confirmationCode}`} label="Link" />
+                    </div>
                   </div>
                 </TableCell>
 
@@ -232,9 +232,10 @@ export function DesktopGuestTable({
                             <span className={`${person.type === 'main' ? 'text-blue-600' : 'text-pink-600'}`}>
                               {person.icon}
                             </span>
-                            <span className={`truncate max-w-[100px] font-medium ${
-                              person.confirmed ? 'text-green-800' : 'text-red-800'
-                            }`}>
+                            <span
+                              className={`truncate max-w-[100px] font-medium ${
+                                person.confirmed ? 'text-green-800' : 'text-red-800'
+                              }`}>
                               {person.name}
                             </span>
                           </div>
@@ -250,32 +251,34 @@ export function DesktopGuestTable({
                       ))}
 
                       {/* Additional People (only when expanded) */}
-                      {isExpanded && additionalPeople.map((person, index) => (
-                        <div
-                          key={`additional-${index}`}
-                          className={`flex items-center justify-between text-xs p-1.5 rounded border ${
-                            person.confirmed ? 'bg-green-50 border-green-200' : 'bg-red-50 border-red-200'
-                          }`}>
-                          <div className="flex items-center gap-1.5">
-                            <span className={`${person.type === 'child' ? 'text-purple-600' : 'text-amber-600'}`}>
-                              {person.icon}
-                            </span>
-                            <span className={`truncate max-w-[100px] font-medium ${
-                              person.confirmed ? 'text-green-800' : 'text-red-800'
+                      {isExpanded &&
+                        additionalPeople.map((person, index) => (
+                          <div
+                            key={`additional-${index}`}
+                            className={`flex items-center justify-between text-xs p-1.5 rounded border ${
+                              person.confirmed ? 'bg-green-50 border-green-200' : 'bg-red-50 border-red-200'
                             }`}>
-                              {person.name}
+                            <div className="flex items-center gap-1.5">
+                              <span className={`${person.type === 'child' ? 'text-purple-600' : 'text-amber-600'}`}>
+                                {person.icon}
+                              </span>
+                              <span
+                                className={`truncate max-w-[100px] font-medium ${
+                                  person.confirmed ? 'text-green-800' : 'text-red-800'
+                                }`}>
+                                {person.name}
+                              </span>
+                            </div>
+                            <span
+                              className={`inline-flex items-center justify-center w-4 h-4 rounded-full text-xs font-bold ${
+                                person.confirmed
+                                  ? 'bg-green-200 text-green-800 border border-green-300'
+                                  : 'bg-red-200 text-red-800 border border-red-300'
+                              }`}>
+                              {person.confirmed ? <Check className="w-2 h-2" /> : <X className="w-2 h-2" />}
                             </span>
                           </div>
-                          <span
-                            className={`inline-flex items-center justify-center w-4 h-4 rounded-full text-xs font-bold ${
-                              person.confirmed
-                                ? 'bg-green-200 text-green-800 border border-green-300'
-                                : 'bg-red-200 text-red-800 border border-red-300'
-                            }`}>
-                            {person.confirmed ? <Check className="w-2 h-2" /> : <X className="w-2 h-2" />}
-                          </span>
-                        </div>
-                      ))}
+                        ))}
                     </div>
                   </div>
                 </TableCell>

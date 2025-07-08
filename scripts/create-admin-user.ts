@@ -8,10 +8,10 @@ import { UserRole } from '../src/lib/auth-types'
 
 /**
  * Script para criar um usuário administrador
- * 
+ *
  * Uso:
  * npx tsx scripts/create-admin-user.ts
- * 
+ *
  * Ou com nome customizado:
  * npx tsx scripts/create-admin-user.ts "Nome do Admin"
  */
@@ -19,20 +19,16 @@ import { UserRole } from '../src/lib/auth-types'
 async function createAdminUser() {
   const email = 'lumyth.br@gmail.com'
   const name = 'Administrador'
-  
+
   try {
     console.log('🔍 Verificando se o usuário já existe...')
-    
+
     // Verifica se já existe um usuário com este email
-    const existingUser = await db
-      .select()
-      .from(tableUsers)
-      .where(eq(tableUsers.email, email))
-      .limit(1)
-    
+    const existingUser = await db.select().from(tableUsers).where(eq(tableUsers.email, email)).limit(1)
+
     if (existingUser.length > 0) {
       console.log('👤 Usuário já existe. Atualizando para administrador...')
-      
+
       // Atualiza o usuário existente para admin
       const [updatedUser] = await db
         .update(tableUsers)
@@ -50,7 +46,7 @@ async function createAdminUser() {
           role: tableUsers.role,
           active: tableUsers.active,
         })
-      
+
       console.log('✅ Usuário atualizado com sucesso!')
       console.log('📋 Dados do usuário:')
       console.log(`   ID: ${updatedUser.id}`)
@@ -58,10 +54,9 @@ async function createAdminUser() {
       console.log(`   Email: ${updatedUser.email}`)
       console.log(`   Role: ${updatedUser.role}`)
       console.log(`   Ativo: ${updatedUser.active}`)
-      
     } else {
       console.log('➕ Criando novo usuário administrador...')
-      
+
       // Cria um novo usuário admin
       const [newUser] = await db
         .insert(tableUsers)
@@ -80,7 +75,7 @@ async function createAdminUser() {
           role: tableUsers.role,
           active: tableUsers.active,
         })
-      
+
       console.log('✅ Usuário criado com sucesso!')
       console.log('📋 Dados do usuário:')
       console.log(`   ID: ${newUser.id}`)
@@ -89,10 +84,9 @@ async function createAdminUser() {
       console.log(`   Role: ${newUser.role}`)
       console.log(`   Ativo: ${newUser.active}`)
     }
-    
+
     console.log('\n🎉 Operação concluída com sucesso!')
     console.log('💡 O usuário agora pode fazer login com Google usando este email.')
-    
   } catch (error) {
     console.error('❌ Erro ao criar/atualizar usuário administrador:')
     console.error(error)

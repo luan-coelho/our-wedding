@@ -48,5 +48,3 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Erro ao criar chave PIX' }, { status: 500 })
   }
 }
-
-

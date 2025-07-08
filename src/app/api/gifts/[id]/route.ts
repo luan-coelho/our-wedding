@@ -70,10 +70,7 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
       pixKey: sanitizedData.pixKey,
     })
 
-    const updatedGift = await db
-      .update(tableGifts)
-      .set(sanitizedData)
-      .where(eq(tableGifts.id, id))
+    const updatedGift = await db.update(tableGifts).set(sanitizedData).where(eq(tableGifts.id, id))
 
     return NextResponse.json(updatedGift, { status: 200 })
   } catch (error) {

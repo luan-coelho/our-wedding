@@ -9,7 +9,7 @@ import {
   IconMessageCircle,
   IconTrendingUp,
   IconCalendar,
-  IconHeart
+  IconHeart,
 } from '@tabler/icons-react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
@@ -129,39 +129,28 @@ export default function AdminPage() {
       <div className="text-center">
         <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-wedding-primary to-wedding-secondary rounded-full text-white mb-4">
           <IconHeart className="size-5" />
-          <span className="font-semibold">Ester & Luan</span>
+          <span className="font-semibold">Luan & Ester</span>
         </div>
         <h1 className="text-4xl font-bold text-wedding-primary mb-2">Painel Administrativo</h1>
         <div className="flex items-center justify-center gap-2 text-muted-foreground">
           <IconCalendar className="size-4" />
-          <span>
-            {daysUntilWedding > 0 
-              ? `${daysUntilWedding} dias para o grande dia!` 
-              : 'O grande dia chegou!'
-            }
-          </span>
+          <span>{daysUntilWedding > 0 ? `${daysUntilWedding} dias para o grande dia!` : 'O grande dia chegou!'}</span>
         </div>
       </div>
 
       {/* Cards de estatísticas */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {statsCards.map((stat) => (
+        {statsCards.map(stat => (
           <Card key={stat.title} className="border-wedding-light/30 hover:shadow-lg transition-all duration-300">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">
-                {stat.title}
-              </CardTitle>
+              <CardTitle className="text-sm font-medium text-muted-foreground">{stat.title}</CardTitle>
               <div className={`p-2 rounded-lg ${stat.bgColor}`}>
                 <stat.icon className={`size-4 ${stat.color}`} />
               </div>
             </CardHeader>
             <CardContent>
-              <div className={`text-2xl font-bold ${stat.color}`}>
-                {isLoading ? '...' : stat.value}
-              </div>
-              <p className="text-xs text-muted-foreground">
-                {stat.description}
-              </p>
+              <div className={`text-2xl font-bold ${stat.color}`}>{isLoading ? '...' : stat.value}</div>
+              <p className="text-xs text-muted-foreground">{stat.description}</p>
             </CardContent>
           </Card>
         ))}
@@ -171,7 +160,7 @@ export default function AdminPage() {
       <div>
         <h2 className="text-2xl font-semibold text-wedding-primary mb-6">Módulos Administrativos</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {adminModules.map((module) => (
+          {adminModules.map(module => (
             <Link key={module.title} href={module.href}>
               <Card className="group border-wedding-light/30 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 cursor-pointer overflow-hidden">
                 <div className={`h-2 bg-gradient-to-r ${module.gradient}`} />
@@ -187,9 +176,7 @@ export default function AdminPage() {
                   <CardTitle className="text-xl group-hover:text-wedding-primary transition-colors">
                     {module.title}
                   </CardTitle>
-                  <CardDescription className="text-muted-foreground">
-                    {module.description}
-                  </CardDescription>
+                  <CardDescription className="text-muted-foreground">{module.description}</CardDescription>
                 </CardHeader>
               </Card>
             </Link>
@@ -205,8 +192,8 @@ export default function AdminPage() {
             Bem-vindo ao Painel Administrativo
           </CardTitle>
           <CardDescription>
-            Gerencie todos os aspectos do seu casamento em um só lugar. Use os módulos acima para 
-            organizar convidados, presentes e muito mais.
+            Gerencie todos os aspectos do seu casamento em um só lugar. Use os módulos acima para organizar convidados,
+            presentes e muito mais.
           </CardDescription>
         </CardHeader>
       </Card>

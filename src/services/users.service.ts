@@ -78,7 +78,10 @@ export async function deleteUser(id: string): Promise<{ message: string }> {
 /**
  * Altera a senha de um usuário
  */
-export async function changeUserPassword(data: { currentPassword: string; newPassword: string }): Promise<{ message: string }> {
+export async function changeUserPassword(data: {
+  currentPassword: string
+  newPassword: string
+}): Promise<{ message: string }> {
   const response = await fetch(`${BASE_URL}/change-password`, {
     method: 'POST',
     headers: {

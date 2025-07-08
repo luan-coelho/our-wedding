@@ -133,7 +133,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             <IconHeart className="size-5 group-data-[collapsible=icon]:size-5" />
           </div>
           <div className="grid flex-1 text-left text-sm leading-tight min-w-0 group-data-[collapsible=icon]:hidden">
-            <span className="truncate font-semibold text-white text-base">Ester & Luan</span>
+            <span className="truncate font-semibold text-white text-base">Luan & Ester</span>
             <span className="truncate text-sm text-white/80">Casamento 2025</span>
           </div>
           <IconSparkles className="size-5 text-white/60 flex-shrink-0 group-data-[collapsible=icon]:hidden" />

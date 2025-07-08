@@ -35,9 +35,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         <div className="flex flex-1 flex-col min-h-0">
           <div className="flex flex-1 flex-col bg-gradient-to-br from-wedding-light/10 via-white to-wedding-sage/5">
             <main className="flex-1 p-6 space-y-6 overflow-auto">
-              <div className="max-w-7xl mx-auto">
-                {children}
-              </div>
+              <div className="max-w-7xl mx-auto">{children}</div>
             </main>
           </div>
         </div>

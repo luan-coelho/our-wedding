@@ -24,20 +24,42 @@ export function AdminOrPlannerProtected({ children }: { children: React.ReactNod
 }
 
 // Pre-configured role checks
-export function AdminOnly({ children, fallback = null }: { children: React.ReactNode, fallback?: React.ReactNode }) {
-  return <RoleCheck allowedRoles={[UserRole.ADMIN]} fallback={fallback}>{children}</RoleCheck>
+export function AdminOnly({ children, fallback = null }: { children: React.ReactNode; fallback?: React.ReactNode }) {
+  return (
+    <RoleCheck allowedRoles={[UserRole.ADMIN]} fallback={fallback}>
+      {children}
+    </RoleCheck>
+  )
 }
 
-export function PlannerOnly({ children, fallback = null }: { children: React.ReactNode, fallback?: React.ReactNode }) {
-  return <RoleCheck allowedRoles={[UserRole.PLANNER]} fallback={fallback}>{children}</RoleCheck>
+export function PlannerOnly({ children, fallback = null }: { children: React.ReactNode; fallback?: React.ReactNode }) {
+  return (
+    <RoleCheck allowedRoles={[UserRole.PLANNER]} fallback={fallback}>
+      {children}
+    </RoleCheck>
+  )
 }
 
-export function GuestOnly({ children, fallback = null }: { children: React.ReactNode, fallback?: React.ReactNode }) {
-  return <RoleCheck allowedRoles={[UserRole.GUEST]} fallback={fallback}>{children}</RoleCheck>
+export function GuestOnly({ children, fallback = null }: { children: React.ReactNode; fallback?: React.ReactNode }) {
+  return (
+    <RoleCheck allowedRoles={[UserRole.GUEST]} fallback={fallback}>
+      {children}
+    </RoleCheck>
+  )
 }
 
-export function AdminOrPlannerOnly({ children, fallback = null }: { children: React.ReactNode, fallback?: React.ReactNode }) {
-  return <RoleCheck allowedRoles={[UserRole.ADMIN, UserRole.PLANNER]} fallback={fallback}>{children}</RoleCheck>
+export function AdminOrPlannerOnly({
+  children,
+  fallback = null,
+}: {
+  children: React.ReactNode
+  fallback?: React.ReactNode
+}) {
+  return (
+    <RoleCheck allowedRoles={[UserRole.ADMIN, UserRole.PLANNER]} fallback={fallback}>
+      {children}
+    </RoleCheck>
+  )
 }
 
 // Pre-configured HOCs for each role
@@ -51,4 +73,4 @@ export const withGuestRole = <P extends object>(Component: React.ComponentType<P
   withRole(Component, [UserRole.GUEST])
 
 export const withAdminOrPlannerRole = <P extends object>(Component: React.ComponentType<P>) =>
-  withRole(Component, [UserRole.ADMIN, UserRole.PLANNER]) 
+  withRole(Component, [UserRole.ADMIN, UserRole.PLANNER])
