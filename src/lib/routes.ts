@@ -33,6 +33,7 @@ export const routes = {
     mensagens: '/mensagens',
     confirmacao: '/confirmacao',
     nossamistoria: '/nossa-historia',
+    manutencao: '/manutencao',
     confirmacaoToken: (token: string) => `/confirmacao/${validateToken(token)}`,
     // Área administrativa
     admin: {
@@ -195,4 +196,5 @@ export const PUBLIC_ROUTES = {
   mensagens: routes.frontend.mensagens,
   confirmacao: routes.frontend.confirmacao,
   nossamistoria: routes.frontend.nossamistoria,
+  manutencao: routes.frontend.manutencao,
 } as const
