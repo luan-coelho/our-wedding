@@ -1,8 +1,8 @@
 'use client'
 
-import { Heart, Sparkles, Star, ArrowDown, Calendar } from 'lucide-react'
-import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import { Calendar, Heart, Sparkles, Star } from 'lucide-react'
 
 interface HeroProps {
   onScrollToNextAction: () => void
@@ -56,7 +56,7 @@ export default function Hero({ onScrollToNextAction }: HeroProps) {
             </div>
 
             <h1 className="relative">
-              <span className="block text-6xl md:text-8xl lg:text-9xl font-light tracking-[0.02em] mb-2 wedding-script text-wedding-purple-deep drop-shadow-sm">
+              <span className="block text-6xl md:text-8xl lg:text-7xl font-light tracking-[0.02em] mb-2 wedding-script text-wedding-purple-deep drop-shadow-sm">
                 Luan
               </span>
               <div className="flex items-center justify-center my-6">
@@ -66,7 +66,7 @@ export default function Hero({ onScrollToNextAction }: HeroProps) {
                 </span>
                 <div className="w-16 md:w-24 h-px bg-gradient-to-r from-transparent via-wedding-lilac to-transparent"></div>
               </div>
-              <span className="block text-6xl md:text-8xl lg:text-9xl font-light tracking-[0.02em] wedding-script text-wedding-purple-deep drop-shadow-sm">
+              <span className="block text-6xl md:text-8xl lg:text-7xl font-light tracking-[0.02em] wedding-script text-wedding-purple-deep drop-shadow-sm">
                 Ester
               </span>
             </h1>
@@ -87,7 +87,7 @@ export default function Hero({ onScrollToNextAction }: HeroProps) {
           <p className="text-2xl md:text-3xl lg:text-4xl text-wedding-dark font-light leading-relaxed max-w-4xl mx-auto mb-6 tracking-wide wedding-heading">
             Dois corações, uma só alma
           </p>
-          <p className="text-lg md:text-xl lg:text-2xl text-wedding-charcoal/80 font-light max-w-3xl mx-auto leading-relaxed">
+          <p className="text-lg md:text-xl lg:text-xl text-wedding-charcoal/80 font-light max-w-3xl mx-auto leading-relaxed">
             Celebrando o amor que nos une para sempre
           </p>
         </div>

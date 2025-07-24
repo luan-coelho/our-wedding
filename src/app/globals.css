@@ -155,21 +155,85 @@
 
 /* Configuração global da fonte */
 * {
-  font-family: var(--font-sans);
-}
-
-html {
-  font-family: var(--font-sans);
-}
-
-body {
-  font-family: var(--font-sans);
   font-feature-settings:
     'rlig' 1,
     'calt' 1;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+html {
+  font-family: var(--font-lora), serif;
+}
+
+body {
+  font-family: var(--font-lora), serif;
+  color: var(--wedding-charcoal);
+  line-height: 1.7;
+}
+
+/* Tipografia para casamento */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-playfair-display), serif;
+  font-weight: 500;
+  line-height: 1.3;
+  margin-bottom: 0.5em;
+  color: var(--wedding-primary);
+  letter-spacing: 0.01em;
+}
+
+.wedding-heading {
+  font-family: var(--font-dancing-script), cursive;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.wedding-subtitle {
+  font-family: var(--font-playfair-display), serif;
+  font-weight: 500;
+  font-style: italic;
+  letter-spacing: 0.03em;
+}
+
+.wedding-accent-text {
+  font-family: var(--font-dancing-script), cursive;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+}
+
+.wedding-body {
+  font-family: var(--font-lora), serif;
+  font-weight: 400;
+  letter-spacing: 0.01em;
+  line-height: 1.7;
+}
+
+/* Tamanhos específicos para elementos de casamento */
+h1.wedding-title {
+  font-size: 3.5rem;
+  line-height: 1.2;
+  margin-bottom: 1rem;
+}
+
+h2.wedding-section-title {
+  font-size: 2.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.wedding-date {
+  font-family: var(--font-dancing-script), cursive;
+  font-size: 2rem;
+  font-weight: 600;
+  color: var(--wedding-primary);
+}
+
+.wedding-names {
+  font-family: var(--font-dancing-script), cursive;
+  font-size: 3rem;
+  font-weight: 700;
+  color: var(--wedding-primary);
+  letter-spacing: 0.03em;
 }
 
 /* Classes utilitárias customizadas do casamento */

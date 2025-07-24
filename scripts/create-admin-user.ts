@@ -27,7 +27,7 @@ async function createAdminUser() {
     const existingUser = await db.select().from(tableUsers).where(eq(tableUsers.email, email)).limit(1)
 
     if (existingUser.length > 0) {
-      console.log('👤 Usuário já existe. Atualizando para administrador...')
+      console.log('Usuário já existe. Atualizando para administrador...')
 
       // Atualiza o usuário existente para admin
       const [updatedUser] = await db
@@ -47,15 +47,15 @@ async function createAdminUser() {
           active: tableUsers.active,
         })
 
-      console.log('✅ Usuário atualizado com sucesso!')
-      console.log('📋 Dados do usuário:')
-      console.log(`   ID: ${updatedUser.id}`)
-      console.log(`   Nome: ${updatedUser.name}`)
-      console.log(`   Email: ${updatedUser.email}`)
-      console.log(`   Role: ${updatedUser.role}`)
-      console.log(`   Ativo: ${updatedUser.active}`)
+      console.log('Usuário atualizado com sucesso!')
+      console.log('Dados do usuário:')
+      console.log(`ID: ${updatedUser.id}`)
+      console.log(`Nome: ${updatedUser.name}`)
+      console.log(`Email: ${updatedUser.email}`)
+      console.log(`Role: ${updatedUser.role}`)
+      console.log(`Ativo: ${updatedUser.active}`)
     } else {
-      console.log('➕ Criando novo usuário administrador...')
+      console.log('Criando novo usuário administrador...')
 
       // Cria um novo usuário admin
       const [newUser] = await db
@@ -76,19 +76,19 @@ async function createAdminUser() {
           active: tableUsers.active,
         })
 
-      console.log('✅ Usuário criado com sucesso!')
-      console.log('📋 Dados do usuário:')
-      console.log(`   ID: ${newUser.id}`)
-      console.log(`   Nome: ${newUser.name}`)
-      console.log(`   Email: ${newUser.email}`)
-      console.log(`   Role: ${newUser.role}`)
-      console.log(`   Ativo: ${newUser.active}`)
+      console.log('Usuário criado com sucesso!')
+      console.log('Dados do usuário:')
+      console.log(`ID: ${newUser.id}`)
+      console.log(`Nome: ${newUser.name}`)
+      console.log(`Email: ${newUser.email}`)
+      console.log(`Role: ${newUser.role}`)
+      console.log(`Ativo: ${newUser.active}`)
     }
 
-    console.log('\n🎉 Operação concluída com sucesso!')
-    console.log('💡 O usuário agora pode fazer login com Google usando este email.')
+    console.log('\nOperação concluída com sucesso!')
+    console.log('O usuário agora pode fazer login com Google usando este email.')
   } catch (error) {
-    console.error('❌ Erro ao criar/atualizar usuário administrador:')
+    console.error('Erro ao criar/atualizar usuário administrador:')
     console.error(error)
     process.exit(1)
   } finally {

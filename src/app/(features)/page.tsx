@@ -43,7 +43,7 @@ export default function Home() {
       <Countdown weddingDate={weddingDate} />
 
       {/* Couple Section */}
-      <Couple />
+      {/* <Couple /> */}
 
       {/* Ceremony Section */}
       <Ceremony />

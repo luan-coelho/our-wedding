@@ -360,11 +360,11 @@ function ConfirmationContent() {
             <div className="w-8 h-px bg-gradient-to-l from-transparent to-wedding-primary"></div>
           </div>
 
-          <h2 className="text-5xl md:text-6xl lg:text-7xl font-light text-gray-800 mb-8 font-serif tracking-wide">
+          <h2 className="text-5xl md:text-6xl lg:text-7xl font-light text-gray-800 mb-8 wedding-heading tracking-wide">
             Confirmação de Presença
           </h2>
 
-          <p className="text-xl md:text-2xl text-gray-600 max-w-4xl mx-auto leading-relaxed font-light">
+          <p className="text-xl md:text-2xl text-gray-600 max-w-4xl mx-auto leading-relaxed font-light wedding-subtitle">
             Confirme sua presença em nosso casamento usando o código que você recebeu
           </p>
 
@@ -383,7 +383,7 @@ function ConfirmationContent() {
                 <div className="w-20 h-20 bg-gradient-to-br from-wedding-primary to-wedding-secondary rounded-full flex items-center justify-center mx-auto mb-6">
                   <UserCheck className="w-10 h-10 text-white" />
                 </div>
-                <CardTitle className="text-3xl font-serif text-wedding-dark mb-4">
+                <CardTitle className="text-3xl wedding-subtitle text-wedding-dark mb-4">
                   Digite seu Código de Confirmação
                 </CardTitle>
                 <CardDescription className="text-lg text-wedding-accent/80 max-w-lg mx-auto">
@@ -450,7 +450,7 @@ function ConfirmationContent() {
                     <Sparkles className="w-5 h-5 text-wedding-secondary fill-current" />
                     <Heart className="w-6 h-6 text-wedding-primary fill-current" />
                   </div>
-                  <CardTitle className="text-2xl font-serif text-wedding-dark">Olá, {guest.name}! 💜</CardTitle>
+                  <CardTitle className="text-2xl wedding-accent-text text-wedding-dark">Olá, {guest.name}! 💜</CardTitle>
                   <CardDescription className="text-lg text-wedding-accent/80">
                     Confirme a presença de cada pessoa individualmente
                   </CardDescription>
@@ -612,7 +612,7 @@ export default function Confirmation() {
               <h2 className="text-5xl md:text-6xl lg:text-7xl font-light text-wedding-dark mb-8 wedding-heading tracking-wide">
                 Confirmação de Presença
               </h2>
-              <p className="text-xl md:text-2xl text-wedding-charcoal/80 max-w-3xl mx-auto leading-relaxed font-light">
+              <p className="text-xl md:text-2xl text-wedding-charcoal/80 max-w-3xl mx-auto leading-relaxed font-light wedding-subtitle">
                 Carregando...
               </p>
             </div>

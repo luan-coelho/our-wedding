@@ -124,7 +124,7 @@ export default function Gifts() {
             <FaHeart className="text-wedding-primary/60 text-2xl animate-pulse" />
           </div>
 
-          <h2 className="text-5xl md:text-6xl lg:text-7xl font-light text-wedding-dark mb-8 font-serif tracking-wide">
+          <h2 className="text-5xl md:text-6xl lg:text-7xl font-light text-wedding-dark mb-8 wedding-heading tracking-wide">
             Lista de Presentes
           </h2>
 
@@ -135,11 +135,11 @@ export default function Gifts() {
           </div>
 
           <div className="max-w-3xl mx-auto space-y-4">
-            <p className="text-xl md:text-2xl text-wedding-dark/80 leading-relaxed font-light">
+            <p className="text-xl md:text-2xl text-wedding-dark/80 leading-relaxed font-light wedding-subtitle">
               Sua presença é o nosso maior presente, mas se desejar nos presentear, aqui estão algumas sugestões
               especiais.
             </p>
-            <p className="text-lg md:text-xl text-wedding-accent/90 leading-relaxed font-light">
+            <p className="text-lg md:text-xl text-wedding-accent/90 leading-relaxed font-light wedding-body">
               Você pode contribuir com o valor total ou parcial de qualquer item através do PIX.
             </p>
           </div>
@@ -213,7 +213,7 @@ export default function Gifts() {
                 </div>
 
                 <CardHeader className="pb-3 px-6 pt-6">
-                  <CardTitle className="text-xl font-serif text-wedding-dark group-hover:text-wedding-primary transition-colors duration-300 leading-tight">
+                  <CardTitle className="text-xl wedding-subtitle text-wedding-dark group-hover:text-wedding-primary transition-colors duration-300 leading-tight">
                     {gift.name}
                   </CardTitle>
                   <CardDescription className="line-clamp-2 text-wedding-accent/80 leading-relaxed">
@@ -269,7 +269,7 @@ export default function Gifts() {
               <FaHeart className="text-wedding-primary/60 text-2xl animate-pulse" />
             </div>
 
-            <h3 className="text-3xl lg:text-4xl font-serif text-wedding-dark mb-6 leading-tight text-center">
+            <h3 className="text-3xl lg:text-4xl wedding-heading text-wedding-dark mb-6 leading-tight text-center">
               Obrigado pelo seu carinho!
             </h3>
 
@@ -279,7 +279,7 @@ export default function Gifts() {
               <div className="w-12 h-px bg-wedding-primary/30" />
             </div>
 
-            <p className="text-lg lg:text-xl text-wedding-accent/90 leading-relaxed max-w-2xl mx-auto text-center">
+            <p className="text-lg lg:text-xl text-wedding-accent/90 leading-relaxed max-w-2xl mx-auto text-center wedding-body">
               Sua generosidade e carinho significam muito para nós neste momento tão especial. Cada contribuição nos
               ajudará a construir nosso novo lar com muito amor e gratidão.
             </p>
@@ -301,7 +301,7 @@ export default function Gifts() {
               <FaQrcode className="text-wedding-primary text-2xl" />
               <FaHeart className="text-wedding-secondary/60 text-lg" />
             </div>
-            <DialogTitle className="text-2xl font-serif text-wedding-dark">QR Code PIX</DialogTitle>
+            <DialogTitle className="text-2xl wedding-subtitle text-wedding-dark text-center">QR Code PIX</DialogTitle>
             <DialogDescription className="text-wedding-accent/80 leading-relaxed">
               Escaneie o código QR com seu aplicativo bancário para realizar a transferência PIX
             </DialogDescription>

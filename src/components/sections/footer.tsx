@@ -45,7 +45,7 @@ export default function Footer() {
                 <Heart className="w-6 h-6 text-wedding-primary fill-current" />
               </div>
 
-              <h3 className="text-3xl md:text-4xl font-serif text-wedding-dark">
+              <h3 className="text-3xl md:text-4xl wedding-heading text-wedding-dark">
                 Ester <span className="text-wedding-secondary font-light">&</span> Luan
               </h3>
 
@@ -70,10 +70,10 @@ export default function Footer() {
 
             {/* Love Quote */}
             <div className="max-w-2xl mx-auto">
-              <p className="text-lg text-wedding-accent/80 font-light italic leading-relaxed">
-                <span className="text-wedding-primary font-serif text-xl">&ldquo;</span>O amor é a ponte entre duas
+              <p className="text-lg text-wedding-accent/80 font-light italic leading-relaxed wedding-subtitle">
+                <span className="text-wedding-primary wedding-accent-text text-xl">&ldquo;</span>O amor é a ponte entre duas
                 almas que se encontraram para caminhar juntas pela eternidade
-                <span className="text-wedding-primary font-serif text-xl">&rdquo;</span>
+                <span className="text-wedding-primary wedding-accent-text text-xl">&rdquo;</span>
               </p>
             </div>
 
@@ -86,24 +86,10 @@ export default function Footer() {
 
             {/* Footer Info */}
             <div className="space-y-4 text-sm text-wedding-accent/70">
-              <p>
+              <p className="wedding-body">
                 Feito com <Heart className="inline w-4 h-4 text-wedding-primary fill-current mx-1" />
                 para celebrar nosso amor
               </p>
-
-              <div className="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-6">
-                <p>&copy; {currentYear} Luan & Ester</p>
-                <span className="hidden sm:inline text-wedding-primary/30">•</span>
-                <p>Todos os direitos reservados</p>
-              </div>
-
-              <div className="pt-2">
-                <a
-                  href="/demo"
-                  className="text-xs text-wedding-primary/40 hover:text-wedding-primary/60 transition-colors duration-300">
-                  Ver Paleta de Cores
-                </a>
-              </div>
             </div>
 
             {/* Final decorative element */}

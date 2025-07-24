@@ -58,10 +58,10 @@ export default function Ceremony() {
             <MapPin className="size-5" />
             <span className="font-medium">Cerimônia</span>
           </div>
-          <h2 className="text-5xl md:text-6xl lg:text-7xl font-light text-wedding-dark mb-8 font-serif tracking-wide">
+          <h2 className="text-5xl md:text-6xl lg:text-7xl font-light text-wedding-dark mb-8 wedding-heading tracking-wide">
             Nossa Cerimônia
           </h2>
-          <p className="text-xl md:text-2xl text-wedding-accent max-w-3xl mx-auto leading-relaxed font-light">
+          <p className="text-xl md:text-2xl text-wedding-accent max-w-3xl mx-auto leading-relaxed font-light wedding-subtitle">
             Venha celebrar conosco este momento único e especial de nossas vidas
           </p>
           <div className="mt-10 flex justify-center">
@@ -70,50 +70,41 @@ export default function Ceremony() {
         </div>
 
         {/* Wedding Details Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-12 mb-16">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16">
           {/* Data */}
-          <Card className="group hover:shadow-2xl transition-all duration-700 border-0 shadow-xl bg-white/90 backdrop-blur-md hover:-translate-y-4 hover:rotate-1 relative overflow-hidden">
-            <div className="absolute inset-0 bg-gradient-to-br from-rose-50/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-            <CardContent className="p-12 text-center relative z-10">
-              <div className="w-24 h-24 rounded-full bg-gradient-to-br from-rose-400 to-rose-600 flex items-center justify-center mb-10 mx-auto group-hover:scale-110 transition-transform duration-500 shadow-xl group-hover:shadow-2xl">
-                <Calendar className="w-12 h-12 text-white" />
+          <Card className="border border-gray-200 bg-white hover:shadow-md transition-shadow duration-300">
+            <CardContent className="p-0 text-center">
+              <div className="w-12 h-12 rounded-full bg-rose-500 flex items-center justify-center mb-6 mx-auto">
+                <Calendar className="w-6 h-6 text-white" />
               </div>
-              <h3 className="text-2xl font-semibold mb-6 text-gray-800 font-serif">Data</h3>
-              <p className="text-xl mb-4 text-gray-700 font-medium">12 de Setembro de 2025</p>
-              <Badge className="bg-rose-100 text-rose-700 border-rose-200 px-4 py-2 text-sm font-medium">
-                Sexta-feira
-              </Badge>
+              <h3 className="text-lg font-medium mb-3 text-gray-900">Data</h3>
+              <p className="text-gray-700 mb-2">12 de Setembro de 2025</p>
+              <p className="text-sm text-gray-500">Sexta-feira</p>
             </CardContent>
           </Card>
 
           {/* Horário */}
-          <Card className="group hover:shadow-2xl transition-all duration-700 border-0 shadow-xl bg-white/90 backdrop-blur-md hover:-translate-y-4 hover:-rotate-1 relative overflow-hidden">
-            <div className="absolute inset-0 bg-gradient-to-br from-purple-50/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-            <CardContent className="p-12 text-center relative z-10">
-              <div className="w-24 h-24 rounded-full bg-gradient-to-br from-purple-400 to-purple-600 flex items-center justify-center mb-10 mx-auto group-hover:scale-110 transition-transform duration-500 shadow-xl group-hover:shadow-2xl">
-                <Clock className="w-12 h-12 text-white" />
+          <Card className="border border-gray-200 bg-white hover:shadow-md transition-shadow duration-300">
+            <CardContent className="p-0 text-center items-center">
+              <div className="w-12 h-12 rounded-full bg-purple-500 flex items-center justify-center mb-6 mx-auto">
+                <Clock className="w-6 h-6 text-white" />
               </div>
-              <h3 className="text-2xl font-semibold mb-6 text-gray-800 font-serif">Horário</h3>
-              <p className="text-xl mb-4 text-gray-700 font-medium">10:00</p>
-              <Badge className="bg-purple-100 text-purple-700 border-purple-200 px-4 py-2 text-sm font-medium">
-                Manhã
-              </Badge>
+              <h3 className="text-lg font-medium mb-3 text-gray-900">Horário</h3>
+              <p className="text-gray-700 mb-2">10:00</p>
+              <p className="text-sm text-gray-500">Manhã</p>
             </CardContent>
           </Card>
 
           {/* Local */}
-          <Card className="group hover:shadow-2xl transition-all duration-700 border-0 shadow-xl bg-white/90 backdrop-blur-md hover:-translate-y-4 hover:rotate-1 relative overflow-hidden">
-            <div className="absolute inset-0 bg-gradient-to-br from-emerald-50/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-            <CardContent className="p-12 text-center relative z-10">
-              <div className="w-24 h-24 rounded-full bg-gradient-to-br from-emerald-400 to-emerald-600 flex items-center justify-center mb-10 mx-auto group-hover:scale-110 transition-transform duration-500 shadow-xl group-hover:shadow-2xl">
-                <MapPin className="w-12 h-12 text-white" />
+          <Card className="border border-gray-200 bg-white hover:shadow-md transition-shadow duration-300">
+            <CardContent className="p-0 text-center">
+              <div className="w-12 h-12 rounded-full bg-emerald-500 flex items-center justify-center mb-6 mx-auto">
+                <MapPin className="w-6 h-6 text-white" />
               </div>
-              <h3 className="text-2xl font-semibold mb-6 text-gray-800 font-serif">Local</h3>
-              <p className="text-lg mb-2 text-gray-700 font-medium">Paróquia Nossa Senhora</p>
-              <p className="text-lg mb-4 text-gray-700 font-medium">do Monte do Carmo</p>
-              <Badge className="bg-emerald-100 text-emerald-700 border-emerald-200 px-4 py-2 text-sm font-medium">
-                Palmas - TO
-              </Badge>
+              <h3 className="text-lg font-medium mb-3 text-gray-900">Local</h3>
+              <p className="text-gray-700 mb-1">Paróquia Nossa Senhora</p>
+              <p className="text-gray-700 mb-2">do Monte do Carmo</p>
+              <p className="text-sm text-gray-500">Palmas - TO</p>
             </CardContent>
           </Card>
         </div>
@@ -227,7 +218,7 @@ export default function Ceremony() {
           <Alert className="border-wedding-primary/30 bg-wedding-primary/5">
             <AlertCircle className="size-5 text-wedding-primary" />
             <AlertDescription className="text-wedding-dark">
-              <h3 className="font-semibold text-lg mb-4">Observações Importantes</h3>
+              <h3 className="font-semibold text-lg mb-4 wedding-subtitle">Observações Importantes</h3>
               <div className="space-y-3">
                 <div className="flex items-start gap-3">
                   <div className="w-6 h-6 bg-wedding-primary/20 rounded-full flex items-center justify-center text-xs font-semibold text-wedding-primary mt-0.5 flex-shrink-0">

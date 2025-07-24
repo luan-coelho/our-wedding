@@ -40,7 +40,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="pt-BR">
-      <body className={`${dancingScript.variable} ${playfairDisplay.variable} ${lora.variable} font-serif antialiased`}>
+      <body className={`${dancingScript.variable} ${playfairDisplay.variable} ${lora.variable} antialiased`}>
         <Providers>
           <AuthProvider>{children}</AuthProvider>
           <Toaster
