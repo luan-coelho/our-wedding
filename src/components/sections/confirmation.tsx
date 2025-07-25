@@ -1,29 +1,29 @@
 'use client'
 
-import { useState, useEffect, Suspense } from 'react'
-import { useSearchParams } from 'next/navigation'
-import {
-  CheckCircle,
-  UserCheck,
-  Heart,
-  Sparkles,
-  Star,
-  Users,
-  Baby,
-  UserPlus,
-  Loader2,
-  PartyPopper,
-  HeartHandshake,
-  AlertCircle,
-} from 'lucide-react'
+import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
-import { Alert, AlertDescription } from '@/components/ui/alert'
-import { toast } from 'sonner'
 import { guestsService } from '@/services/guests.service'
+import {
+  AlertCircle,
+  Baby,
+  CheckCircle,
+  Heart,
+  HeartHandshake,
+  Loader2,
+  PartyPopper,
+  Sparkles,
+  Star,
+  UserCheck,
+  UserPlus,
+  Users,
+} from 'lucide-react'
+import { useSearchParams } from 'next/navigation'
+import { Suspense, useEffect, useState } from 'react'
+import { toast } from 'sonner'
 
 interface Guest {
   id: string
@@ -330,25 +330,6 @@ function ConfirmationContent() {
             backgroundImage: `url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23d946ef' fill-opacity='0.3'%3E%3Ccircle cx='50' cy='50' r='4'/%3E%3Ccircle cx='20' cy='20' r='2'/%3E%3Ccircle cx='80' cy='20' r='2'/%3E%3Ccircle cx='20' cy='80' r='2'/%3E%3Ccircle cx='80' cy='80' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
           }}
         />
-      </div>
-
-      {/* Floating elements */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-20 left-10 animate-float">
-          <CheckCircle className="w-6 h-6 text-wedding-primary/30 fill-current" />
-        </div>
-        <div className="absolute top-40 right-20 animate-float-delayed">
-          <UserCheck className="w-5 h-5 text-purple-300/30 fill-current" />
-        </div>
-        <div className="absolute bottom-32 left-20 animate-float">
-          <Heart className="w-7 h-7 text-rose-300/30 fill-current" />
-        </div>
-        <div className="absolute top-60 right-1/4 animate-float-delayed">
-          <Sparkles className="w-6 h-6 text-purple-300/30 fill-current" />
-        </div>
-        <div className="absolute bottom-40 left-1/3 animate-float">
-          <Star className="w-5 h-5 text-rose-300/30 fill-current" />
-        </div>
       </div>
 
       <div className="container mx-auto px-6 max-w-6xl relative z-10">

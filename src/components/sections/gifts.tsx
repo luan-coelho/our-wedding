@@ -1,14 +1,13 @@
 'use client'
 
-import { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { Skeleton } from '@/components/ui/skeleton'
-import Image from 'next/image'
-import { FaCheck, FaClipboard, FaGift, FaQrcode, FaHeart, FaStar } from 'react-icons/fa'
-import { Gift, Sparkles, Star, ShoppingBag } from 'lucide-react'
 import { Gift as GiftType } from '@/types'
+import Image from 'next/image'
+import { useEffect, useState } from 'react'
+import { FaCheck, FaClipboard, FaGift, FaHeart, FaQrcode, FaStar } from 'react-icons/fa'
 
 export default function Gifts() {
   const [gifts, setGifts] = useState<GiftType[]>([])
@@ -94,36 +93,9 @@ export default function Gifts() {
         />
       </div>
 
-      {/* Floating elements */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-20 left-10 animate-float">
-          <Gift className="w-8 h-8 text-wedding-primary/30 fill-current" />
-        </div>
-        <div className="absolute top-40 right-20 animate-float-delayed">
-          <FaHeart className="text-6xl text-rose-300/30" />
-        </div>
-        <div className="absolute bottom-32 left-20 animate-float">
-          <ShoppingBag className="w-7 h-7 text-wedding-primary/30 fill-current" />
-        </div>
-        <div className="absolute top-60 right-1/4 animate-float-delayed">
-          <Sparkles className="w-6 h-6 text-purple-300/30 fill-current" />
-        </div>
-        <div className="absolute bottom-40 left-1/3 animate-float">
-          <Star className="w-5 h-5 text-rose-300/30 fill-current" />
-        </div>
-      </div>
-
       <div className="container mx-auto px-6 max-w-7xl relative z-10">
         {/* Section Header */}
         <div className="text-center mb-16">
-          <div className="flex items-center justify-center gap-3 mb-6">
-            <FaHeart className="text-wedding-primary/60 text-2xl animate-pulse" />
-            <FaStar className="text-wedding-secondary/70 text-lg" />
-            <FaGift className="text-wedding-accent/60 text-3xl" />
-            <FaStar className="text-wedding-secondary/70 text-lg" />
-            <FaHeart className="text-wedding-primary/60 text-2xl animate-pulse" />
-          </div>
-
           <h2 className="text-5xl md:text-6xl lg:text-7xl font-light text-wedding-dark mb-8 wedding-heading tracking-wide">
             Lista de Presentes
           </h2>
@@ -212,7 +184,7 @@ export default function Gifts() {
                   <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                 </div>
 
-                <CardHeader className="pb-3 px-6 pt-6">
+                <CardHeader>
                   <CardTitle className="text-xl wedding-subtitle text-wedding-dark group-hover:text-wedding-primary transition-colors duration-300 leading-tight">
                     {gift.name}
                   </CardTitle>
@@ -221,14 +193,13 @@ export default function Gifts() {
                   </CardDescription>
                 </CardHeader>
 
-                <CardContent className="pb-6 px-6">
+                <CardContent className="px-6">
                   <div className="flex items-center gap-2">
-                    <FaStar className="text-wedding-secondary/60 text-sm" />
                     <p className="font-semibold text-2xl text-wedding-primary">{formatPrice(gift.price)}</p>
                   </div>
                 </CardContent>
 
-                <CardFooter className="flex gap-3 px-6 pb-6">
+                <CardFooter className="flex gap-3">
                   <Button
                     onClick={() => copyToClipboard(gift, gift.id)}
                     className="flex-1 bg-green-600 hover:bg-green-700 text-white border-0 shadow-md hover:shadow-lg transition-all duration-300"
@@ -263,12 +234,6 @@ export default function Gifts() {
         {/* Thank You Section */}
         <div className="max-w-4xl mx-auto">
           <div className="bg-gradient-to-br from-wedding-light/40 via-white/60 to-wedding-secondary/20 backdrop-blur-sm p-8 lg:p-12 rounded-3xl border border-wedding-accent/15 shadow-xl">
-            <div className="flex items-center justify-center gap-2 mb-6">
-              <FaHeart className="text-wedding-primary/60 text-2xl animate-pulse" />
-              <FaStar className="text-wedding-secondary/70 text-lg" />
-              <FaHeart className="text-wedding-primary/60 text-2xl animate-pulse" />
-            </div>
-
             <h3 className="text-3xl lg:text-4xl wedding-heading text-wedding-dark mb-6 leading-tight text-center">
               Obrigado pelo seu carinho!
             </h3>
@@ -283,12 +248,6 @@ export default function Gifts() {
               Sua generosidade e carinho significam muito para nós neste momento tão especial. Cada contribuição nos
               ajudará a construir nosso novo lar com muito amor e gratidão.
             </p>
-
-            <div className="flex items-center justify-center gap-4 mt-8">
-              <FaHeart className="text-wedding-primary/40 text-sm" />
-              <span className="text-wedding-accent/60 font-medium">Com amor, Luan & Ester</span>
-              <FaHeart className="text-wedding-primary/40 text-sm" />
-            </div>
           </div>
         </div>
       </div>
@@ -297,10 +256,6 @@ export default function Gifts() {
       <Dialog open={showQRCode !== null} onOpenChange={open => !open && setShowQRCode(null)}>
         <DialogContent className="sm:max-w-lg bg-white/95 backdrop-blur-sm border-wedding-accent/20">
           <DialogHeader className="text-center space-y-4">
-            <div className="flex items-center justify-center gap-2 mb-2">
-              <FaQrcode className="text-wedding-primary text-2xl" />
-              <FaHeart className="text-wedding-secondary/60 text-lg" />
-            </div>
             <DialogTitle className="text-2xl wedding-subtitle text-wedding-dark text-center">QR Code PIX</DialogTitle>
             <DialogDescription className="text-wedding-accent/80 leading-relaxed">
               Escaneie o código QR com seu aplicativo bancário para realizar a transferência PIX

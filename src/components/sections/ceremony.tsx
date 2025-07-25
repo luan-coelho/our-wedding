@@ -35,22 +35,6 @@ export default function Ceremony() {
         />
       </div>
 
-      {/* Floating elements */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-20 left-10 animate-float">
-          <MapPin className="w-6 h-6 text-wedding-primary/30 fill-current" />
-        </div>
-        <div className="absolute top-40 right-20 animate-float-delayed">
-          <Calendar className="w-5 h-5 text-purple-300/30 fill-current" />
-        </div>
-        <div className="absolute bottom-32 left-20 animate-float">
-          <Clock className="w-7 h-7 text-wedding-primary/30 fill-current" />
-        </div>
-        <div className="absolute top-60 right-1/4 animate-float-delayed">
-          <Heart className="w-5 h-5 text-rose-300/30 fill-current" />
-        </div>
-      </div>
-
       <div className="container mx-auto px-6 max-w-7xl relative z-10">
         {/* Section Header */}
         <div className="text-center mb-16">
@@ -69,55 +53,15 @@ export default function Ceremony() {
           </div>
         </div>
 
-        {/* Wedding Details Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16">
-          {/* Data */}
-          <Card className="border border-gray-200 bg-white hover:shadow-md transition-shadow duration-300">
-            <CardContent className="p-0 text-center">
-              <div className="w-12 h-12 rounded-full bg-rose-500 flex items-center justify-center mb-6 mx-auto">
-                <Calendar className="w-6 h-6 text-white" />
-              </div>
-              <h3 className="text-lg font-medium mb-3 text-gray-900">Data</h3>
-              <p className="text-gray-700 mb-2">12 de Setembro de 2025</p>
-              <p className="text-sm text-gray-500">Sexta-feira</p>
-            </CardContent>
-          </Card>
-
-          {/* Horário */}
-          <Card className="border border-gray-200 bg-white hover:shadow-md transition-shadow duration-300">
-            <CardContent className="p-0 text-center items-center">
-              <div className="w-12 h-12 rounded-full bg-purple-500 flex items-center justify-center mb-6 mx-auto">
-                <Clock className="w-6 h-6 text-white" />
-              </div>
-              <h3 className="text-lg font-medium mb-3 text-gray-900">Horário</h3>
-              <p className="text-gray-700 mb-2">10:00</p>
-              <p className="text-sm text-gray-500">Manhã</p>
-            </CardContent>
-          </Card>
-
-          {/* Local */}
-          <Card className="border border-gray-200 bg-white hover:shadow-md transition-shadow duration-300">
-            <CardContent className="p-0 text-center">
-              <div className="w-12 h-12 rounded-full bg-emerald-500 flex items-center justify-center mb-6 mx-auto">
-                <MapPin className="w-6 h-6 text-white" />
-              </div>
-              <h3 className="text-lg font-medium mb-3 text-gray-900">Local</h3>
-              <p className="text-gray-700 mb-1">Paróquia Nossa Senhora</p>
-              <p className="text-gray-700 mb-2">do Monte do Carmo</p>
-              <p className="text-sm text-gray-500">Palmas - TO</p>
-            </CardContent>
-          </Card>
-        </div>
-
         {/* Map and Location Details */}
         <div className="grid lg:grid-cols-3 gap-8 mb-12">
           {/* Map */}
           <div className="lg:col-span-2">
-            <Card className="overflow-hidden border-wedding-light/30 shadow-lg">
-              <div className="aspect-video w-full">
+            <Card className="overflow-hidden border-wedding-light/30 shadow-lg h-full p-3">
+              <div className="h-full w-full">
                 <iframe
                   src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3927.0228768090715!2d-48.3179763!3d-10.178795699999998!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x9324cc9e31431eef%3A0xc16bbff60feb6716!2sPar%C3%B3quia%20Nossa%20Senhora%20do%20Monte%20do%20Carmo!5e0!3m2!1spt-BR!2sbr!4v1746164865442!5m2!1spt-BR!2sbr"
-                  className="w-full h-full border-0"
+                  className="w-full h-full border-0 p-"
                   allowFullScreen
                   loading="lazy"
                   referrerPolicy="no-referrer-when-downgrade"
@@ -242,8 +186,15 @@ export default function Ceremony() {
                     3
                   </div>
                   <p className="text-wedding-accent">
-                    A cerimônia será <strong>exclusivamente religiosa</strong>, sem festa ou recepção posterior.
+                    A cerimônia será <strong>exclusivamente religiosa</strong>, encontraremos vocês na saída da igreja
+                    para os cumprimentos e fotos, com todo carinho.{' '}
                   </p>
+                </div>
+                <div className="flex items-start gap-3">
+                  <div className="w-6 h-6 bg-wedding-primary/20 rounded-full flex items-center justify-center text-xs font-semibold text-wedding-primary mt-0.5 flex-shrink-0">
+                    4
+                  </div>
+                  <p className="text-wedding-accent">Não haverá festa ou recepção posterior.</p>
                 </div>
               </div>
             </AlertDescription>

@@ -1,7 +1,7 @@
 'use client'
 
+import { Calendar, Heart, Sparkles } from 'lucide-react'
 import { useEffect, useState } from 'react'
-import { Sparkles, Calendar, Clock, Heart } from 'lucide-react'
 
 interface CountdownProps {
   weddingDate: Date
@@ -58,22 +58,6 @@ export default function Countdown({ weddingDate }: CountdownProps) {
             backgroundImage: `url("data:image/svg+xml,%3Csvg width='120' height='120' viewBox='0 0 120 120' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23d946ef' fill-opacity='0.4'%3E%3Cpath d='M60 60l30-30v60l-30-30zm0 0l-30-30v60l30-30z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
           }}
         />
-      </div>
-
-      {/* Floating elements */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-20 left-10 animate-float">
-          <Clock className="w-8 h-8 text-wedding-purple-light/30 fill-current" />
-        </div>
-        <div className="absolute top-40 right-20 animate-float-delayed">
-          <Calendar className="w-6 h-6 text-wedding-lilac/30 fill-current" />
-        </div>
-        <div className="absolute bottom-32 left-20 animate-float">
-          <Sparkles className="w-7 h-7 text-wedding-purple-light/30 fill-current" />
-        </div>
-        <div className="absolute top-60 right-1/4 animate-float-delayed">
-          <Heart className="w-5 h-5 text-wedding-lilac/30 fill-current" />
-        </div>
       </div>
 
       <div id="countdown-container" className="container mx-auto px-6 max-w-6xl relative z-10">

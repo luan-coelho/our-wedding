@@ -1,7 +1,7 @@
 'use client'
 
-import { Heart, Sparkles, Star, Users, Calendar } from 'lucide-react'
 import { Card, CardContent } from '@/components/ui/card'
+import { Calendar, Heart, Sparkles, Users } from 'lucide-react'
 
 export default function Couple() {
   return (
@@ -16,25 +16,6 @@ export default function Couple() {
             backgroundImage: `url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23d946ef' fill-opacity='0.3'%3E%3Ccircle cx='50' cy='50' r='4'/%3E%3Ccircle cx='20' cy='20' r='2'/%3E%3Ccircle cx='80' cy='20' r='2'/%3E%3Ccircle cx='20' cy='80' r='2'/%3E%3Ccircle cx='80' cy='80' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
           }}
         />
-      </div>
-
-      {/* Floating elements */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-20 left-10 animate-float">
-          <Heart className="w-6 h-6 text-rose-300/40 fill-current" />
-        </div>
-        <div className="absolute top-40 right-20 animate-float-delayed">
-          <Sparkles className="w-4 h-4 text-purple-300/40 fill-current" />
-        </div>
-        <div className="absolute bottom-32 left-20 animate-float">
-          <Star className="w-5 h-5 text-rose-300/40 fill-current" />
-        </div>
-        <div className="absolute top-60 right-1/4 animate-float-delayed">
-          <Users className="w-6 h-6 text-purple-300/40 fill-current" />
-        </div>
-        <div className="absolute bottom-40 left-1/3 animate-float">
-          <Heart className="w-4 h-4 text-rose-300/40 fill-current" />
-        </div>
       </div>
 
       <div className="container mx-auto px-6 max-w-7xl relative z-10">

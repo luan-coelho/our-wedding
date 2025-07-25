@@ -1,13 +1,12 @@
 'use client'
 
-import Navbar from '@/components/sections/navbar'
-import Hero from '@/components/sections/hero'
-import Countdown from '@/components/sections/countdown'
-import Couple from '@/components/sections/couple'
 import Ceremony from '@/components/sections/ceremony'
-import Gifts from '@/components/sections/gifts'
 import Confirmation from '@/components/sections/confirmation'
+import Countdown from '@/components/sections/countdown'
 import Footer from '@/components/sections/footer'
+import Gifts from '@/components/sections/gifts'
+import Hero from '@/components/sections/hero'
+import Navbar from '@/components/sections/navbar'
 
 export default function Home() {
   // Data do casamento (12 de setembro de 2025)

@@ -14,25 +14,6 @@ export default function Hero({ onScrollToNextAction }: HeroProps) {
       {/* Background */}
       <div className="absolute inset-0 bg-gradient-to-br from-wedding-lavender/80 via-white to-wedding-lilac/80" />
 
-      {/* Floating Hearts Animation */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-20 left-10 animate-float">
-          <Heart className="w-6 h-6 text-wedding-purple-light/40 fill-current" />
-        </div>
-        <div className="absolute top-40 right-20 animate-float-delayed">
-          <Sparkles className="w-4 h-4 text-wedding-lilac/40 fill-current" />
-        </div>
-        <div className="absolute bottom-32 left-20 animate-float">
-          <Star className="w-5 h-5 text-wedding-purple-light/40 fill-current" />
-        </div>
-        <div className="absolute top-60 left-1/3 animate-float-delayed">
-          <Heart className="w-4 h-4 text-wedding-lilac/40 fill-current" />
-        </div>
-        <div className="absolute bottom-40 right-1/3 animate-float">
-          <Sparkles className="w-6 h-6 text-wedding-purple-light/40 fill-current" />
-        </div>
-      </div>
-
       {/* Main Content */}
       <div className="relative z-10 text-center px-6 max-w-7xl mx-auto">
         {/* Date Badge */}
@@ -84,8 +65,8 @@ export default function Hero({ onScrollToNextAction }: HeroProps) {
 
         {/* Subtitle */}
         <div className="mb-16 animate-fade-in-up" style={{ animationDelay: '0.4s' }}>
-          <p className="text-2xl md:text-3xl lg:text-4xl text-wedding-dark font-light leading-relaxed max-w-4xl mx-auto mb-6 tracking-wide wedding-heading">
-            Dois corações, uma só alma
+          <p className="text-2xl md:text-2xl lg:text-3xl text-wedding-dark font-light leading-relaxed max-w-4xl mx-auto mb-6 tracking-wide wedding-heading">
+            &quot;Aliás, sabemos que todas as coisas concorrem para o bem daqueles que amam a Deus.&quot; Rm 8,28
           </p>
           <p className="text-lg md:text-xl lg:text-xl text-wedding-charcoal/80 font-light max-w-3xl mx-auto leading-relaxed">
             Celebrando o amor que nos une para sempre

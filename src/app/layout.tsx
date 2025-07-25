@@ -1,7 +1,7 @@
 import AuthProvider from '@/components/auth-provider'
 import { Ban, CircleCheckBig, CircleEllipsis, Info, TriangleAlert } from 'lucide-react'
 import type { Metadata } from 'next'
-import { Dancing_Script, Playfair_Display, Lora } from 'next/font/google'
+import { Dancing_Script, Playfair_Display } from 'next/font/google'
 import { Toaster } from 'sonner'
 import './globals.css'
 import Providers from './Providers'
@@ -21,13 +21,6 @@ const playfairDisplay = Playfair_Display({
   display: 'swap',
 })
 
-const lora = Lora({
-  variable: '--font-lora',
-  subsets: ['latin'],
-  weight: ['400', '500', '600', '700'],
-  display: 'swap',
-})
-
 export const metadata: Metadata = {
   title: 'Luan & Ester - Nosso Casamento',
   description: 'Site do casamento de Luan e Ester - Venha celebrar conosco!',
@@ -40,7 +33,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="pt-BR">
-      <body className={`${dancingScript.variable} ${playfairDisplay.variable} ${lora.variable} antialiased`}>
+      <body className={`${dancingScript.variable} ${playfairDisplay.variable} antialiased`}>
         <Providers>
           <AuthProvider>{children}</AuthProvider>
           <Toaster
@@ -55,7 +48,7 @@ export default function RootLayout({
               loading: <CircleEllipsis />,
             }}
             theme={'light'}
-            position="top-right"
+            position="bottom-right"
             expand
             richColors
           />
