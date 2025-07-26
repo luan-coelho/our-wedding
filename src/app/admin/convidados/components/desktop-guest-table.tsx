@@ -69,7 +69,6 @@ export function DesktopGuestTable({
             <TableHead className="font-semibold text-gray-700 px-6">Convidado</TableHead>
             <TableHead className="text-center font-semibold text-gray-700">Código</TableHead>
             <TableHead className="text-center font-semibold text-gray-700">Confirmações</TableHead>
-            <TableHead className="font-semibold text-gray-700">Link de Convite</TableHead>
             <AdminProtected>
               <TableHead className="text-center font-semibold text-gray-700">Ações</TableHead>
             </AdminProtected>
@@ -282,18 +281,7 @@ export function DesktopGuestTable({
                     </div>
                   </div>
                 </TableCell>
-
-                <TableCell className="py-4">
-                  <div className="flex items-center gap-2">
-                    <Input
-                      readOnly
-                      value={`${baseUrl}/confirmacao/${guest.token}`}
-                      className="flex-1 text-sm bg-gray-50 border-black text-gray-600"
-                    />
-                    <CopyToClipboard text={`${baseUrl}/confirmacao/${guest.token}`} />
-                  </div>
-                </TableCell>
-
+                
                 <AdminProtected>
                   <TableCell className="text-center py-4">
                     <div className="flex gap-2 justify-center">

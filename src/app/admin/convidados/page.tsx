@@ -289,7 +289,7 @@ export default function AdminGuestsPage() {
           ))}
         </div>
 
-        <Card className="rounded-lg shadow-sm border-black bg-white">
+        <Card className="rounded-lg shadow-sm border-black bg-white gap-0">
           <CardHeader className="flex flex-col sm:flex-row sm:items-center sm:justify-between pb-4 border-b border-black space-y-4 sm:space-y-0">
             <CardTitle className="text-xl sm:text-2xl font-bold text-gray-900">Convidados</CardTitle>
             <AdminProtected>
@@ -297,138 +297,67 @@ export default function AdminGuestsPage() {
                 <Button
                   onClick={() => setIsImportDialogOpen(true)}
                   variant="outline"
-                  size="sm"
                   className="shadow-sm hover:shadow-md transition-shadow border-black">
                   <Upload className="h-4 w-4 mr-2" />
                   Importar
                 </Button>
-                <Button asChild size="sm" className="shadow-sm hover:shadow-md transition-shadow border-black">
+                <Button asChild className="shadow-sm hover:shadow-md transition-shadow border-black">
                   <Link href={routes.frontend.admin.convidados.create}>Adicionar</Link>
                 </Button>
               </div>
             </AdminProtected>
           </CardHeader>
 
-          {/* Legenda do Sistema de Confirmações - Hidden on mobile */}
-          <div className="hidden sm:block px-6 py-4 bg-blue-50 border-b border-gray-200">
-            <div className="space-y-4">
-              <h3 className="font-semibold text-gray-900 text-sm">Sistema de Confirmações</h3>
+          <CardContent className="p-0 gap-0">
+            {/* Filters Section */}
+            <div className="px-3 sm:px-6 py-4 border-b border-black bg-gray-50/50">
+              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
+                {/* Name Filter */}
+                <div className="flex-1">
+                  <div className="relative">
+                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                    <Input
+                      placeholder="Buscar por nome..."
+                      value={nameFilter}
+                      onChange={e => setNameFilter(e.target.value)}
+                      className="pl-10 bg-white border-black focus:border-gray-900 focus:ring-gray-900/20 shadow-sm"
+                    />
+                  </div>
+                </div>
 
-              {/* Códigos de Confirmação */}
-              <div className="bg-white p-3 rounded-lg border border-blue-200">
-                <h4 className="font-medium text-gray-800 text-xs mb-2">💡 Códigos de Confirmação</h4>
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 text-xs">
-                  <div className="flex items-start gap-2">
-                    <div className="font-mono text-sm bg-blue-100 px-2 py-1 rounded border">123456</div>
-                    <div>
-                      <div className="font-medium text-gray-800">Código de 6 dígitos</div>
-                      <div className="text-gray-600">Para digitar na página inicial</div>
-                    </div>
-                  </div>
-                  <div className="flex items-start gap-2">
-                    <div className="text-blue-600 font-medium bg-blue-50 px-2 py-1 rounded border">🔗 Link</div>
-                    <div>
-                      <div className="font-medium text-gray-800">URL direta</div>
-                      <div className="text-gray-600">Para enviar por WhatsApp/Email</div>
-                    </div>
-                  </div>
-                </div>
-                <div className="mt-3 p-2 bg-amber-50 rounded border border-amber-200">
-                  <div className="text-xs text-amber-800">
-                    <span className="font-medium">📋 Como funciona:</span> O convidado acessa a página inicial e:
-                    <br />• <strong>Digita o código de 6 dígitos</strong> OU
-                    <br />• <strong>Clica no link direto</strong> (exemplo:{' '}
-                    <span className="font-mono">/?code=123456</span>)
-                    <br />• <strong>Confirma a presença</strong> de cada pessoa individualmente
-                  </div>
+                {/* Status Filter */}
+                <div className="sm:w-48">
+                  <Select
+                    value={statusFilter}
+                    onValueChange={(value: 'all' | 'confirmed' | 'unconfirmed' | 'partial') => setStatusFilter(value)}>
+                    <SelectTrigger className="bg-white border-black focus:border-gray-900 focus:ring-gray-900/20 shadow-sm">
+                      <SelectValue placeholder="Status" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-white border-black shadow">
+                      <SelectItem value="all" className="hover:bg-gray-50">
+                        Todos
+                      </SelectItem>
+                      <SelectItem value="confirmed" className="hover:bg-green-50 text-green-700">
+                        Totalmente Confirmados
+                      </SelectItem>
+                      <SelectItem value="partial" className="hover:bg-yellow-50 text-yellow-700">
+                        Parcialmente Confirmados
+                      </SelectItem>
+                      <SelectItem value="unconfirmed" className="hover:bg-red-50 text-red-700">
+                        Não Confirmados
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
               </div>
 
-              {/* Tipos de Pessoas */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 text-xs">
-                <div className="flex items-center gap-2">
-                  <div className="flex items-center gap-1">
-                    <Users className="w-3 h-3 text-gray-600" />
-                    <span className="text-gray-700">Principal</span>
-                  </div>
-                  <Heart className="w-3 h-3 text-pink-600" />
-                  <span className="text-gray-700">Cônjuge</span>
+              {/* Results count */}
+              {(nameFilter || statusFilter !== 'all') && (
+                <div className="mt-3 text-sm text-gray-600">
+                  Mostrando {filteredGuests.length} de {guests.length} convidados
                 </div>
-                <div className="flex items-center gap-2">
-                  <div className="flex items-center gap-1">
-                    <Baby className="w-3 h-3 text-blue-600" />
-                    <span className="text-gray-700">Filhos</span>
-                  </div>
-                  <UserPlus className="w-3 h-3 text-purple-600" />
-                  <span className="text-gray-700">Outros</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="flex items-center gap-1">
-                    <Check className="w-3 h-3 text-green-600" />
-                    <span className="text-gray-700">Confirmado</span>
-                  </div>
-                  <X className="w-3 h-3 text-red-600" />
-                  <span className="text-gray-700">Não confirmado</span>
-                </div>
-              </div>
-              <div className="text-xs text-gray-600">
-                <span className="font-medium">Formato:</span> Confirmados/Total - Cada pessoa do grupo pode confirmar
-                individualmente
-              </div>
+              )}
             </div>
-          </div>
-
-          {/* Filters Section */}
-          <div className="px-3 sm:px-6 py-4 border-b border-black bg-gray-50/50">
-            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
-              {/* Name Filter */}
-              <div className="flex-1">
-                <div className="relative">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-                  <Input
-                    placeholder="Buscar por nome..."
-                    value={nameFilter}
-                    onChange={e => setNameFilter(e.target.value)}
-                    className="pl-10 bg-white border-black focus:border-gray-900 focus:ring-gray-900/20 shadow-sm"
-                  />
-                </div>
-              </div>
-
-              {/* Status Filter */}
-              <div className="sm:w-48">
-                <Select
-                  value={statusFilter}
-                  onValueChange={(value: 'all' | 'confirmed' | 'unconfirmed' | 'partial') => setStatusFilter(value)}>
-                  <SelectTrigger className="bg-white border-black focus:border-gray-900 focus:ring-gray-900/20 shadow-sm">
-                    <SelectValue placeholder="Status" />
-                  </SelectTrigger>
-                  <SelectContent className="bg-white border-black shadow">
-                    <SelectItem value="all" className="hover:bg-gray-50">
-                      Todos
-                    </SelectItem>
-                    <SelectItem value="confirmed" className="hover:bg-green-50 text-green-700">
-                      Totalmente Confirmados
-                    </SelectItem>
-                    <SelectItem value="partial" className="hover:bg-yellow-50 text-yellow-700">
-                      Parcialmente Confirmados
-                    </SelectItem>
-                    <SelectItem value="unconfirmed" className="hover:bg-red-50 text-red-700">
-                      Não Confirmados
-                    </SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-
-            {/* Results count */}
-            {(nameFilter || statusFilter !== 'all') && (
-              <div className="mt-3 text-sm text-gray-600">
-                Mostrando {filteredGuests.length} de {guests.length} convidados
-              </div>
-            )}
-          </div>
-
-          <CardContent className="p-0">
             {isLoading ? (
               <div className="text-center py-8 text-gray-500">
                 <div className="animate-pulse">Carregando...</div>

@@ -163,7 +163,7 @@ export default function Gifts() {
             {gifts.map(gift => (
               <Card
                 key={gift.id}
-                className="group overflow-hidden border-0 shadow-lg hover:shadow-2xl transition-all duration-500 bg-white/80 backdrop-blur-sm hover:-translate-y-2">
+                className="pt-0 group overflow-hidden border-0 shadow-lg hover:shadow-2xl transition-all duration-500 bg-white/80 backdrop-blur-sm hover:-translate-y-2">
                 <div className="relative h-56 w-full bg-gradient-to-br from-wedding-light/30 to-wedding-secondary/20 overflow-hidden">
                   {gift.imageUrl ? (
                     <Image
@@ -185,7 +185,7 @@ export default function Gifts() {
                 </div>
 
                 <CardHeader>
-                  <CardTitle className="text-xl wedding-subtitle text-wedding-dark group-hover:text-wedding-primary transition-colors duration-300 leading-tight">
+                  <CardTitle className="text-xl text-center font-geist-mono font-semibold text-wedding-dark group-hover:text-wedding-primary transition-colors duration-300 leading-tight">
                     {gift.name}
                   </CardTitle>
                   <CardDescription className="line-clamp-2 text-wedding-accent/80 leading-relaxed">
@@ -203,7 +203,7 @@ export default function Gifts() {
                   {gift.selectedPixKey && (
                     <div className="flex items-center gap-2 flex-1">
                       <FaStar className="text-yellow-500 h-5 w-5" />
-                      <span className="text-sm text-wedding-accent/80">
+                      <span className="text-sm text-wedding-accent/80 text-center">
                         {gift.selectedPixKey.name} ({gift.selectedPixKey.type})
                       </span>
                     </div>
