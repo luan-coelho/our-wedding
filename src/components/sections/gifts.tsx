@@ -194,37 +194,48 @@ export default function Gifts() {
                 </CardHeader>
 
                 <CardContent className="px-6">
-                  <div className="flex items-center gap-2">
-                    <p className="font-semibold text-2xl text-wedding-primary">{formatPrice(gift.price)}</p>
+                  <div className="flex items-center justify-center gap-2">
+                    <p className="font-semibold text-3xl text-wedding-primary">{formatPrice(gift.price)}</p>
                   </div>
                 </CardContent>
 
-                <CardFooter className="flex gap-3">
-                  <Button
-                    onClick={() => copyToClipboard(gift, gift.id)}
-                    className="flex-1 bg-green-600 hover:bg-green-700 text-white border-0 shadow-md hover:shadow-lg transition-all duration-300"
-                    disabled={!getEffectivePixKey(gift)}>
-                    {copiedId === gift.id ? (
-                      <>
-                        <FaCheck className="mr-2 h-4 w-4" />
-                        Copiado!
-                      </>
-                    ) : (
-                      <>
-                        <FaClipboard className="mr-2 h-4 w-4" />
-                        Copiar PIX
-                      </>
-                    )}
-                  </Button>
+                <CardFooter className="flex gap-3 flex-col">
+                  {gift.selectedPixKey && (
+                    <div className="flex items-center gap-2 flex-1">
+                      <FaStar className="text-yellow-500 h-5 w-5" />
+                      <span className="text-sm text-wedding-accent/80">
+                        {gift.selectedPixKey.name} ({gift.selectedPixKey.type})
+                      </span>
+                    </div>
+                  )}
 
-                  <Button
-                    variant="outline"
-                    onClick={() => setShowQRCode(gift.id)}
-                    className="border-wedding-accent/30 text-wedding-accent hover:bg-wedding-accent/10 hover:border-wedding-accent/50 shadow-md hover:shadow-lg transition-all duration-300"
-                    disabled={!getEffectivePixKey(gift)}>
-                    <FaQrcode className="mr-2 h-4 w-4" />
-                    QR Code
-                  </Button>
+                  <div className="flex gap-3 mt-2">
+                    <Button
+                      onClick={() => copyToClipboard(gift, gift.id)}
+                      className="flex-1 bg-green-600 hover:bg-green-700 text-white border-0 shadow-md hover:shadow-lg transition-all duration-300"
+                      disabled={!getEffectivePixKey(gift)}>
+                      {copiedId === gift.id ? (
+                        <>
+                          <FaCheck className="mr-2 h-4 w-4" />
+                          Copiado!
+                        </>
+                      ) : (
+                        <>
+                          <FaClipboard className="mr-2 h-4 w-4" />
+                          Copiar PIX
+                        </>
+                      )}
+                    </Button>
+
+                    <Button
+                      variant="outline"
+                      onClick={() => setShowQRCode(gift.id)}
+                      className="border-wedding-accent/30 text-wedding-accent hover:bg-wedding-accent/10 hover:border-wedding-accent/50 shadow-md hover:shadow-lg transition-all duration-300"
+                      disabled={!getEffectivePixKey(gift)}>
+                      <FaQrcode className="mr-2 h-4 w-4" />
+                      QR Code
+                    </Button>
+                  </div>
                 </CardFooter>
               </Card>
             ))}

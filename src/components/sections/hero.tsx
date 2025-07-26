@@ -18,8 +18,8 @@ export default function Hero({ onScrollToNextAction }: HeroProps) {
       <div className="relative z-10 text-center px-6 max-w-7xl mx-auto">
         {/* Date Badge */}
         <div className="mb-10 flex justify-center animate-fade-in">
-          <Badge className="bg-gradient-to-r from-wedding-lavender/90 to-wedding-lilac/90 text-wedding-dark border-wedding-purple-light/50 px-8 py-4 text-base font-medium rounded-full shadow-xl backdrop-blur-md hover:shadow-2xl transition-all duration-500 hover:scale-105">
-            <Calendar className="w-5 h-5 mr-3" />
+          <Badge className="text-2xl not-italic wedding-heading bg-gradient-to-r from-wedding-lavender/90 to-wedding-lilac/90 text-wedding-dark border-wedding-purple-light/50 px-8 py-4 font-medium rounded-full shadow-xl backdrop-blur-md hover:shadow-2xl transition-all duration-500 hover:scale-105">
+            <Calendar className="min-w-6 min-h-6 border-dashed mr-3" />
             12 de Setembro de 2025
           </Badge>
         </div>

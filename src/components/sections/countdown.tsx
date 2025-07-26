@@ -131,7 +131,7 @@ export default function Countdown({ weddingDate }: CountdownProps) {
         <div className="mt-16 text-center">
           <div className="inline-flex items-center space-x-4 px-8 py-4 bg-white/60 backdrop-blur-sm rounded-full shadow-lg">
             <Calendar className="w-5 h-5 text-wedding-primary" />
-            <span className="text-lg font-medium text-wedding-dark wedding-accent-text">12 de Setembro de 2025</span>
+            <span className="text-2xl font-medium text-wedding-dark wedding-accent-text">12 de Setembro de 2025</span>
             <Heart className="w-5 h-5 text-wedding-accent fill-current" />
           </div>
         </div>
