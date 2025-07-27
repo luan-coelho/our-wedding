@@ -108,7 +108,7 @@ export default function CountdownTimer({ targetDate }: { targetDate: Date }) {
 
       {/* Countdown Cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
-        {timeUnits.map((unit, index) => (
+        {timeUnits.map(unit => (
           <Card
             key={unit.label}
             className="group hover:shadow-xl transition-all duration-500 border-0 shadow-lg hover:-translate-y-2 overflow-hidden">

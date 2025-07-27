@@ -5,12 +5,14 @@ Este documento explica como funciona o sistema de confirmação de presença imp
 ## Visão Geral
 
 O sistema permite que os convidados confirmem sua presença de duas formas:
+
 1. **Código de 6 dígitos**: Digitando um código numérico na página inicial
 2. **Link direto**: Clicando em um link que já preenche o código automaticamente
 
 ## Como Funciona
 
 ### 1. Cadastro do Convidado
+
 - Quando um convidado é cadastrado no sistema, ele recebe automaticamente:
   - Um **token UUID** único (para URLs antigas)
   - Um **código de 6 dígitos** único (nova funcionalidade)
@@ -18,16 +20,19 @@ O sistema permite que os convidados confirmem sua presença de duas formas:
 ### 2. Opções de Confirmação
 
 #### Opção 1: Código de 6 dígitos
+
 - O convidado acessa a página inicial (`/`)
 - Digita o código de 6 dígitos no campo "Código de Confirmação"
 - Clica em "Confirmar Presença"
 
 #### Opção 2: Link direto com query param
+
 - O convidado clica em um link como: `https://seusite.com/?code=123456`
 - O sistema automaticamente preenche e processa o código
 - O convidado é direcionado para o formulário de confirmação
 
 #### Opção 3: Link tradicional (mantido para compatibilidade)
+
 - O convidado clica em um link como: `https://seusite.com/confirmacao/uuid-token`
 - Funciona como antes, usando o token UUID
 
@@ -51,11 +56,13 @@ ALTER TABLE guest ADD COLUMN confirmation_code TEXT NOT NULL UNIQUE;
 ### APIs
 
 #### Buscar convidado por código
+
 ```
 GET /api/confirmacao/code/[code]
 ```
 
 #### Confirmar presença por código
+
 ```
 PUT /api/confirmacao/code/[code]
 ```
@@ -63,6 +70,7 @@ PUT /api/confirmacao/code/[code]
 ### Componentes
 
 #### `confirmation.tsx`
+
 - Componente principal na página inicial
 - Detecta automaticamente o tipo de entrada (código vs token vs URL)
 - Processa automaticamente URLs coladas
@@ -86,24 +94,28 @@ extractTokenFromUrl(value) // extrai token/code da URL
 ## Interface do Administrador
 
 ### Página de Convidados
+
 - Mostra o código de 6 dígitos de cada convidado
 - Permite copiar o código diretamente
 - Permite copiar o link direto (`/?code=123456`)
 - Mantém o link tradicional para compatibilidade
 
 ### Funcionalidades
+
 - **Copiar Código**: Copia apenas o código de 6 dígitos
 - **Copiar Link**: Copia a URL completa com o código
 
 ## Exemplos de Uso
 
 ### Para o Administrador
+
 1. Cadastrar convidado → Sistema gera código automaticamente
 2. Copiar código: `123456`
 3. Copiar link: `https://seusite.com/?code=123456`
 4. Enviar por WhatsApp/Email para o convidado
 
 ### Para o Convidado
+
 1. **Opção 1**: Digitar `123456` na página inicial
 2. **Opção 2**: Clicar no link `https://seusite.com/?code=123456`
 3. **Opção 3**: Clicar no link tradicional `https://seusite.com/confirmacao/uuid`
@@ -126,6 +138,7 @@ extractTokenFromUrl(value) // extrai token/code da URL
 ## Casos de Uso Especiais
 
 ### Auto-detecção de URLs
+
 - Quando o usuário cola uma URL completa, o sistema automaticamente extrai o código/token
 - Funciona para URLs do tipo:
   - `https://seusite.com/confirmacao/uuid`
@@ -133,6 +146,7 @@ extractTokenFromUrl(value) // extrai token/code da URL
   - `https://seusite.com/?token=uuid`
 
 ### Confirmações Múltiplas
+
 - Cada pessoa do grupo pode ser confirmada individualmente
 - Suporte a: Principal, Cônjuge, Filhos, Acompanhantes
 - Status visual para cada confirmação
@@ -140,6 +154,7 @@ extractTokenFromUrl(value) // extrai token/code da URL
 ## Monitoramento
 
 O sistema permite monitorar:
+
 - Quantos convidados confirmaram presença
 - Quantas pessoas por grupo confirmaram
 - Status de cada confirmação individual

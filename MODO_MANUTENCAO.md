@@ -44,11 +44,13 @@ A página de manutenção (`/src/app/manutencao/page.tsx`) inclui:
 ## Comportamento do Sistema
 
 ### Quando o Modo de Manutenção está ATIVO:
+
 - Todas as rotas redirecionam para `/manutencao`
 - Usuários não conseguem acessar nenhuma funcionalidade da aplicação
 - APIs de autenticação continuam funcionando (para não quebrar sessões)
 
 ### Quando o Modo de Manutenção está INATIVO:
+
 - Aplicação funciona normalmente
 - Tentativas de acessar `/manutencao` redirecionam para a home (`/`)
 
@@ -88,4 +90,4 @@ Para personalizar a página de manutenção:
 
 1. Edite o arquivo `src/app/manutencao/page.tsx`
 2. Modifique textos, cores, ícones ou layout conforme necessário
-3. Adicione informações específicas sobre a manutenção em curso 
+3. Adicione informações específicas sobre a manutenção em curso

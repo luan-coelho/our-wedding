@@ -10,11 +10,17 @@ import { z } from 'zod'
 export async function GET() {
   const session = await auth()
 
+  if (!session?.user) {
+    return new NextResponse(JSON.stringify({ error: 'Não autorizado' }), {
+      status: 401,
+    })
+  }
+
   // Busca todos os usuários
   const allUsers = await db
     .select()
     .from(tableUsers)
-    .where(not(eq(tableUsers.id, session?.user.id!)))
+    .where(not(eq(tableUsers.id, session.user.id)))
     .orderBy(asc(tableUsers.name))
 
   return NextResponse.json(allUsers)

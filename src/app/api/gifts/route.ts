@@ -1,6 +1,6 @@
 import { db } from '@/db'
-import { tableGifts, tablePixKeys } from '@/db/schema'
-import { asc, eq } from 'drizzle-orm'
+import { tableGifts } from '@/db/schema'
+import { asc } from 'drizzle-orm'
 import { NextResponse } from 'next/server'
 import { validate as isValidUUID } from 'uuid'
 

@@ -58,8 +58,8 @@ export function ImportGuestsDialog({ open, onOpenChange }: ImportGuestsDialogPro
       queryClient.invalidateQueries({ queryKey: ['guests'] })
       handleClose()
     },
-    onError: (error: any) => {
-      toast.error(error.error || 'Erro ao importar convidados')
+    onError: error => {
+      toast.error(error?.message ?? 'Erro ao importar convidados')
     },
   })
 

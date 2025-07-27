@@ -16,7 +16,6 @@ import {
   Loader2,
   PartyPopper,
   Sparkles,
-  Star,
   UserCheck,
   UserPlus,
   Users,
@@ -182,8 +181,10 @@ function ConfirmationContent() {
       }
 
       setConfirmations(people)
-    } catch (error: any) {
-      toast.error(error.message || 'Código inválido ou expirado. Verifique e tente novamente.')
+    } catch (error) {
+      if (error instanceof Error) {
+        toast.error(error.message)
+      }
     } finally {
       setIsLoading(false)
     }
@@ -299,9 +300,11 @@ function ConfirmationContent() {
       setConfirmationStatus('success')
       setHasChanged(false)
       toast.success('Confirmação registrada com sucesso!')
-    } catch (error: any) {
+    } catch (error) {
       setConfirmationStatus('error')
-      toast.error(error.message || 'Falha ao confirmar presença. Tente novamente.')
+      if (error instanceof Error) {
+        toast.error(error.message || 'Falha ao confirmar presença. Tente novamente.')
+      }
     } finally {
       setIsSubmitting(false)
     }
@@ -431,7 +434,9 @@ function ConfirmationContent() {
                     <Sparkles className="w-5 h-5 text-wedding-secondary fill-current" />
                     <Heart className="w-6 h-6 text-wedding-primary fill-current" />
                   </div>
-                  <CardTitle className="text-2xl wedding-accent-text text-wedding-dark">Olá, {guest.name}! 💜</CardTitle>
+                  <CardTitle className="text-2xl wedding-accent-text text-wedding-dark">
+                    Olá, {guest.name}! 💜
+                  </CardTitle>
                   <CardDescription className="text-lg text-wedding-accent/80">
                     Confirme a presença de cada pessoa individualmente
                   </CardDescription>

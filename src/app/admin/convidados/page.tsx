@@ -21,11 +21,11 @@ import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { routes } from '@/lib/routes'
 import { guestsService } from '@/services/guests.service'
-import { Search, Upload, Check, Users, Heart, Baby, UserPlus, X } from 'lucide-react'
+import { Search, Upload } from 'lucide-react'
 import { toast } from 'sonner'
-import { ImportGuestsDialog } from './import-guests-dialog'
-import { MobileGuestCard } from './components/mobile-guest-card'
 import { DesktopGuestTable } from './components/desktop-guest-table'
+import { MobileGuestCard } from './components/mobile-guest-card'
+import { ImportGuestsDialog } from './import-guests-dialog'
 
 export default function AdminGuestsPage() {
   const queryClient = useQueryClient()
@@ -78,46 +78,6 @@ export default function AdminGuestsPage() {
       return matchesName && matchesStatus
     })
   }, [guests, nameFilter, statusFilter])
-
-  // Calculate total attendees (including family members)
-  const totalAttendees = useMemo(() => {
-    return filteredGuests.reduce((total, guest) => {
-      let guestCount = 1 // Main guest
-      if (guest.spouse) guestCount += 1
-      if (guest.children) guestCount += guest.children.length
-      if (guest.companions) guestCount += guest.companions.length
-      return total + guestCount
-    }, 0)
-  }, [filteredGuests])
-
-  // Calculate confirmed attendees (considering individual confirmations)
-  const confirmedAttendees = useMemo(() => {
-    return filteredGuests.reduce((total, guest) => {
-      let confirmedCount = 0
-
-      // Main guest
-      if (guest.isConfirmed) confirmedCount += 1
-
-      // Spouse
-      if (guest.spouse && guest.spouseConfirmation) confirmedCount += 1
-
-      // Children
-      if (guest.children && guest.childrenConfirmations) {
-        guest.children.forEach(child => {
-          if (guest.childrenConfirmations?.[child]) confirmedCount += 1
-        })
-      }
-
-      // Companions
-      if (guest.companions && guest.companionsConfirmations) {
-        guest.companions.forEach(companion => {
-          if (guest.companionsConfirmations?.[companion]) confirmedCount += 1
-        })
-      }
-
-      return total + confirmedCount
-    }, 0)
-  }, [filteredGuests])
 
   // Mutation to delete a guest
   const deleteGuestMutation = useMutation({
@@ -195,7 +155,6 @@ export default function AdminGuestsPage() {
 
   const notConfirmedGuests = useMemo(() => {
     return filteredGuests.filter(guest => {
-      const totalInGroup = 1 + (guest.spouse ? 1 : 0) + (guest.children?.length || 0) + (guest.companions?.length || 0)
       let confirmedInGroup = 0
 
       if (guest.isConfirmed) confirmedInGroup += 1

@@ -1,15 +1,14 @@
 'use client'
 
-import { Guest } from '@/types'
-import { useState } from 'react'
-import Link from 'next/link'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { CopyToClipboard } from '@/components/copy-to-clipboard'
 import { AdminProtected } from '@/components/roles'
+import { Button } from '@/components/ui/button'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { routes } from '@/lib/routes'
-import { Check, HelpCircle, Users, Heart, Baby, UserPlus, X, ChevronDown, ChevronUp, Eye, EyeOff } from 'lucide-react'
+import { Guest } from '@/types'
+import { Baby, Check, ChevronDown, ChevronUp, Eye, EyeOff, Heart, HelpCircle, UserPlus, Users, X } from 'lucide-react'
+import Link from 'next/link'
+import { useState } from 'react'
 
 interface DesktopGuestTableProps {
   guests: Guest[]
@@ -281,7 +280,7 @@ export function DesktopGuestTable({
                     </div>
                   </div>
                 </TableCell>
-                
+
                 <AdminProtected>
                   <TableCell className="text-center py-4">
                     <div className="flex gap-2 justify-center">

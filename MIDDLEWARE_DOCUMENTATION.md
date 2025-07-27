@@ -5,21 +5,25 @@ Este documento descreve a implementação do middleware Next.js 15 para a aplica
 ## 📋 Funcionalidades Implementadas
 
 ### 1. **Modo de Manutenção**
+
 - ✅ Redirecionamento automático para `/manutencao` quando `MAINTENANCE_MODE=true`
 - ✅ Proteção de rotas essenciais durante manutenção (auth, estáticos)
 - ✅ Prevenção de acesso à página de manutenção quando modo está inativo
 
 ### 2. **Sistema de Autenticação**
+
 - ✅ Integração com NextAuth
 - ✅ Redirecionamento para login com callback URL
 - ✅ Rotas públicas sem necessidade de autenticação
 
 ### 3. **Controle de Acesso por Role**
+
 - ✅ **Guest**: Acesso apenas à confirmação
 - ✅ **Planner**: Acesso limitado ao admin (apenas visualização de convidados)
 - ✅ **Admin**: Acesso total à aplicação
 
 ### 4. **Headers de Segurança**
+
 - ✅ Headers básicos de segurança
 - ✅ Headers de debug em desenvolvimento
 - ✅ Proteção contra clickjacking e XSS
@@ -29,10 +33,10 @@ Este documento descreve a implementação do middleware Next.js 15 para a aplica
 ### Estrutura do Middleware
 
 ```typescript
-export default auth(async (req) => {
+export default auth(async req => {
   // 1. Verificação de modo de manutenção
   // 2. Rotas públicas
-  // 3. Verificação de autenticação  
+  // 3. Verificação de autenticação
   // 4. Controle de acesso por role
   // 5. Headers de segurança
   // 6. Retorno da resposta
@@ -43,18 +47,18 @@ export default auth(async (req) => {
 
 ```typescript
 export const config = {
-  matcher: [
-    '/((?!api(?!/auth)|_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt).*)',
-  ],
+  matcher: ['/((?!api(?!/auth)|_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt).*)'],
 }
 ```
 
 **O que o matcher inclui:**
+
 - ✅ Todas as páginas da aplicação
 - ✅ Rotas de API de autenticação (`/api/auth/*`)
 - ✅ Rotas de confirmação dinâmicas
 
 **O que o matcher exclui:**
+
 - ❌ APIs gerais (`/api/*` exceto auth)
 - ❌ Arquivos estáticos (`/_next/static/*`)
 - ❌ Otimização de imagens (`/_next/image/*`)
@@ -63,6 +67,7 @@ export const config = {
 ## 🛡️ Fluxo de Segurança
 
 ### 1. Verificação de Manutenção
+
 ```mermaid
 graph TD
     A[Request] --> B{Modo Manutenção?}
@@ -75,6 +80,7 @@ graph TD
 ```
 
 ### 2. Fluxo de Autenticação
+
 ```mermaid
 graph TD
     A[Request] --> B{Rota Pública?}
@@ -85,6 +91,7 @@ graph TD
 ```
 
 ### 3. Controle de Acesso por Role
+
 ```mermaid
 graph TD
     A[Usuário Autenticado] --> B{Role?}
@@ -99,6 +106,7 @@ graph TD
 ## 🚦 Tipos de Usuário e Permissões
 
 ### **Guest (Convidado)**
+
 - **Acesso Permitido:**
   - `/confirmacao/*` - Confirmar presença
   - Rotas públicas gerais
@@ -107,6 +115,7 @@ graph TD
   - Outras funcionalidades
 
 ### **Planner (Organizador)**
+
 - **Acesso Permitido:**
   - `/admin/convidados` - Visualizar lista de convidados
   - Rotas públicas gerais
@@ -118,6 +127,7 @@ graph TD
   - Outras áreas administrativas
 
 ### **Admin (Administrador)**
+
 - **Acesso Permitido:**
   - Todas as rotas da aplicação
   - Todas as funcionalidades administrativas
@@ -129,7 +139,7 @@ O middleware adiciona automaticamente headers de segurança:
 ```typescript
 // Headers de segurança básicos
 response.headers.set('x-frame-options', 'DENY')
-response.headers.set('x-content-type-options', 'nosniff') 
+response.headers.set('x-content-type-options', 'nosniff')
 response.headers.set('referrer-policy', 'strict-origin-when-cross-origin')
 
 // Headers de debug (apenas em desenvolvimento)
@@ -142,6 +152,7 @@ if (process.env.NODE_ENV === 'development') {
 ## 🛠️ Configuração e Uso
 
 ### Variáveis de Ambiente
+
 ```bash
 # Ativar modo de manutenção
 MAINTENANCE_MODE=true
@@ -152,16 +163,17 @@ NEXTAUTH_URL="http://localhost:3000"
 ```
 
 ### Rotas Públicas Configuradas
+
 ```typescript
 const publicRoutes = [
-  '/',                    // Home
-  '/localizacao',         // Localização do evento
-  '/presentes',           // Lista de presentes
-  '/mensagens',           // Mensagens dos convidados
-  '/nossa-historia',      // História do casal
-  '/confirmacao',         // Confirmação de presença
-  '/auth/login',          // Login
-  '/api/auth'            // APIs de autenticação
+  '/', // Home
+  '/localizacao', // Localização do evento
+  '/presentes', // Lista de presentes
+  '/mensagens', // Mensagens dos convidados
+  '/nossa-historia', // História do casal
+  '/confirmacao', // Confirmação de presença
+  '/auth/login', // Login
+  '/api/auth', // APIs de autenticação
 ]
 ```
 
@@ -170,15 +182,19 @@ const publicRoutes = [
 ### Cenários de Redirecionamento
 
 1. **Modo Manutenção Ativo:**
+
    - `qualquer-rota` → `/manutencao`
 
 2. **Usuário Não Autenticado:**
+
    - `rota-privada` → `/auth/login?callbackUrl=rota-original`
 
 3. **Guest tentando acessar admin:**
+
    - `/admin/*` → `/confirmacao`
 
 4. **Planner tentando acessar área restrita:**
+
    - `/admin/presentes` → `/admin/convidados`
    - `/admin/convidados/novo` → `/admin/convidados`
 
@@ -188,6 +204,7 @@ const publicRoutes = [
 ## 🧪 Testes e Debug
 
 ### Headers de Debug (Desenvolvimento)
+
 ```bash
 # Verificar headers no navegador (DevTools > Network)
 x-user-role: admin
@@ -195,6 +212,7 @@ x-user-id: user123
 ```
 
 ### Logs do Middleware
+
 O middleware não gera logs automaticamente, mas você pode adicionar:
 
 ```typescript
@@ -211,6 +229,7 @@ console.log(`[Middleware] ${req.method} ${pathname} - Role: ${userRole}`)
 ## 🔮 Melhorias Futuras
 
 ### Possíveis Implementações
+
 - [ ] Rate limiting por IP
 - [ ] Logs estruturados com Winston/Pino
 - [ ] Middleware de monitoramento de performance
@@ -221,6 +240,7 @@ console.log(`[Middleware] ${req.method} ${pathname} - Role: ${userRole}`)
 - [ ] Middleware de compressão customizado
 
 ### Flags Experimentais (Next.js 15.2+)
+
 ```typescript
 // next.config.ts
 export default {
@@ -240,17 +260,20 @@ export const config = {
 ### Problemas Comuns
 
 1. **Loop infinito de redirecionamento:**
+
    - Verificar se as rotas públicas estão corretamente configuradas
    - Conferir se `/auth/login` está na lista de rotas públicas
 
 2. **Headers não funcionando:**
+
    - Verificar se o matcher está capturando a rota
    - Confirmar que o middleware está sendo executado
 
 3. **Modo manutenção não funciona:**
+
    - Verificar se `MAINTENANCE_MODE=true` está no `.env`
    - Reiniciar a aplicação após alterar variáveis de ambiente
 
 4. **Roles não sendo respeitados:**
    - Verificar se o NextAuth está configurado corretamente
-   - Confirmar se o campo `role` está sendo retornado na sessão 
+   - Confirmar se o campo `role` está sendo retornado na sessão

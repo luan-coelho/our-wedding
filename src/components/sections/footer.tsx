@@ -1,6 +1,6 @@
 'use client'
 
-import { Heart, Sparkles, Star, Calendar, MapPin } from 'lucide-react'
+import { Heart } from 'lucide-react'
 
 export default function Footer() {
   return (
@@ -35,8 +35,8 @@ export default function Footer() {
             {/* Love Quote */}
             <div className="max-w-2xl mx-auto">
               <p className="text-lg text-wedding-accent/80 font-light italic leading-relaxed wedding-subtitle">
-                <span className="text-wedding-primary wedding-accent-text text-xl">&ldquo;</span>O amor é a ponte entre duas
-                almas que se encontraram para caminhar juntas pela eternidade
+                <span className="text-wedding-primary wedding-accent-text text-xl">&ldquo;</span>O amor é a ponte entre
+                duas almas que se encontraram para caminhar juntas pela eternidade
                 <span className="text-wedding-primary wedding-accent-text text-xl">&rdquo;</span>
               </p>
             </div>

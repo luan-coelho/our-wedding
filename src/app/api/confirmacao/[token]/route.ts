@@ -18,7 +18,13 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
     }
 
     // Prepare os dados para atualização
-    const updateData: any = {
+    const updateData: {
+      isConfirmed: boolean
+      updatedAt: Date
+      spouseConfirmation?: boolean
+      childrenConfirmations?: Record<string, boolean>
+      companionsConfirmations?: Record<string, boolean>
+    } = {
       isConfirmed: Boolean(isConfirmed),
       updatedAt: new Date(),
     }

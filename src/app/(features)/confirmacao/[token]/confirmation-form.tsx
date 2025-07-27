@@ -326,7 +326,7 @@ export default function ConfirmationForm({ guest }: ConfirmationFormProps) {
 
           {hasChanged && (
             <p className="text-xs sm:text-sm text-muted-foreground text-center px-4">
-              Você fez alterações. Clique em "Confirmar" para salvar.
+              Você fez alterações. Clique em &quot;Confirmar&quot; para salvar.
             </p>
           )}
         </div>

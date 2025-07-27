@@ -68,8 +68,10 @@ export default function UsuariosPage() {
       queryClient.invalidateQueries({ queryKey: ['users'] })
       handleCloseDialog()
     },
-    onError: (error: any) => {
-      toast.error(error.error || 'Erro ao conceder permissão')
+    onError: (error) => {
+      if (error instanceof Error) {
+        toast.error(error.message)
+      }
     },
   })
 

@@ -1,12 +1,12 @@
 'use client'
 
-import { useState } from 'react'
-import { MapPin, Copy, Navigation, Clock, AlertCircle, CheckCircle2, Calendar, Heart } from 'lucide-react'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
-import { Separator } from '@/components/ui/separator'
 import { Alert, AlertDescription } from '@/components/ui/alert'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Separator } from '@/components/ui/separator'
+import { AlertCircle, Calendar, CheckCircle2, Clock, Copy, MapPin, Navigation } from 'lucide-react'
+import { useState } from 'react'
 
 export default function Ceremony() {
   const [copied, setCopied] = useState(false)

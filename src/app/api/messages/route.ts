@@ -49,6 +49,9 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json(messageWithFormattedDate, { status: 201 })
   } catch (error) {
+    if (error instanceof Error) {
+      return NextResponse.json({ error: error.message }, { status: 500 })
+    }
     return NextResponse.json({ error: 'Erro ao enviar mensagem' }, { status: 500 })
   }
 }

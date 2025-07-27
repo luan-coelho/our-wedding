@@ -20,9 +20,7 @@ export default function MaintenancePage() {
 
           {/* Título principal */}
           <div className="space-y-4">
-            <h1 className="text-3xl md:text-4xl font-bold text-gray-900">
-              Site em Construção
-            </h1>
+            <h1 className="text-3xl md:text-4xl font-bold text-gray-900">Site em Construção</h1>
             <p className="text-lg text-gray-600 leading-relaxed">
               Estamos criando algo muito especial para nosso grande dia!
               <br />
@@ -36,15 +34,14 @@ export default function MaintenancePage() {
               <Clock className="w-5 h-5" />
               <span className="font-semibold">Em Desenvolvimento</span>
             </div>
-            <p className="text-rose-600">
-              Trabalhando com muito carinho nos detalhes finais.
-            </p>
+            <p className="text-rose-600">Trabalhando com muito carinho nos detalhes finais.</p>
           </div>
 
           {/* Mensagem motivacional */}
           <div className="pt-4 border-t border-gray-200 space-y-3">
             <p className="text-sm text-gray-500 text-center">
-              &ldquo;O matrimônio é a união de duas almas que se amam tanto que desejam fazer-se santas juntas.&rdquo; - São João Paulo II
+              &ldquo;O matrimônio é a união de duas almas que se amam tanto que desejam fazer-se santas juntas.&rdquo; -
+              São João Paulo II
             </p>
           </div>
 
@@ -58,4 +55,4 @@ export default function MaintenancePage() {
       </Card>
     </div>
   )
-} 
+}

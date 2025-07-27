@@ -14,7 +14,7 @@ import {
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { giftsService, guestsService, messagesService } from '@/services'
-import { DashboardStats } from '@/types'
+import { DashboardStats, Guest } from '@/types'
 
 export default function AdminPage() {
   const [stats, setStats] = useState<DashboardStats>({
@@ -38,7 +38,7 @@ export default function AdminPage() {
         ])
 
         const confirmedGuests = Array.isArray(guestsRes)
-          ? guestsRes.filter((guest: any) => guest.isConfirmed).length
+          ? guestsRes.filter((guest: Guest) => guest.isConfirmed).length
           : 0
 
         setStats({

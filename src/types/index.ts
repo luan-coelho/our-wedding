@@ -105,7 +105,7 @@ export interface UserFormData {
 // API RESPONSE TYPES - For API responses and error handling
 // ============================================================================
 
-export interface ApiResponse<T = any> {
+export interface ApiResponse<T = unknown> {
   data?: T
   message?: string
   error?: string

@@ -1,8 +1,8 @@
 'use client'
 
-import { useEffect } from 'react'
+import { Heart, Loader2 } from 'lucide-react'
 import { useRouter } from 'next/navigation'
-import { Loader2, Heart } from 'lucide-react'
+import { useEffect } from 'react'
 
 export default function ConfirmacaoTokenPage({ params }: { params: Promise<{ token: string }> }) {
   const router = useRouter()
@@ -15,7 +15,7 @@ export default function ConfirmacaoTokenPage({ params }: { params: Promise<{ tok
         // Redireciona para a página principal com o token como parâmetro
         router.push(`/?token=${token}#confirmation`)
       } catch (error) {
-        // Em caso de erro, redireciona para a página principal
+        console.error('Erro ao obter o token:', error)
         router.push('/')
       }
     }

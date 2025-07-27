@@ -2,31 +2,24 @@ import { NextResponse } from 'next/server'
 import { auth } from '@/auth'
 import { routes } from './lib/routes'
 
-export default auth(async (req) => {
+export default auth(async req => {
   const { pathname } = req.nextUrl
 
   // === MODO DE MANUTENÇÃO ===
   // Verificar se o modo de manutenção está ativo primeiro
   const isMaintenanceMode = process.env.MAINTENANCE_MODE === 'true'
-  
+
   if (isMaintenanceMode) {
     // Permitir acesso apenas a rotas essenciais durante manutenção
-    const allowedDuringMaintenance = [
-      '/manutencao',
-      '/api/auth',
-      '/_next',
-      '/favicon.ico'
-    ]
-    
-    const isAllowedPath = allowedDuringMaintenance.some(path => 
-      pathname.startsWith(path)
-    )
-    
+    const allowedDuringMaintenance = ['/manutencao', '/api/auth', '/_next', '/favicon.ico']
+
+    const isAllowedPath = allowedDuringMaintenance.some(path => pathname.startsWith(path))
+
     if (!isAllowedPath) {
       const maintenanceUrl = new URL(routes.frontend.manutencao, req.nextUrl.origin)
       return NextResponse.redirect(maintenanceUrl)
     }
-    
+
     // Se estiver na página de manutenção, permitir acesso
     if (pathname.startsWith('/manutencao')) {
       return NextResponse.next()
@@ -45,17 +38,15 @@ export default auth(async (req) => {
   const publicRoutes = [
     '/',
     '/localizacao',
-    '/presentes', 
+    '/presentes',
     '/mensagens',
     '/nossa-historia',
     '/confirmacao',
     '/auth/login',
-    '/api/auth'
+    '/api/auth',
   ]
 
-  const isPublicRoute = publicRoutes.some(route => 
-    pathname === route || pathname.startsWith(`${route}/`)
-  )
+  const isPublicRoute = publicRoutes.some(route => pathname === route || pathname.startsWith(`${route}/`))
 
   // Permitir acesso a rotas públicas e de autenticação
   if (isPublicRoute || pathname.startsWith('/api/auth')) {
@@ -77,11 +68,9 @@ export default auth(async (req) => {
   if (userRole === 'guest') {
     // Permitir apenas rotas de confirmação para guests
     const guestAllowedRoutes = ['/confirmacao']
-    
-    const isGuestAllowed = guestAllowedRoutes.some(route => 
-      pathname.startsWith(route)
-    )
-    
+
+    const isGuestAllowed = guestAllowedRoutes.some(route => pathname.startsWith(route))
+
     if (!isGuestAllowed) {
       const confirmationUrl = new URL('/confirmacao', req.nextUrl.origin)
       return NextResponse.redirect(confirmationUrl)
@@ -100,9 +89,7 @@ export default auth(async (req) => {
 
       // Bloquear operações de criação/edição/exclusão
       const restrictedOperations = ['/novo', '/editar', '/excluir']
-      const hasRestrictedOperation = restrictedOperations.some(op => 
-        pathname.includes(op)
-      )
+      const hasRestrictedOperation = restrictedOperations.some(op => pathname.includes(op))
 
       if (hasRestrictedOperation) {
         const guestsUrl = new URL(routes.frontend.admin.convidados.index, req.nextUrl.origin)
@@ -114,7 +101,7 @@ export default auth(async (req) => {
   // === HEADERS PERSONALIZADOS ===
   // Adicionar headers de segurança e informações úteis
   const response = NextResponse.next()
-  
+
   // Header com informação do usuário (para debug em desenvolvimento)
   if (process.env.NODE_ENV === 'development' && req.auth?.user) {
     response.headers.set('x-user-role', req.auth.user.role || 'unknown')
@@ -137,7 +124,7 @@ export const config = {
      * Aplica middleware em todas as rotas exceto:
      * - API routes (exceto auth que precisamos processar)
      * - Arquivos estáticos (_next/static)
-     * - Otimização de imagens (_next/image)  
+     * - Otimização de imagens (_next/image)
      * - Arquivos de metadata (favicon, sitemap, robots)
      */
     '/((?!api(?!/auth)|_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt).*)',

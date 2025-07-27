@@ -1,9 +1,9 @@
 import { auth } from '@/auth'
 import { db } from '@/db'
 import { tablePixKeys } from '@/db/schema'
+import { isAdmin } from '@/lib/auth-types'
 import { asc } from 'drizzle-orm'
 import { NextRequest, NextResponse } from 'next/server'
-import { isAdmin } from '@/lib/auth-types'
 
 // GET /api/pixkeys - Listar todas as chaves PIX
 export async function GET() {
@@ -45,6 +45,9 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json(pixKey)
   } catch (error) {
-    return NextResponse.json({ error: 'Erro ao criar chave PIX' }, { status: 500 })
+    if (error instanceof Error) {
+      return NextResponse.json({ error: error.message }, { status: 500 })
+    }
+    return NextResponse.json({ error: 'Erro ao criar chave PIX.' }, { status: 500 })
   }
 }

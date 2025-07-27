@@ -32,7 +32,7 @@ export default function GuestForm({ guest }: GuestFormProps) {
   const queryClient = useQueryClient()
   const isEditing = !!guest
 
-  const form = useForm<any>({
+  const form = useForm<GuestFormData>({
     resolver: zodResolver(guestSchema),
     defaultValues: {
       name: guest?.name || '',
@@ -79,12 +79,12 @@ export default function GuestForm({ guest }: GuestFormProps) {
         } else {
           return await guestsService.create(data)
         }
-      } catch (error: any) {
+      } catch (error) {
         // Se for erro de nome duplicado (409), definir erro no campo específico
         if (error.status === 409) {
           form.setError('name', {
             type: 'manual',
-            message: error.error,
+            message: error,
           })
           throw new Error('Nome duplicado')
         }
@@ -106,7 +106,7 @@ export default function GuestForm({ guest }: GuestFormProps) {
     },
   })
 
-  const onSubmit = (data: any) => {
+  const onSubmit = (data: GuestFormData) => {
     // Filter out empty strings from arrays before submission
     const cleanedData = {
       ...data,
@@ -217,7 +217,7 @@ export default function GuestForm({ guest }: GuestFormProps) {
                   <div className="text-center py-6 text-gray-500 bg-gray-50 rounded-lg border border-gray-200">
                     <User className="h-8 w-8 mx-auto mb-2 text-gray-400" />
                     <p>Nenhum filho adicionado</p>
-                    <p className="text-sm">Clique em "Adicionar Filho" para incluir filhos no grupo</p>
+                    <p className="text-sm">Clique em &quot;Adicionar Filho&quot; para incluir filhos no grupo</p>
                   </div>
                 ) : (
                   <div className="space-y-3">
@@ -277,7 +277,7 @@ export default function GuestForm({ guest }: GuestFormProps) {
                     <UserPlus className="h-8 w-8 mx-auto mb-2 text-gray-400" />
                     <p>Nenhum acompanhante adicionado</p>
                     <p className="text-sm">
-                      Clique em "Adicionar Acompanhante" para incluir outros familiares ou amigos
+                      Clique em &quot;Adicionar Acompanhante&quot; para incluir outros familiares ou amigos
                     </p>
                   </div>
                 ) : (
