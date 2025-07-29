@@ -1,39 +1,21 @@
+import { tableUsers, User } from '@/db/schema'
 import { eq } from 'drizzle-orm'
 import NextAuth from 'next-auth'
-import Google from 'next-auth/providers/google'
+import authConfig from './auth.config'
 import { db } from './db'
-import { tableUsers } from '@/db/schema'
-import { routes } from './lib/routes'
 import { UserRoleType } from './lib/auth-types'
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
-  debug: true,
-  trustHost: true,
-  providers: [
-    Google({
-      profile(profile) {
-        return { ...profile }
-      },
-    }),
-  ],
-  secret: process.env.AUTH_SECRET,
-  session: {
-    strategy: 'jwt',
-    maxAge: 30 * 24 * 60 * 60, // 30 dias
-  },
-  pages: {
-    signIn: routes.frontend.auth.login,
-    signOut: routes.frontend.home,
-    newUser: routes.frontend.auth.login,
-    error: routes.frontend.auth.login,
-  },
+  ...authConfig,
   callbacks: {
     async signIn({ user, account }) {
       if (account?.provider === 'google') {
         // Verifica se o usuário existe no banco de dados
-        const existingUser = await db.query.tableUsers.findFirst({
-          where: eq(tableUsers.email, user.email ?? ''),
-        })
+        const [existingUser]: User[] | [] = await db
+          .select()
+          .from(tableUsers)
+          .where(eq(tableUsers.email, user.email ?? ''))
+          .execute()
 
         // Se o usuário não existir no sistema, bloqueia o acesso
         if (!existingUser) {

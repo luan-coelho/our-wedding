@@ -1,8 +1,12 @@
+import NextAuth from 'next-auth'
 import { NextResponse } from 'next/server'
-import { auth } from '@/auth'
+import authConfig from './auth.config'
 import { routes } from './lib/routes'
 
-export default auth(async req => {
+// Usar configuração básica sem adapter para compatibilidade com Edge Runtime
+const { auth: middleware } = NextAuth(authConfig)
+
+export default middleware(req => {
   const { pathname } = req.nextUrl
 
   // === MODO DE MANUTENÇÃO ===

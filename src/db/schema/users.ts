@@ -11,3 +11,5 @@ export const tableUsers = pgTable('user', {
   createdAt: timestamp('createdAt').defaultNow().notNull(),
   updatedAt: timestamp('updatedAt'),
 })
+
+export type User = typeof tableUsers.$inferSelect
