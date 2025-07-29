@@ -364,7 +364,7 @@ function ConfirmationContent() {
             <Card className="border-0 shadow-2xl bg-white/90 backdrop-blur-md relative overflow-hidden">
               <div className="absolute inset-0 bg-gradient-to-br from-wedding-primary/5 to-purple-50/30"></div>
               <CardHeader className="text-center pb-4 relative z-10">
-                <div className="w-20 h-20 bg-gradient-to-br from-wedding-primary to-wedding-secondary rounded-full flex items-center justify-center mx-auto mb-6">
+                <div className="w-20 h-20 bg-wedding-primary to-wedding-secondary rounded-full flex items-center justify-center mx-auto mb-6">
                   <UserCheck className="w-10 h-10 text-white" />
                 </div>
                 <CardTitle className="text-3xl wedding-subtitle text-wedding-dark mb-4">
@@ -391,11 +391,9 @@ function ConfirmationContent() {
                       className="text-lg p-4 h-14 border-2 border-wedding-light/50 focus:border-wedding-primary"
                       disabled={isLoading}
                     />
-                    <p className="text-sm text-wedding-accent/60 mt-2">
+                    <p className="text-sm text-wedding-accent mt-2">
                       Exemplos: <span className="font-mono">123456</span> ou{' '}
-                      <span className="font-mono text-xs">https://exemplo.com/confirmacao/abc123...</span> ou{' '}
-                      <span className="font-mono text-xs">https://exemplo.com/?token=abc123...</span> ou{' '}
-                      <span className="font-mono text-xs">https://exemplo.com/?code=123456</span>
+                      <span className="font-mono text-xs">https://www.casamento-luan-e-ester.com.br/?code=123456</span>
                     </p>
                     {inputValue.startsWith('http') && (
                       <p className="text-xs text-blue-600 mt-1 flex items-center gap-1">
@@ -407,7 +405,7 @@ function ConfirmationContent() {
                   <Button
                     type="submit"
                     disabled={isLoading || !inputValue.trim()}
-                    className="w-full h-14 text-lg bg-gradient-to-r from-wedding-primary to-wedding-secondary hover:from-wedding-primary/90 hover:to-wedding-secondary/90 text-white shadow-lg hover:shadow-xl transition-all duration-300">
+                    className="w-full h-14 text-lg bg-wedding-primary to-wedding-secondary hover:from-wedding-primary/90 hover:to-wedding-secondary/90 text-white shadow-lg hover:shadow-xl transition-all duration-300">
                     {isLoading ? (
                       <>
                         <Loader2 className="mr-2 h-5 w-5 animate-spin" />

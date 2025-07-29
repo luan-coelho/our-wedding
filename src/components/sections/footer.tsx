@@ -34,7 +34,7 @@ export default function Footer() {
 
             {/* Love Quote */}
             <div className="max-w-2xl mx-auto">
-              <p className="text-lg text-wedding-accent/80 font-light italic leading-relaxed wedding-subtitle">
+              <p className="text-lg text-wedding-accent font-light leading-relaxed wedding-subtitle">
                 <span className="text-wedding-primary wedding-accent-text text-xl">&ldquo;</span>O amor é a ponte entre
                 duas almas que se encontraram para caminhar juntas pela eternidade
                 <span className="text-wedding-primary wedding-accent-text text-xl">&rdquo;</span>

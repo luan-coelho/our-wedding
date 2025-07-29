@@ -12,6 +12,7 @@ import { useMutation, useQuery } from '@tanstack/react-query'
 import { queryClient } from '@/lib/query-client'
 import { giftsService, pixKeysService } from '@/services'
 import { routes } from '@/lib/routes'
+import { useLastPixKey } from '@/hooks/use-last-pix-key'
 
 import { Eye, X } from 'lucide-react'
 import Image from 'next/image'
@@ -24,6 +25,7 @@ import { GiftFormData, giftSchema } from '../schema'
 export default function AddGiftPage() {
   const router = useRouter()
   const [imagePreview, setImagePreview] = useState<string | null>(null)
+  const { lastPixKey, saveLastPixKey } = useLastPixKey()
 
   const form = useForm<GiftFormData>({
     resolver: zodResolver(giftSchema),
@@ -31,8 +33,8 @@ export default function AddGiftPage() {
       name: '',
       description: '',
       price: '',
-      pixKey: '',
-      selectedPixKeyId: null,
+      pixKey: lastPixKey.pixKey || '',
+      selectedPixKeyId: lastPixKey.selectedPixKeyId || null,
       imageUrl: '',
     },
   })
@@ -49,11 +51,32 @@ export default function AddGiftPage() {
   const createGiftMutation = useMutation({
     mutationFn: giftsService.create,
     onSuccess: () => {
+      // Extrair os dados originais do formulário para salvar a última chave PIX
+      const currentFormData = form.getValues()
+
+      // Salvar a última chave PIX utilizada
+      saveLastPixKey({
+        pixKey: currentFormData.pixKey || '',
+        selectedPixKeyId: currentFormData.selectedPixKeyId || null,
+      })
+
       // Invalidar queries para forçar recarregamento de dados
       queryClient.invalidateQueries({ queryKey: ['gifts'] })
       // Redirecionar para a página de gerenciamento após sucesso
       toast.success('Presente criado com sucesso')
-      router.push(routes.frontend.admin.presentes.index)
+
+      // Reset do formulário mantendo a última chave PIX
+      form.reset({
+        name: '',
+        description: '',
+        price: '',
+        pixKey: currentFormData.pixKey || '',
+        selectedPixKeyId: currentFormData.selectedPixKeyId || null,
+        imageUrl: '',
+      })
+      if (imagePreview) {
+        setImagePreview(null)
+      }
     },
     onError: error => {
       console.error('Erro ao criar presente:', error)

@@ -197,7 +197,7 @@ h6 {
 .wedding-subtitle {
   font-family: var(--font-playfair-display), serif;
   font-weight: 500;
-  font-style: italic;
+  /* font-style: italic; */
   letter-spacing: 0.03em;
 }
 
