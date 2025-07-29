@@ -37,7 +37,7 @@ export default function AdminGuestsPage() {
   const [nameFilter, setNameFilter] = useState('')
   const [statusFilter, setStatusFilter] = useState<'all' | 'confirmed' | 'unconfirmed' | 'partial'>('all')
 
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'
+  const baseUrl = process.env.AUTH_URL || 'http://localhost:3000'
 
   // Query to fetch guests
   const { data: guests = [], isLoading } = useQuery({
