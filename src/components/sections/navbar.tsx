@@ -1,13 +1,12 @@
 'use client'
 
 import { Button } from '@/components/ui/button'
-import { Calendar, CheckCircle, Gift, Heart, MapPin, Menu, Users, X } from 'lucide-react'
+import { Calendar, CheckCircle, Gift, Heart, MapPin, Menu, X } from 'lucide-react'
 import { useEffect, useState } from 'react'
 
 const navItems = [
   { id: 'hero', label: 'Início', icon: Heart },
   { id: 'countdown', label: 'Contagem', icon: Calendar },
-  { id: 'couple', label: 'O Casal', icon: Users },
   { id: 'ceremony', label: 'Cerimônia', icon: MapPin },
   { id: 'gifts', label: 'Presentes', icon: Gift },
   { id: 'confirmation', label: 'Confirmação', icon: CheckCircle },

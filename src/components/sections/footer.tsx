@@ -1,6 +1,8 @@
 'use client'
 
+import Link from 'next/link'
 import { Heart } from 'lucide-react'
+import { routes } from '@/lib/routes'
 
 export default function Footer() {
   return (
@@ -41,6 +43,67 @@ export default function Footer() {
               </p>
             </div>
           </div>
+        </div>
+
+        {/* Seção principal do footer */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          {/* Links principais */}
+          <div>
+            <h3 className="font-semibold text-gray-900 mb-4">Navegação</h3>
+            <ul className="space-y-2">
+              <li>
+                <Link href={routes.frontend.home} className="text-gray-600 hover:text-gray-900 transition-colors">
+                  Início
+                </Link>
+              </li>
+              <li>
+                <Link href="#gifts" className="text-gray-600 hover:text-gray-900 transition-colors">
+                  Lista de Presentes
+                </Link>
+              </li>
+            </ul>
+          </div>
+
+          {/* Outras seções do footer */}
+          <div>
+            <h3 className="font-semibold text-gray-900 mb-4">Informações</h3>
+            <ul className="space-y-2">
+              <li>
+                <Link
+                  href="#ceremony"
+                  className="text-gray-600 hover:text-gray-900 transition-colors">
+                  Localização
+                </Link>
+              </li>
+            </ul>
+          </div>
+
+          {/* Link do Admin */}
+          <div>
+            <h3 className="font-semibold text-gray-900 mb-4">Área Restrita</h3>
+            <ul className="space-y-2">
+              <li>
+                <Link
+                  href={routes.frontend.admin.home}
+                  className="text-gray-600 hover:text-gray-900 transition-colors flex items-center gap-2">
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+                    />
+                  </svg>
+                  Administração
+                </Link>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        {/* Copyright */}
+        <div className="border-t mt-8 pt-8 text-center text-gray-600">
+          <p>&copy; 2025 Nosso Casamento. Todos os direitos reservados.</p>
         </div>
       </div>
     </footer>
