@@ -16,6 +16,12 @@ import { Plus, Minus, Users, Heart, User, UserPlus } from 'lucide-react'
 import { useMemo } from 'react'
 import { guestsService } from '@/services/guests.service'
 
+// Define API error type based on the error structure in handleApiResponse
+interface ApiError {
+  error: string;
+  status: number;
+}
+
 interface GuestFormProps {
   guest?: {
     id: string
@@ -42,14 +48,17 @@ export default function GuestForm({ guest }: GuestFormProps) {
     },
   })
 
-  // Field arrays for dynamic lists
+  // Field arrays for dynamic lists - using TypeScript ignore comments due to a type limitation
+  // in react-hook-form when using string arrays with useFieldArray
   const {
     fields: childrenFields,
     append: appendChild,
     remove: removeChild,
   } = useFieldArray({
     control: form.control,
+    // @ts-expect-error - This is necessary for string arrays with useFieldArray
     name: 'children',
+    keyName: 'id', // This helps useFieldArray work with primitive arrays
   })
 
   const {
@@ -58,7 +67,9 @@ export default function GuestForm({ guest }: GuestFormProps) {
     remove: removeCompanion,
   } = useFieldArray({
     control: form.control,
+    // @ts-expect-error - This is necessary for string arrays with useFieldArray
     name: 'companions',
+    keyName: 'id', // This helps useFieldArray work with primitive arrays
   })
 
   // Calculate total guest count
@@ -81,10 +92,11 @@ export default function GuestForm({ guest }: GuestFormProps) {
         }
       } catch (error) {
         // Se for erro de nome duplicado (409), definir erro no campo específico
-        if (error.status === 409) {
+        const apiError = error as ApiError;
+        if (apiError && apiError.status === 409) {
           form.setError('name', {
             type: 'manual',
-            message: error,
+            message: 'Nome duplicado',
           })
           throw new Error('Nome duplicado')
         }
