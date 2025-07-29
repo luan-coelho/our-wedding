@@ -75,11 +75,29 @@ export async function POST(request: NextRequest) {
       }
     }
 
+    // Remove duplicates within the import list itself (case-insensitive)
+    const uniqueNamesToImport: string[] = []
+    const seenNames = new Set<string>()
+    const internalDuplicates: string[] = []
+
+    for (const name of namesToImport) {
+      const lowerName = name.toLowerCase()
+      if (seenNames.has(lowerName)) {
+        internalDuplicates.push(name)
+      } else {
+        seenNames.add(lowerName)
+        uniqueNamesToImport.push(name)
+      }
+    }
+
+    // Add internal duplicates to the duplicates array
+    duplicates.push(...internalDuplicates)
+
     // Import new guests
     const imported = []
-    if (namesToImport.length > 0) {
+    if (uniqueNamesToImport.length > 0) {
       const guestData = await Promise.all(
-        namesToImport.map(async name => ({
+        uniqueNamesToImport.map(async name => ({
           name,
           spouse: null,
           children: [],
