@@ -83,9 +83,6 @@ export const routes = {
       base: '/api/messages',
       byId: (id: string) => `/api/messages/${validateId(id)}`,
     },
-    confirmacao: {
-      byToken: (token: string) => `/api/confirmacao/${validateToken(token)}`,
-    },
     users: {
       base: '/api/users',
       byId: (id: string) => `/api/users/${validateId(id)}`,

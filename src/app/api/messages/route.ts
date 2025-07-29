@@ -5,9 +5,7 @@ import { desc } from 'drizzle-orm'
 
 export async function GET() {
   try {
-    const messagesList = await db.query.tableMessages.findMany({
-      orderBy: [desc(tableMessages.createdAt)],
-    })
+    const messagesList = await db.select().from(tableMessages).orderBy(desc(tableMessages.createdAt))
 
     // Garantir que todas as datas sejam strings ISO
     const messagesWithFormattedDates = messagesList.map(message => ({

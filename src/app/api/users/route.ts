@@ -79,11 +79,7 @@ export async function POST(request: NextRequest) {
         active: true,
         updatedAt: new Date(),
       })
-      .returning({
-        id: tableUsers.id,
-        email: tableUsers.email,
-        role: tableUsers.role,
-      })
+      .returning()
 
     return NextResponse.json({ ...newUser, message: 'Permissão concedida' }, { status: 201 })
   } catch (error) {

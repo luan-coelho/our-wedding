@@ -1,6 +1,6 @@
 import { auth } from '@/auth'
 import { db } from '@/db'
-import { tableGifts } from '@/db/schema'
+import { tableGifts, tablePixKeys } from '@/db/schema'
 import { isAdmin } from '@/lib/auth-types'
 import { eq } from 'drizzle-orm'
 import { NextRequest, NextResponse } from 'next/server'
@@ -14,12 +14,13 @@ export async function GET(_: NextRequest, { params }: { params: Promise<{ id: st
   }
 
   try {
-    const gift = await db.query.tableGifts.findFirst({
-      where: eq(tableGifts.id, id),
-      with: {
-        selectedPixKey: true,
-      },
-    })
+    const gift = await db
+      .select()
+      .from(tableGifts)
+      .leftJoin(tablePixKeys, eq(tableGifts.pixKeyId, tablePixKeys.id))
+      .where(eq(tableGifts.id, id))
+      .limit(1)
+      .then(results => results[0] || null)
 
     if (!gift) {
       return NextResponse.json({ error: 'Presente não encontrado' }, { status: 404 })

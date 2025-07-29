@@ -22,9 +22,12 @@ export async function GET(_: NextRequest, { params }: { params: Promise<{ id: st
       return NextResponse.json({ error: 'Não autorizado' }, { status: 403 })
     }
 
-    const pixKey = await db.query.tablePixKeys.findFirst({
-      where: eq(tablePixKeys.id, id),
-    })
+    const pixKey = await db
+      .select()
+      .from(tablePixKeys)
+      .where(eq(tablePixKeys.id, id))
+      .limit(1)
+      .then(results => results[0] || null)
 
     if (!pixKey) {
       return NextResponse.json({ error: 'Chave PIX não encontrada' }, { status: 404 })
@@ -56,9 +59,12 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
     const data = await request.json()
 
     // Verificar se a chave PIX existe
-    const existingKey = await db.query.tablePixKeys.findFirst({
-      where: eq(tablePixKeys.id, id),
-    })
+    const existingKey = await db
+      .select()
+      .from(tablePixKeys)
+      .where(eq(tablePixKeys.id, id))
+      .limit(1)
+      .then(results => results[0] || null)
 
     if (!existingKey) {
       return NextResponse.json({ error: 'Chave PIX não encontrada' }, { status: 404 })
@@ -111,9 +117,12 @@ export async function DELETE(_: NextRequest, { params }: { params: Promise<{ id:
     }
 
     // Verificar se a chave PIX existe
-    const existingKey = await db.query.tablePixKeys.findFirst({
-      where: eq(tablePixKeys.id, id),
-    })
+    const existingKey = await db
+      .select()
+      .from(tablePixKeys)
+      .where(eq(tablePixKeys.id, id))
+      .limit(1)
+      .then(results => results[0] || null)
 
     if (!existingKey) {
       return NextResponse.json({ error: 'Chave PIX não encontrada' }, { status: 404 })

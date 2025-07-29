@@ -53,13 +53,15 @@ export async function POST(request: NextRequest) {
     }
 
     // Check for duplicates against existing guests (case-insensitive)
-    const existingGuests = await db.query.tableGuests.findMany({
-      columns: { name: true },
-      where: sql`LOWER(${tableGuests.name}) IN (${sql.join(
-        cleanedNames.map(name => sql`LOWER(${name})`),
-        sql`, `,
-      )})`,
-    })
+    const existingGuests = await db
+      .select({ name: tableGuests.name })
+      .from(tableGuests)
+      .where(
+        sql`LOWER(${tableGuests.name}) IN (${sql.join(
+          cleanedNames.map(name => sql`LOWER(${name})`),
+          sql`, `,
+        )})`,
+      )
 
     const existingNamesLower = existingGuests.map(guest => guest.name.toLowerCase())
     const duplicates: string[] = []

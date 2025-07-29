@@ -12,9 +12,12 @@ export async function GET(_: NextRequest, { params }: { params: Promise<{ id: st
       return NextResponse.json({ error: 'ID inválido' }, { status: 400 })
     }
 
-    const guest = await db.query.tableGuests.findFirst({
-      where: eq(tableGuests.id, id),
-    })
+    const guest = await db
+      .select()
+      .from(tableGuests)
+      .where(eq(tableGuests.id, id))
+      .limit(1)
+      .then(results => results[0] || null)
 
     if (!guest) {
       return NextResponse.json({ error: 'Convidado não encontrado' }, { status: 404 })
@@ -35,9 +38,12 @@ export async function DELETE(_: Request, { params }: { params: Promise<{ id: str
       return NextResponse.json({ error: 'ID inválido' }, { status: 400 })
     }
 
-    const existingGuest = await db.query.tableGuests.findFirst({
-      where: eq(tableGuests.id, id),
-    })
+    const existingGuest = await db
+      .select()
+      .from(tableGuests)
+      .where(eq(tableGuests.id, id))
+      .limit(1)
+      .then(results => results[0] || null)
 
     if (!existingGuest) {
       return NextResponse.json({ error: 'Convidado não encontrado' }, { status: 404 })
@@ -62,9 +68,12 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
 
     const data = await request.json()
 
-    const existingGuest = await db.query.tableGuests.findFirst({
-      where: eq(tableGuests.id, id),
-    })
+    const existingGuest = await db
+      .select()
+      .from(tableGuests)
+      .where(eq(tableGuests.id, id))
+      .limit(1)
+      .then(results => results[0] || null)
 
     if (!existingGuest) {
       return NextResponse.json({ error: 'Convidado não encontrado' }, { status: 404 })
@@ -78,9 +87,12 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
         return NextResponse.json({ error: 'Nome é obrigatório' }, { status: 400 })
       }
 
-      const duplicateGuest = await db.query.tableGuests.findFirst({
-        where: and(eq(tableGuests.name, nameToCheck), ne(tableGuests.id, id)),
-      })
+      const duplicateGuest = await db
+        .select()
+        .from(tableGuests)
+        .where(and(eq(tableGuests.name, nameToCheck), ne(tableGuests.id, id)))
+        .limit(1)
+        .then(results => results[0] || null)
 
       if (duplicateGuest) {
         return NextResponse.json({ error: 'Já existe um convidado com este nome' }, { status: 409 })
@@ -91,9 +103,12 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
 
     await db.update(tableGuests).set(data).where(eq(tableGuests.id, id))
 
-    const updatedGuest = await db.query.tableGuests.findFirst({
-      where: eq(tableGuests.id, id),
-    })
+    const updatedGuest = await db
+      .select()
+      .from(tableGuests)
+      .where(eq(tableGuests.id, id))
+      .limit(1)
+      .then(results => results[0] || null)
 
     return NextResponse.json(updatedGuest)
   } catch (error) {
@@ -112,9 +127,12 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
 
     const { name, spouse, children, companions } = await request.json()
 
-    const existingGuest = await db.query.tableGuests.findFirst({
-      where: eq(tableGuests.id, id),
-    })
+    const existingGuest = await db
+      .select()
+      .from(tableGuests)
+      .where(eq(tableGuests.id, id))
+      .limit(1)
+      .then(results => results[0] || null)
 
     if (!existingGuest) {
       return NextResponse.json({ error: 'Convidado não encontrado' }, { status: 404 })
@@ -127,9 +145,12 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
 
     // Check for duplicate name (excluding current guest)
     const nameToCheck = name.trim()
-    const duplicateGuest = await db.query.tableGuests.findFirst({
-      where: and(eq(tableGuests.name, nameToCheck), ne(tableGuests.id, id)),
-    })
+    const duplicateGuest = await db
+      .select()
+      .from(tableGuests)
+      .where(and(eq(tableGuests.name, nameToCheck), ne(tableGuests.id, id)))
+      .limit(1)
+      .then(results => results[0] || null)
 
     if (duplicateGuest) {
       return NextResponse.json({ error: 'Já existe um convidado com este nome' }, { status: 409 })
@@ -146,9 +167,12 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
 
     await db.update(tableGuests).set(updateData).where(eq(tableGuests.id, id))
 
-    const updatedGuest = await db.query.tableGuests.findFirst({
-      where: eq(tableGuests.id, id),
-    })
+    const updatedGuest = await db
+      .select()
+      .from(tableGuests)
+      .where(eq(tableGuests.id, id))
+      .limit(1)
+      .then(results => results[0] || null)
 
     return NextResponse.json(updatedGuest)
   } catch (error) {

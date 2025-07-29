@@ -39,13 +39,7 @@ async function createAdminUser() {
           updatedAt: new Date(),
         })
         .where(eq(tableUsers.email, email))
-        .returning({
-          id: tableUsers.id,
-          name: tableUsers.name,
-          email: tableUsers.email,
-          role: tableUsers.role,
-          active: tableUsers.active,
-        })
+        .returning()
 
       console.log('Usuário atualizado com sucesso!')
       console.log('Dados do usuário:')
@@ -68,13 +62,7 @@ async function createAdminUser() {
           createdAt: new Date(),
           updatedAt: new Date(),
         })
-        .returning({
-          id: tableUsers.id,
-          name: tableUsers.name,
-          email: tableUsers.email,
-          role: tableUsers.role,
-          active: tableUsers.active,
-        })
+        .returning()
 
       console.log('Usuário criado com sucesso!')
       console.log('Dados do usuário:')

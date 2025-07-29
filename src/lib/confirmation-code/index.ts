@@ -13,9 +13,13 @@ function generateRandomCode(): string {
  * Verifica se o código já existe no banco de dados
  */
 async function codeExists(code: string): Promise<boolean> {
-  const existingGuest = await db.query.tableGuests.findFirst({
-    where: eq(tableGuests.confirmationCode, code),
-  })
+  const existingGuest = await db
+    .select()
+    .from(tableGuests)
+    .where(eq(tableGuests.confirmationCode, code))
+    .limit(1)
+    .then(results => results[0] || null)
+
   return !!existingGuest
 }
 

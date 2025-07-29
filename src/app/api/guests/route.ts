@@ -6,9 +6,7 @@ import { generateUniqueConfirmationCode } from '@/lib/confirmation-code'
 
 export async function GET() {
   try {
-    const guestsList = await db.query.tableGuests.findMany({
-      orderBy: [asc(tableGuests.name)],
-    })
+    const guestsList = await db.select().from(tableGuests).orderBy(asc(tableGuests.name))
 
     return NextResponse.json(guestsList)
   } catch (error) {
@@ -26,9 +24,12 @@ export async function POST(request: NextRequest) {
     }
 
     // Verificar se já existe um convidado com o mesmo nome
-    const existingGuest = await db.query.tableGuests.findFirst({
-      where: eq(tableGuests.name, name.trim()),
-    })
+    const existingGuest = await db
+      .select()
+      .from(tableGuests)
+      .where(eq(tableGuests.name, name.trim()))
+      .limit(1)
+      .then(results => results[0] || null)
 
     if (existingGuest) {
       return NextResponse.json({ error: 'Já existe um convidado com este nome' }, { status: 409 })
