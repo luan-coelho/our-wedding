@@ -181,11 +181,10 @@ export function DesktopGuestTable({
                 </TableCell>
 
                 <TableCell className="text-center py-4">
-                  <div className="flex flex-col items-center gap-2">
+                  <div className="flex items-center gap-2">
                     <div className="font-mono text-lg font-bold text-blue-600 bg-blue-50 px-3 py-1 rounded-lg border border-blue-200">
                       {guest.confirmationCode}
                     </div>
-                    <div className="text-xs text-gray-500">Código de 6 dígitos</div>
                     <div className="flex gap-1">
                       <CopyToClipboard text={guest.confirmationCode} />
                       <CopyToClipboard text={`${baseUrl}/?code=${guest.confirmationCode}`} label="Link" />

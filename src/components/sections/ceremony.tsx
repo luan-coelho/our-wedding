@@ -142,7 +142,7 @@ export default function Ceremony() {
                   <Calendar className="size-5 text-wedding-primary" />
                   <div>
                     <p className="font-semibold text-wedding-dark">Cerimônia</p>
-                    <p className="text-wedding-accent">10:00</p>
+                    <p className="text-wedding-accent">10:00 sem atraso</p>
                   </div>
                 </div>
                 <Separator className="bg-wedding-light/50" />

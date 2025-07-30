@@ -17,6 +17,7 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import * as React from 'react'
 
+import { AdminProtected } from '@/components/roles'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
 import {
@@ -33,16 +34,14 @@ import {
   SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
-  SidebarGroupLabel,
   SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarSeparator,
 } from '@/components/ui/sidebar'
-import { routes } from '@/lib/routes'
-import { AdminProtected } from '@/components/roles'
 import { UserRole } from '@/lib/auth-types'
+import { routes } from '@/lib/routes'
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { data: session } = useSession()
@@ -134,7 +133,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           </div>
           <div className="grid flex-1 text-left text-sm leading-tight min-w-0 group-data-[collapsible=icon]:hidden">
             <span className="truncate font-semibold text-white text-base">Luan & Ester</span>
-            <span className="truncate text-sm text-white/80">Casamento 2025</span>
+            <span className="truncate text-sm text-white/80">Casamento</span>
           </div>
           <IconSparkles className="size-5 text-white/60 flex-shrink-0 group-data-[collapsible=icon]:hidden" />
         </div>
@@ -143,10 +142,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       <SidebarContent className="bg-gray-900 py-4 overflow-y-auto overflow-x-hidden flex-1">
         {/* Seção Administrativa */}
         <SidebarGroup className="px-3 group-data-[collapsible=icon]:px-2">
-          <SidebarGroupLabel className="text-wedding-light font-semibold flex items-center gap-2 px-3 py-2 mb-2 group-data-[collapsible=icon]:px-0 group-data-[collapsible=icon]:justify-center">
-            <IconDashboard className="size-4 flex-shrink-0" />
-            <span className="truncate group-data-[collapsible=icon]:hidden">Administração</span>
-          </SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu className="space-y-1">
               {filteredAdminItems.map(item => (
@@ -186,10 +181,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 
         {/* Seção Pública */}
         <SidebarGroup className="px-3 group-data-[collapsible=icon]:px-2">
-          <SidebarGroupLabel className="text-wedding-secondary font-semibold flex items-center gap-2 px-3 py-2 mb-2 group-data-[collapsible=icon]:px-0 group-data-[collapsible=icon]:justify-center">
-            <IconHome className="size-4 flex-shrink-0" />
-            <span className="truncate group-data-[collapsible=icon]:hidden">Portal Público</span>
-          </SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu className="space-y-1">
               {publicItems.map(item => (
