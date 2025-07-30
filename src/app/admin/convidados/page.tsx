@@ -108,10 +108,15 @@ export default function AdminGuestsPage() {
     setStatusFilter('all')
   }
 
-  // Calculate statistics
-  const fullyConfirmedGuests = useMemo(() => {
-    return filteredGuests.filter(guest => {
-      const totalInGroup = 1 + (guest.spouse ? 1 : 0) + (guest.children?.length || 0) + (guest.companions?.length || 0)
+  // Calculate statistics - now counting total people, not just main guests
+  const totalPeople = useMemo(() => {
+    return filteredGuests.reduce((total, guest) => {
+      return total + 1 + (guest.spouse ? 1 : 0) + (guest.children?.length || 0) + (guest.companions?.length || 0)
+    }, 0)
+  }, [filteredGuests])
+
+  const totalConfirmedPeople = useMemo(() => {
+    return filteredGuests.reduce((total, guest) => {
       let confirmedInGroup = 0
 
       if (guest.isConfirmed) confirmedInGroup += 1
@@ -127,52 +132,13 @@ export default function AdminGuestsPage() {
         })
       }
 
-      return confirmedInGroup === totalInGroup
-    }).length
+      return total + confirmedInGroup
+    }, 0)
   }, [filteredGuests])
 
-  const partiallyConfirmedGuests = useMemo(() => {
-    return filteredGuests.filter(guest => {
-      const totalInGroup = 1 + (guest.spouse ? 1 : 0) + (guest.children?.length || 0) + (guest.companions?.length || 0)
-      let confirmedInGroup = 0
-
-      if (guest.isConfirmed) confirmedInGroup += 1
-      if (guest.spouse && guest.spouseConfirmation) confirmedInGroup += 1
-      if (guest.children && guest.childrenConfirmations) {
-        guest.children.forEach(child => {
-          if (guest.childrenConfirmations?.[child]) confirmedInGroup += 1
-        })
-      }
-      if (guest.companions && guest.companionsConfirmations) {
-        guest.companions.forEach(companion => {
-          if (guest.companionsConfirmations?.[companion]) confirmedInGroup += 1
-        })
-      }
-
-      return confirmedInGroup > 0 && confirmedInGroup < totalInGroup
-    }).length
-  }, [filteredGuests])
-
-  const notConfirmedGuests = useMemo(() => {
-    return filteredGuests.filter(guest => {
-      let confirmedInGroup = 0
-
-      if (guest.isConfirmed) confirmedInGroup += 1
-      if (guest.spouse && guest.spouseConfirmation) confirmedInGroup += 1
-      if (guest.children && guest.childrenConfirmations) {
-        guest.children.forEach(child => {
-          if (guest.childrenConfirmations?.[child]) confirmedInGroup += 1
-        })
-      }
-      if (guest.companions && guest.companionsConfirmations) {
-        guest.companions.forEach(companion => {
-          if (guest.companionsConfirmations?.[companion]) confirmedInGroup += 1
-        })
-      }
-
-      return confirmedInGroup === 0
-    }).length
-  }, [filteredGuests])
+  const totalNotConfirmedPeople = useMemo(() => {
+    return totalPeople - totalConfirmedPeople
+  }, [totalPeople, totalConfirmedPeople])
 
   const totalGuests = filteredGuests.length
 
@@ -184,20 +150,20 @@ export default function AdminGuestsPage() {
       textColor: 'text-blue-600',
     },
     {
-      title: 'Totalmente Confirmados',
-      value: fullyConfirmedGuests,
+      title: 'Total de Pessoas',
+      value: totalPeople,
+      bgColor: 'bg-purple-100',
+      textColor: 'text-purple-600',
+    },
+    {
+      title: 'Pessoas Confirmadas',
+      value: totalConfirmedPeople,
       bgColor: 'bg-green-100',
       textColor: 'text-green-600',
     },
     {
-      title: 'Parcialmente Confirmados',
-      value: partiallyConfirmedGuests,
-      bgColor: 'bg-yellow-100',
-      textColor: 'text-yellow-600',
-    },
-    {
-      title: 'Não Confirmados',
-      value: notConfirmedGuests,
+      title: 'Pessoas Não Confirmadas',
+      value: totalNotConfirmedPeople,
       bgColor: 'bg-red-100',
       textColor: 'text-red-600',
     },
