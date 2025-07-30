@@ -140,6 +140,12 @@ export default function AdminGuestsPage() {
     return totalPeople - totalConfirmedPeople
   }, [totalPeople, totalConfirmedPeople])
 
+  const totalChildren = useMemo(() => {
+    return filteredGuests.reduce((total, guest) => {
+      return total + (guest.children?.length || 0)
+    }, 0)
+  }, [filteredGuests])
+
   const totalGuests = filteredGuests.length
 
   const statsCards = [
@@ -154,6 +160,12 @@ export default function AdminGuestsPage() {
       value: totalPeople,
       bgColor: 'bg-purple-100',
       textColor: 'text-purple-600',
+    },
+    {
+      title: 'Total de Filhos',
+      value: totalChildren,
+      bgColor: 'bg-orange-100',
+      textColor: 'text-orange-600',
     },
     {
       title: 'Pessoas Confirmadas',
@@ -199,7 +211,7 @@ export default function AdminGuestsPage() {
 
       <div className="container mx-auto px-2 sm:px-4 mt-4 sm:mt-10">
         {/* Guest Statistics */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 mb-4 sm:mb-8">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-6 mb-4 sm:mb-8">
           {statsCards.map((card, index) => (
             <Card
               key={index}
