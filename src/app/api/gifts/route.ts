@@ -6,7 +6,12 @@ import { validate as isValidUUID } from 'uuid'
 
 export async function GET() {
   try {
-    const giftsList = await db.select().from(tableGifts).orderBy(asc(tableGifts.createdAt)).execute()
+    const giftsList = await db.query.tableGifts.findMany({
+      with: {
+        selectedPixKey: true,
+      },
+      orderBy: asc(tableGifts.createdAt),
+    })
 
     return NextResponse.json(giftsList, { status: 200 })
   } catch (error) {

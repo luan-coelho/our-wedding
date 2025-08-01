@@ -357,6 +357,34 @@ function ConfirmationContent() {
           </div>
         </div>
 
+        {/* Important Notice */}
+        <div className="max-w-4xl mx-auto mb-12">
+          <Alert className="border-2 border-amber-200 bg-gradient-to-r from-amber-50 to-yellow-50 shadow-lg">
+            <AlertCircle className="h-4 w-4 text-amber-600 mt-0.5 flex-shrink-0" />
+
+            <AlertDescription className="text-amber-800 font-medium">
+              <div className="space-y-3">
+                <div className="flex items-start gap-2">
+                  <p className="font-semibold text-amber-900">
+                    <strong>AVISO IMPORTANTE:</strong> Confirme sua presença até <strong>31/08/2025</strong>
+                  </p>
+                </div>
+                <div className="flex items-start gap-2">
+                  <Users className="h-4 w-4 text-amber-600 mt-0.5 flex-shrink-0" />
+                  <p>
+                    Este convite é <strong>exclusivo</strong> para os nomes que aparecem na confirmação. Não será
+                    permitida a entrada de pessoas não convidadas.
+                  </p>
+                </div>
+                <div className="flex items-start gap-2">
+                  <HeartHandshake className="h-4 w-4 text-amber-600 mt-0.5 flex-shrink-0" />
+                  <p>Por favor, respeite essa orientação para evitar constrangimentos no dia do evento.</p>
+                </div>
+              </div>
+            </AlertDescription>
+          </Alert>
+        </div>
+
         {/* Main Content */}
         <div className="max-w-4xl mx-auto">
           {!guest ? (

@@ -41,11 +41,6 @@ export default middleware(req => {
   // Rotas que não precisam de autenticação
   const publicRoutes = [
     '/',
-    '/localizacao',
-    '/presentes',
-    '/mensagens',
-    '/nossa-historia',
-    '/confirmacao',
     '/auth/login',
     '/api/auth',
   ]

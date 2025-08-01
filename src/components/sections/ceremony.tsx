@@ -150,7 +150,9 @@ export default function Ceremony() {
                   <Badge variant="outline" className="border-wedding-accent/30 text-wedding-accent">
                     Importante
                   </Badge>
-                  <p className="text-wedding-dark mt-2 font-medium">Não haverá recepção ou festa</p>
+                  <p className="text-wedding-dark mt-2 font-medium">
+                    Após a cerimônia haverá um almoço, o local será disponibilizado após a confirmação dos convidados.
+                  </p>
                 </div>
               </CardContent>
             </Card>

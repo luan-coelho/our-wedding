@@ -82,7 +82,7 @@ export default function Gifts() {
   return (
     <section
       id="gifts"
-      className="py-32 bg-gradient-to-b from-wedding-light/10 via-white to-wedding-light/20 relative overflow-hidden">
+      className="py-16 sm:py-20 md:py-24 lg:py-32 bg-gradient-to-b from-wedding-light/10 via-white to-wedding-light/20 relative overflow-hidden">
       {/* Background decoration */}
       <div className="absolute inset-0 opacity-[0.02]">
         <div
@@ -93,10 +93,10 @@ export default function Gifts() {
         />
       </div>
 
-      <div className="container mx-auto px-6 max-w-7xl relative z-10">
+      <div className="container mx-auto px-4 sm:px-6 max-w-7xl relative z-10">
         {/* Section Header */}
         <div className="text-center mb-16">
-          <h2 className="text-5xl md:text-6xl lg:text-7xl font-light text-wedding-dark mb-8 wedding-heading tracking-wide">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-light text-wedding-dark mb-8 wedding-heading tracking-wide">
             Lista de Presentes
           </h2>
 
@@ -107,11 +107,11 @@ export default function Gifts() {
           </div>
 
           <div className="max-w-3xl mx-auto space-y-4">
-            <p className="text-xl md:text-2xl text-wedding-dark/80 leading-relaxed font-light wedding-subtitle">
+            <p className="text-lg sm:text-xl md:text-2xl text-wedding-dark/80 leading-relaxed font-light wedding-subtitle">
               Sua presença é o nosso maior presente, mas se desejar nos presentear, aqui estão algumas sugestões
               especiais.
             </p>
-            <p className="text-lg md:text-xl text-wedding-accent/90 leading-relaxed font-light wedding-body">
+            <p className="text-base sm:text-lg md:text-xl text-wedding-accent/90 leading-relaxed font-light wedding-body">
               Você pode contribuir com o valor total ou parcial de qualquer item através do PIX.
             </p>
           </div>
@@ -123,10 +123,10 @@ export default function Gifts() {
 
         {/* Gifts Grid */}
         {isLoading ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 mb-20">
+          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-5 lg:gap-6 xl:gap-8 mb-20">
             {[...Array(6)].map((_, index) => (
               <Card key={index} className="overflow-hidden border-0 shadow-lg bg-white/80 backdrop-blur-sm">
-                <div className="relative h-56 w-full">
+                <div className="relative h-40 sm:h-48 md:h-56 w-full">
                   <Skeleton className="h-full w-full rounded-t-xl" />
                 </div>
                 <CardHeader className="pb-3">
@@ -159,12 +159,12 @@ export default function Gifts() {
             </div>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 mb-20">
+          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-5 lg:gap-6 xl:gap-8 mb-20">
             {gifts.map(gift => (
               <Card
                 key={gift.id}
-                className="pt-0 group overflow-hidden border-0 shadow-lg hover:shadow-2xl transition-all duration-500 bg-white/80 backdrop-blur-sm hover:-translate-y-2">
-                <div className="relative h-56 w-full bg-gradient-to-br from-wedding-light/30 to-wedding-secondary/20 overflow-hidden">
+                className="pt-0 group overflow-hidden border-0 shadow-lg hover:shadow-2xl transition-all duration-500 bg-white/80 backdrop-blur-sm hover:-translate-y-2 gap-2">
+                <div className="relative h-30 sm:h-48 md:h-56 w-full bg-gradient-to-br from-wedding-light/30 to-wedding-secondary/20 overflow-hidden">
                   {gift.imageUrl ? (
                     <Image
                       src={gift.imageUrl}
@@ -176,53 +176,55 @@ export default function Gifts() {
                   ) : (
                     <div className="flex items-center justify-center h-full">
                       <div className="text-center">
-                        <FaGift className="text-6xl text-wedding-primary/40 mx-auto mb-2 group-hover:text-wedding-primary/60 transition-colors" />
-                        <p className="text-sm text-wedding-accent/60 font-medium">Imagem em breve</p>
+                        <FaGift className="text-4xl sm:text-5xl md:text-6xl text-wedding-primary/40 mx-auto mb-2 group-hover:text-wedding-primary/60 transition-colors" />
+                        <p className="text-xs sm:text-sm text-wedding-accent/60 font-medium">Imagem em breve</p>
                       </div>
                     </div>
                   )}
                   <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                 </div>
 
-                <CardHeader>
-                  <CardTitle className="text-xl text-center font-geist-mono font-semibold text-wedding-dark group-hover:text-wedding-primary transition-colors duration-300 leading-tight">
+                <CardHeader className="px-4 sm:px-6">
+                  <CardTitle className="text-lg sm:text-xl text-center font-geist-mono font-semibold text-wedding-dark group-hover:text-wedding-primary transition-colors duration-300 leading-tight">
                     {gift.name}
                   </CardTitle>
-                  <CardDescription className="line-clamp-2 text-wedding-accent/80 leading-relaxed">
+                  <CardDescription className="line-clamp-2 text-wedding-accent/80 leading-relaxed text-sm sm:text-base">
                     {gift.description}
                   </CardDescription>
                 </CardHeader>
 
-                <CardContent className="px-6">
+                <CardContent className="px-4 sm:px-6">
                   <div className="flex items-center justify-center gap-2">
-                    <p className="font-semibold text-3xl text-wedding-primary">{formatPrice(gift.price)}</p>
+                    <p className="font-semibold text-xl sm:text-2xl md:text-3xl text-wedding-primary">{formatPrice(gift.price)}</p>
                   </div>
                 </CardContent>
 
-                <CardFooter className="flex gap-3 flex-col">
+                <CardFooter className="flex gap-2 sm:gap-3 flex-col px-4 sm:px-6">
                   {gift.selectedPixKey && (
                     <div className="flex items-center gap-2 flex-1">
-                      <FaStar className="text-yellow-500 h-5 w-5" />
-                      <span className="text-sm text-wedding-accent/80 text-center">
+                      <FaStar className="text-yellow-500 h-4 w-4 sm:h-5 sm:w-5" />
+                      <span className="text-xs sm:text-sm text-wedding-accent/80 text-center">
                         {gift.selectedPixKey.name} ({gift.selectedPixKey.type})
                       </span>
                     </div>
                   )}
 
-                  <div className="flex gap-3 mt-2">
+                  <div className="flex gap-2 sm:gap-3 mt-2">
                     <Button
                       onClick={() => copyToClipboard(gift, gift.id)}
-                      className="flex-1 bg-green-600 hover:bg-green-700 text-white border-0 shadow-md hover:shadow-lg transition-all duration-300"
+                      className="flex-1 bg-green-600 hover:bg-green-700 text-white border-0 shadow-md hover:shadow-lg transition-all duration-300 text-sm sm:text-base py-2 sm:py-3"
                       disabled={!getEffectivePixKey(gift)}>
                       {copiedId === gift.id ? (
                         <>
-                          <FaCheck className="mr-2 h-4 w-4" />
-                          Copiado!
+                          <FaCheck className="mr-1 sm:mr-2 h-3 w-3 sm:h-4 sm:w-4" />
+                          <span className="hidden sm:inline">Copiado!</span>
+                          <span className="sm:hidden">OK!</span>
                         </>
                       ) : (
                         <>
-                          <FaClipboard className="mr-2 h-4 w-4" />
-                          Copiar PIX
+                          <FaClipboard className="mr-1 sm:mr-2 h-3 w-3 sm:h-4 sm:w-4" />
+                          <span className="hidden sm:inline">Copiar PIX</span>
+                          <span className="sm:hidden">PIX</span>
                         </>
                       )}
                     </Button>
@@ -230,10 +232,11 @@ export default function Gifts() {
                     <Button
                       variant="outline"
                       onClick={() => setShowQRCode(gift.id)}
-                      className="border-wedding-accent/30 text-wedding-accent hover:bg-wedding-accent/10 hover:border-wedding-accent/50 shadow-md hover:shadow-lg transition-all duration-300"
+                      className="border-wedding-accent/30 text-wedding-accent hover:bg-wedding-accent/10 hover:border-wedding-accent/50 shadow-md hover:shadow-lg transition-all duration-300 text-sm sm:text-base py-2 sm:py-3"
                       disabled={!getEffectivePixKey(gift)}>
-                      <FaQrcode className="mr-2 h-4 w-4" />
-                      QR Code
+                      <FaQrcode className="mr-1 sm:mr-2 h-3 w-3 sm:h-4 sm:w-4" />
+                      <span className="hidden sm:inline">QR Code</span>
+                      <span className="sm:hidden">QR</span>
                     </Button>
                   </div>
                 </CardFooter>
@@ -244,8 +247,8 @@ export default function Gifts() {
 
         {/* Thank You Section */}
         <div className="max-w-4xl mx-auto">
-          <div className="bg-gradient-to-br from-wedding-light/40 via-white/60 to-wedding-secondary/20 backdrop-blur-sm p-8 lg:p-12 rounded-3xl border border-wedding-accent/15 shadow-xl">
-            <h3 className="text-3xl lg:text-4xl wedding-heading text-wedding-dark mb-6 leading-tight text-center">
+          <div className="bg-gradient-to-br from-wedding-light/40 via-white/60 to-wedding-secondary/20 backdrop-blur-sm p-6 sm:p-8 lg:p-12 rounded-3xl border border-wedding-accent/15 shadow-xl">
+            <h3 className="text-2xl sm:text-3xl lg:text-4xl wedding-heading text-wedding-dark mb-6 leading-tight text-center">
               Obrigado pelo seu carinho!
             </h3>
 
@@ -255,7 +258,7 @@ export default function Gifts() {
               <div className="w-12 h-px bg-wedding-primary/30" />
             </div>
 
-            <p className="text-lg lg:text-xl text-wedding-accent/90 leading-relaxed max-w-2xl mx-auto text-center wedding-body">
+            <p className="text-base sm:text-lg lg:text-xl text-wedding-accent/90 leading-relaxed max-w-2xl mx-auto text-center wedding-body">
               Sua generosidade e carinho significam muito para nós neste momento tão especial. Cada contribuição nos
               ajudará a construir nosso novo lar com muito amor e gratidão.
             </p>
@@ -265,29 +268,29 @@ export default function Gifts() {
 
       {/* Dialog para QR Code */}
       <Dialog open={showQRCode !== null} onOpenChange={open => !open && setShowQRCode(null)}>
-        <DialogContent className="sm:max-w-lg bg-white/95 backdrop-blur-sm border-wedding-accent/20">
+        <DialogContent className="sm:max-w-lg mx-4 bg-white/95 backdrop-blur-sm border-wedding-accent/20">
           <DialogHeader className="text-center space-y-4">
-            <DialogTitle className="text-2xl wedding-subtitle text-wedding-dark text-center">QR Code PIX</DialogTitle>
-            <DialogDescription className="text-wedding-accent/80 leading-relaxed">
+            <DialogTitle className="text-xl sm:text-2xl wedding-subtitle text-wedding-dark text-center">QR Code PIX</DialogTitle>
+            <DialogDescription className="text-wedding-accent/80 leading-relaxed text-sm sm:text-base">
               Escaneie o código QR com seu aplicativo bancário para realizar a transferência PIX
             </DialogDescription>
           </DialogHeader>
 
           {selectedGift && getEffectivePixKey(selectedGift) && (
-            <div className="flex flex-col items-center p-6 space-y-6">
-              <div className="bg-white p-6 rounded-2xl shadow-lg border border-wedding-accent/20">
+            <div className="flex flex-col items-center p-4 sm:p-6 space-y-4 sm:space-y-6">
+              <div className="bg-white p-4 sm:p-6 rounded-2xl shadow-lg border border-wedding-accent/20">
                 <Image
                   src={getQRCodeUrl(selectedGift)}
                   alt="QR Code PIX"
-                  width={200}
-                  height={200}
-                  className="rounded-lg"
+                  width={180}
+                  height={180}
+                  className="rounded-lg sm:w-[200px] sm:h-[200px]"
                 />
               </div>
 
-              <div className="text-center space-y-2 bg-wedding-light/30 p-4 rounded-xl border border-wedding-accent/10 w-full">
+              <div className="text-center space-y-2 bg-wedding-light/30 p-3 sm:p-4 rounded-xl border border-wedding-accent/10 w-full">
                 <p className="text-sm font-medium text-wedding-dark">Chave PIX:</p>
-                <p className="text-base font-mono text-wedding-primary break-all">{getEffectivePixKey(selectedGift)}</p>
+                <p className="text-sm sm:text-base font-mono text-wedding-primary break-all">{getEffectivePixKey(selectedGift)}</p>
                 {selectedGift.selectedPixKey && (
                   <p className="text-xs text-wedding-accent/70">
                     {selectedGift.selectedPixKey.name} ({selectedGift.selectedPixKey.type})
@@ -297,15 +300,15 @@ export default function Gifts() {
 
               <Button
                 onClick={() => copyToClipboard(selectedGift, selectedGift.id)}
-                className="w-full bg-green-600 hover:bg-green-700 text-white shadow-lg hover:shadow-xl transition-all duration-300">
+                className="w-full bg-green-600 hover:bg-green-700 text-white shadow-lg hover:shadow-xl transition-all duration-300 text-sm sm:text-base py-2 sm:py-3">
                 {copiedId === selectedGift.id ? (
                   <>
-                    <FaCheck className="mr-2 h-4 w-4" />
+                    <FaCheck className="mr-2 h-3 w-3 sm:h-4 sm:w-4" />
                     Chave Copiada!
                   </>
                 ) : (
                   <>
-                    <FaClipboard className="mr-2 h-4 w-4" />
+                    <FaClipboard className="mr-2 h-3 w-3 sm:h-4 sm:w-4" />
                     Copiar Chave PIX
                   </>
                 )}
