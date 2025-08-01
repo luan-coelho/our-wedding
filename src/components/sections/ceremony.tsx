@@ -142,7 +142,7 @@ export default function Ceremony() {
                   <Calendar className="size-5 text-wedding-primary" />
                   <div>
                     <p className="font-semibold text-wedding-dark">Cerimônia</p>
-                    <p className="text-wedding-accent font-semibold text-xl">10:00 da manhã sem atraso</p>
+                    <p className="text-wedding-accent font-semibold text-xl">10:00 da manhã (sem atraso)</p>
                   </div>
                 </div>
                 <Separator className="bg-wedding-light/50" />
@@ -188,7 +188,7 @@ export default function Ceremony() {
                     3
                   </div>
                   <p className="text-wedding-accent">
-                    Após a cerimônia, nos encontraremos no almoço para as fotos e cumprimentos dos noivos.
+                    Após a cerimônia, nos encontraremos para as fotos, cumprimentos dos noivos e o almoço.
                   </p>
                 </div>
               </div>

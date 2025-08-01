@@ -137,6 +137,28 @@ export async function confirmGuestByCode(
   return handleApiResponse<Guest>(response)
 }
 
+/**
+ * Atualiza confirmação de presença de um convidado manualmente
+ */
+export async function updateGuestConfirmation(
+  id: string,
+  data: {
+    isConfirmed?: boolean
+    spouseConfirmation?: boolean
+    childrenConfirmations?: Record<string, boolean>
+    companionsConfirmations?: Record<string, boolean>
+  },
+): Promise<Guest> {
+  const response = await fetch(`${BASE_URL}/${id}/confirmation`, {
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(data),
+  })
+  return handleApiResponse<Guest>(response)
+}
+
 // ============================================================================
 // GUESTS SERVICE OBJECT - Exportação organizada de todas as funções
 // ============================================================================
@@ -151,4 +173,5 @@ export const guestsService = {
   bulkImport: bulkImportGuests,
   getByCode: getGuestByCode,
   confirmByCode: confirmGuestByCode,
+  updateConfirmation: updateGuestConfirmation,
 } as const

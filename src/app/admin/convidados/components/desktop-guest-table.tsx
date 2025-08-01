@@ -14,6 +14,7 @@ interface DesktopGuestTableProps {
   guests: Guest[]
   baseUrl: string
   onDeleteClick: (guest: Guest) => void
+  onManualConfirmationClick: (guest: Guest) => void
   nameFilter: string
   statusFilter: string
   onClearFilters: () => void
@@ -23,6 +24,7 @@ export function DesktopGuestTable({
   guests,
   baseUrl,
   onDeleteClick,
+  onManualConfirmationClick,
   nameFilter,
   statusFilter,
   onClearFilters,
@@ -283,6 +285,13 @@ export function DesktopGuestTable({
                 <AdminProtected>
                   <TableCell className="text-center py-4">
                     <div className="flex gap-2 justify-center">
+                      <Button
+                        onClick={() => onManualConfirmationClick(guest)}
+                        variant="outline"
+                        size="sm"
+                        className="shadow-sm hover:shadow-md transition-shadow border-black bg-blue-50 hover:bg-blue-100">
+                        Confirmar
+                      </Button>
                       <Button
                         asChild
                         variant="outline"

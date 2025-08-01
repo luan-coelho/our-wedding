@@ -15,9 +15,10 @@ interface MobileGuestCardProps {
   guest: Guest
   baseUrl: string
   onDeleteClick: (guest: Guest) => void
+  onManualConfirmationClick: (guest: Guest) => void
 }
 
-export function MobileGuestCard({ guest, baseUrl, onDeleteClick }: MobileGuestCardProps) {
+export function MobileGuestCard({ guest, baseUrl, onDeleteClick, onManualConfirmationClick }: MobileGuestCardProps) {
   const [isExpanded, setIsExpanded] = useState(false)
 
   const partySize = 1 + (guest.spouse ? 1 : 0) + (guest.children?.length || 0) + (guest.companions?.length || 0)
@@ -219,6 +220,13 @@ export function MobileGuestCard({ guest, baseUrl, onDeleteClick }: MobileGuestCa
         {/* Action Buttons */}
         <AdminProtected>
           <div className="flex gap-2">
+            <Button
+              onClick={() => onManualConfirmationClick(guest)}
+              variant="outline"
+              size="sm"
+              className="flex-1 shadow-sm hover:shadow-md transition-shadow border-black bg-blue-50 hover:bg-blue-100">
+              Confirmar
+            </Button>
             <Button
               asChild
               variant="outline"

@@ -26,12 +26,15 @@ import { toast } from 'sonner'
 import { DesktopGuestTable } from './components/desktop-guest-table'
 import { MobileGuestCard } from './components/mobile-guest-card'
 import { ImportGuestsDialog } from './import-guests-dialog'
+import { ManualConfirmationDialog } from './components/manual-confirmation-dialog'
 
 export default function AdminGuestsPage() {
   const queryClient = useQueryClient()
   const [guestToDelete, setGuestToDelete] = useState<Guest | null>(null)
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
   const [isImportDialogOpen, setIsImportDialogOpen] = useState(false)
+  const [guestToConfirm, setGuestToConfirm] = useState<Guest | null>(null)
+  const [isConfirmationDialogOpen, setIsConfirmationDialogOpen] = useState(false)
 
   // Filter states
   const [nameFilter, setNameFilter] = useState('')
@@ -93,14 +96,53 @@ export default function AdminGuestsPage() {
     },
   })
 
+  // Mutation to update guest confirmation
+  const updateConfirmationMutation = useMutation({
+    mutationFn: ({ guestId, confirmationData }: {
+      guestId: string
+      confirmationData: {
+        isConfirmed?: boolean
+        spouseConfirmation?: boolean
+        childrenConfirmations?: Record<string, boolean>
+        companionsConfirmations?: Record<string, boolean>
+      }
+    }) => guestsService.updateConfirmation(guestId, confirmationData),
+    onSuccess: () => {
+      toast.success('Confirmação atualizada com sucesso')
+      queryClient.invalidateQueries({ queryKey: ['guests'] })
+      setIsConfirmationDialogOpen(false)
+      setGuestToConfirm(null)
+    },
+    onError: (error: Error) => {
+      toast.error(error.message || 'Erro ao atualizar confirmação')
+    },
+  })
+
   function handleDeleteClick(guest: Guest) {
     setGuestToDelete(guest)
     setIsDeleteDialogOpen(true)
   }
 
+  function handleManualConfirmationClick(guest: Guest) {
+    setGuestToConfirm(guest)
+    setIsConfirmationDialogOpen(true)
+  }
+
   function handleConfirmDelete() {
     if (!guestToDelete) return
     deleteGuestMutation.mutate(guestToDelete.id)
+  }
+
+  async function handleSaveConfirmation(
+    guestId: string,
+    confirmationData: {
+      isConfirmed?: boolean
+      spouseConfirmation?: boolean
+      childrenConfirmations?: Record<string, boolean>
+      companionsConfirmations?: Record<string, boolean>
+    }
+  ) {
+    updateConfirmationMutation.mutate({ guestId, confirmationData })
   }
 
   function handleClearFilters() {
@@ -311,6 +353,7 @@ export default function AdminGuestsPage() {
                           guest={guest}
                           baseUrl={baseUrl}
                           onDeleteClick={handleDeleteClick}
+                          onManualConfirmationClick={handleManualConfirmationClick}
                         />
                       ))}
                     </div>
@@ -342,6 +385,7 @@ export default function AdminGuestsPage() {
                     guests={filteredGuests}
                     baseUrl={baseUrl}
                     onDeleteClick={handleDeleteClick}
+                    onManualConfirmationClick={handleManualConfirmationClick}
                     nameFilter={nameFilter}
                     statusFilter={statusFilter}
                     onClearFilters={handleClearFilters}
@@ -355,6 +399,15 @@ export default function AdminGuestsPage() {
 
       {/* Import Guests Dialog */}
       <ImportGuestsDialog open={isImportDialogOpen} onOpenChange={setIsImportDialogOpen} />
+
+      {/* Manual Confirmation Dialog */}
+      <ManualConfirmationDialog
+        open={isConfirmationDialogOpen}
+        onOpenChange={setIsConfirmationDialogOpen}
+        guest={guestToConfirm}
+        onSave={handleSaveConfirmation}
+        isLoading={updateConfirmationMutation.isPending}
+      />
     </>
   )
 }
