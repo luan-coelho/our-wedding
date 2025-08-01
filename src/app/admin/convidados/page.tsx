@@ -21,12 +21,13 @@ import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { routes } from '@/lib/routes'
 import { guestsService } from '@/services/guests.service'
-import { Search, Upload } from 'lucide-react'
+import { Search, Upload, FileText } from 'lucide-react'
 import { toast } from 'sonner'
 import { DesktopGuestTable } from './components/desktop-guest-table'
 import { MobileGuestCard } from './components/mobile-guest-card'
 import { ImportGuestsDialog } from './import-guests-dialog'
 import { ManualConfirmationDialog } from './components/manual-confirmation-dialog'
+import { ReportsDialog } from './components/reports-dialog'
 
 export default function AdminGuestsPage() {
   const queryClient = useQueryClient()
@@ -35,6 +36,7 @@ export default function AdminGuestsPage() {
   const [isImportDialogOpen, setIsImportDialogOpen] = useState(false)
   const [guestToConfirm, setGuestToConfirm] = useState<Guest | null>(null)
   const [isConfirmationDialogOpen, setIsConfirmationDialogOpen] = useState(false)
+  const [isReportsDialogOpen, setIsReportsDialogOpen] = useState(false)
 
   // Filter states
   const [nameFilter, setNameFilter] = useState('')
@@ -266,6 +268,13 @@ export default function AdminGuestsPage() {
             <AdminProtected>
               <div className="flex flex-col sm:flex-row gap-2">
                 <Button
+                  onClick={() => setIsReportsDialogOpen(true)}
+                  variant="outline"
+                  className="shadow-sm hover:shadow-md transition-shadow border-black">
+                  <FileText className="h-4 w-4 mr-2" />
+                  Relatórios
+                </Button>
+                <Button
                   onClick={() => setIsImportDialogOpen(true)}
                   variant="outline"
                   className="shadow-sm hover:shadow-md transition-shadow border-black">
@@ -399,6 +408,13 @@ export default function AdminGuestsPage() {
         guest={guestToConfirm}
         onSave={handleSaveConfirmation}
         isLoading={updateConfirmationMutation.isPending}
+      />
+
+      {/* Reports Dialog */}
+      <ReportsDialog
+        open={isReportsDialogOpen}
+        onOpenChange={setIsReportsDialogOpen}
+        guests={guests}
       />
     </>
   )
