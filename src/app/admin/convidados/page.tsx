@@ -188,15 +188,7 @@ export default function AdminGuestsPage() {
     }, 0)
   }, [filteredGuests])
 
-  const totalGuests = filteredGuests.length
-
   const statsCards = [
-    {
-      title: 'Total de Convidados',
-      value: totalGuests,
-      bgColor: 'bg-blue-100',
-      textColor: 'text-blue-600',
-    },
     {
       title: 'Total de Pessoas',
       value: totalPeople,
@@ -253,7 +245,7 @@ export default function AdminGuestsPage() {
 
       <div className="container mx-auto px-2 sm:px-4 mt-4 sm:mt-10">
         {/* Guest Statistics */}
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-6 mb-4 sm:mb-8">
+        <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 mb-4 sm:mb-8">
           {statsCards.map((card, index) => (
             <Card
               key={index}
