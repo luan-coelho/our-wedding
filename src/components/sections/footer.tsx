@@ -37,9 +37,9 @@ export default function Footer() {
             {/* Love Quote */}
             <div className="max-w-2xl mx-auto">
               <p className="text-lg text-wedding-accent font-light leading-relaxed wedding-subtitle">
-                <span className="text-wedding-primary wedding-accent-text text-xl">&ldquo;</span>O amor é a ponte entre
-                duas almas que se encontraram para caminhar juntas pela eternidade
-                <span className="text-wedding-primary wedding-accent-text text-xl">&rdquo;</span>
+                <span className="text-wedding-primary wedding-accent-text text-xl">&ldquo;</span>O verdadeiro amor
+                mede-se pela capacidade de sacrifício e de entrega mútua.
+                <span className="text-wedding-primary wedding-accent-text text-xl">&rdquo;</span> (São João Paulo II)
               </p>
             </div>
           </div>
@@ -51,11 +51,6 @@ export default function Footer() {
           <div>
             <h3 className="font-semibold text-gray-900 mb-4">Navegação</h3>
             <ul className="space-y-2">
-              <li>
-                <Link href={routes.frontend.home} className="text-gray-600 hover:text-gray-900 transition-colors">
-                  Início
-                </Link>
-              </li>
               <li>
                 <Link href="#gifts" className="text-gray-600 hover:text-gray-900 transition-colors">
                   Lista de Presentes
@@ -69,9 +64,7 @@ export default function Footer() {
             <h3 className="font-semibold text-gray-900 mb-4">Informações</h3>
             <ul className="space-y-2">
               <li>
-                <Link
-                  href="#ceremony"
-                  className="text-gray-600 hover:text-gray-900 transition-colors">
+                <Link href="#ceremony" className="text-gray-600 hover:text-gray-900 transition-colors">
                   Localização
                 </Link>
               </li>
