@@ -34,7 +34,7 @@ export default function AddGiftPage() {
       description: '',
       price: '',
       pixKey: lastPixKey.pixKey || '',
-      selectedPixKeyId: lastPixKey.selectedPixKeyId || null,
+      selectedPixKeyId: lastPixKey?.selectedPixKeyId || undefined,
       imageUrl: '',
     },
   })
@@ -71,7 +71,7 @@ export default function AddGiftPage() {
         description: '',
         price: '',
         pixKey: currentFormData.pixKey || '',
-        selectedPixKeyId: currentFormData.selectedPixKeyId || null,
+        selectedPixKeyId: currentFormData.selectedPixKeyId || undefined,
         imageUrl: '',
       })
       if (imagePreview) {
@@ -243,7 +243,7 @@ export default function AddGiftPage() {
                               field.onChange(e)
                               // Clear selected PIX key when custom key is entered
                               if (e.target.value) {
-                                form.setValue('selectedPixKeyId', null)
+                                form.setValue('selectedPixKeyId', undefined)
                               }
                             }}
                           />

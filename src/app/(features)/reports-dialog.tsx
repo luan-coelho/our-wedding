@@ -12,7 +12,7 @@ import {
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { FileDown, FileSpreadsheet, Users, UserCheck, UserX, Baby } from 'lucide-react'
 import { useMemo } from 'react'
-import { generateGuestsReport } from '../lib/report-generator'
+import { generateGuestsReport } from './report-generator'
 import { toast } from 'sonner'
 
 interface ReportsDialogProps {
