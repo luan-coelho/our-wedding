@@ -108,11 +108,10 @@ export default function Gifts() {
 
           <div className="max-w-3xl mx-auto space-y-4">
             <p className="text-lg sm:text-xl md:text-2xl text-wedding-dark/80 leading-relaxed font-light wedding-subtitle">
-              Sua presença é o nosso maior presente, mas se desejar nos presentear, aqui estão algumas sugestões
-              especiais.
+              Nossa casa já está pronta e cheia de amor, mas se você quiser nos dar uma ajudinha, aqui está o nosso PIX!
             </p>
             <p className="text-base sm:text-lg md:text-xl text-wedding-accent/90 leading-relaxed font-light wedding-body">
-              Você pode contribuir com o valor total ou parcial de qualquer item através do PIX.
+              Você pode contribuir com o valor total ou parcial de qualquer item.
             </p>
           </div>
 
