@@ -147,7 +147,7 @@ function ConfirmationContent() {
       const people: PersonConfirmation[] = [
         {
           name: guestData.name,
-          isConfirmed: guestData.isConfirmed,
+          isConfirmed: guestData.isConfirmed !== undefined ? guestData.isConfirmed : true,
           type: 'main',
         },
       ]
@@ -155,7 +155,7 @@ function ConfirmationContent() {
       if (guestData.spouse) {
         people.push({
           name: guestData.spouse,
-          isConfirmed: guestData.spouseConfirmation || false,
+          isConfirmed: guestData.spouseConfirmation !== undefined ? guestData.spouseConfirmation : true,
           type: 'spouse',
         })
       }
@@ -164,7 +164,7 @@ function ConfirmationContent() {
         guestData.children.forEach((child: string) => {
           people.push({
             name: child,
-            isConfirmed: guestData.childrenConfirmations?.[child] || false,
+            isConfirmed: guestData.childrenConfirmations?.[child] !== undefined ? guestData.childrenConfirmations[child] : true,
             type: 'child',
           })
         })
@@ -174,7 +174,7 @@ function ConfirmationContent() {
         guestData.companions.forEach((companion: string) => {
           people.push({
             name: companion,
-            isConfirmed: guestData.companionsConfirmations?.[companion] || false,
+            isConfirmed: guestData.companionsConfirmations?.[companion] !== undefined ? guestData.companionsConfirmations[companion] : true,
             type: 'companion',
           })
         })

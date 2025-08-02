@@ -188,7 +188,7 @@ export function DesktopGuestTable({
                       {guest.confirmationCode}
                     </div>
                     <div className="flex gap-1">
-                      <CopyToClipboard text={guest.confirmationCode} />
+                      {/* <CopyToClipboard text={guest.confirmationCode} /> */}
                       <CopyToClipboard text={`${baseUrl}/?code=${guest.confirmationCode}`} label="Link" />
                     </div>
                   </div>

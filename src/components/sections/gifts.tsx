@@ -194,7 +194,9 @@ export default function Gifts() {
 
                 <CardContent className="px-4 sm:px-6">
                   <div className="flex items-center justify-center gap-2">
-                    <p className="font-semibold text-xl sm:text-2xl md:text-3xl text-wedding-primary">{formatPrice(gift.price)}</p>
+                    <p className="font-semibold text-xl sm:text-2xl md:text-3xl text-wedding-primary">
+                      {formatPrice(gift.price)}
+                    </p>
                   </div>
                 </CardContent>
 
@@ -258,8 +260,8 @@ export default function Gifts() {
             </div>
 
             <p className="text-base sm:text-lg lg:text-xl text-wedding-accent/90 leading-relaxed max-w-2xl mx-auto text-center wedding-body">
-              Sua generosidade e carinho significam muito para nós neste momento tão especial. Cada contribuição nos
-              ajudará a construir nosso novo lar com muito amor e gratidão.
+              Espero que tenham dado boas risadas. Sua generosidade e carinho significam muito para nós neste momento
+              tão especial.
             </p>
           </div>
         </div>
@@ -269,7 +271,9 @@ export default function Gifts() {
       <Dialog open={showQRCode !== null} onOpenChange={open => !open && setShowQRCode(null)}>
         <DialogContent className="sm:max-w-lg mx-4 bg-white/95 backdrop-blur-sm border-wedding-accent/20">
           <DialogHeader className="text-center space-y-4">
-            <DialogTitle className="text-xl sm:text-2xl wedding-subtitle text-wedding-dark text-center">QR Code PIX</DialogTitle>
+            <DialogTitle className="text-xl sm:text-2xl wedding-subtitle text-wedding-dark text-center">
+              QR Code PIX
+            </DialogTitle>
             <DialogDescription className="text-wedding-accent/80 leading-relaxed text-sm sm:text-base">
               Escaneie o código QR com seu aplicativo bancário para realizar a transferência PIX
             </DialogDescription>
@@ -289,7 +293,9 @@ export default function Gifts() {
 
               <div className="text-center space-y-2 bg-wedding-light/30 p-3 sm:p-4 rounded-xl border border-wedding-accent/10 w-full">
                 <p className="text-sm font-medium text-wedding-dark">Chave PIX:</p>
-                <p className="text-sm sm:text-base font-mono text-wedding-primary break-all">{getEffectivePixKey(selectedGift)}</p>
+                <p className="text-sm sm:text-base font-mono text-wedding-primary break-all">
+                  {getEffectivePixKey(selectedGift)}
+                </p>
                 {selectedGift.selectedPixKey && (
                   <p className="text-xs text-wedding-accent/70">
                     {selectedGift.selectedPixKey.name} ({selectedGift.selectedPixKey.type})

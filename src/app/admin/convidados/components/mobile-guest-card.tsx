@@ -1,15 +1,14 @@
 'use client'
 
-import { Guest } from '@/types'
-import { useState } from 'react'
-import Link from 'next/link'
-import { Card, CardContent } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
 import { CopyToClipboard } from '@/components/copy-to-clipboard'
 import { AdminProtected } from '@/components/roles'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent } from '@/components/ui/card'
 import { routes } from '@/lib/routes'
-import { Check, HelpCircle, Users, Heart, Baby, UserPlus, X, ChevronDown, ChevronUp, Eye, EyeOff } from 'lucide-react'
+import { Guest } from '@/types'
+import { Baby, Check, ChevronDown, ChevronUp, Eye, EyeOff, Heart, HelpCircle, UserPlus, Users, X } from 'lucide-react'
+import Link from 'next/link'
+import { useState } from 'react'
 
 interface MobileGuestCardProps {
   guest: Guest
@@ -112,13 +111,13 @@ export function MobileGuestCard({ guest, baseUrl, onDeleteClick, onManualConfirm
 
         {/* Confirmation Code */}
         <div className="mb-3 text-center">
-          <div className="inline-flex flex-col items-center gap-1">
+          <div className="inline-flex flex-col items-center gap-3">
             <div className="font-mono text-lg font-bold text-blue-600 bg-blue-50 px-3 py-1 rounded-lg border border-blue-200">
               {guest.confirmationCode}
             </div>
             <div className="text-xs text-gray-500">Código de confirmação</div>
             <div className="flex gap-1">
-              <CopyToClipboard text={guest.confirmationCode} />
+              {/* <CopyToClipboard text={guest.confirmationCode} /> */}
               <CopyToClipboard text={`${baseUrl}/?code=${guest.confirmationCode}`} label="Link" />
             </div>
           </div>
@@ -203,19 +202,6 @@ export function MobileGuestCard({ guest, baseUrl, onDeleteClick, onManualConfirm
             ))}
           </div>
         )}
-
-        {/* Link de Convite */}
-        <div className="mb-3">
-          <label className="text-xs text-gray-500 mb-1 block">Link de Convite</label>
-          <div className="flex items-center gap-2">
-            <Input
-              readOnly
-              value={`${baseUrl}/confirmacao/${guest.token}`}
-              className="flex-1 text-xs bg-gray-50 border-gray-300 text-gray-600"
-            />
-            <CopyToClipboard text={`${baseUrl}/confirmacao/${guest.token}`} />
-          </div>
-        </div>
 
         {/* Action Buttons */}
         <AdminProtected>
