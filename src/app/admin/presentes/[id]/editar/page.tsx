@@ -1,24 +1,31 @@
 'use client'
 
 import { AdminProtected } from '@/components/roles'
-import { useParams, useRouter } from 'next/navigation'
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { giftSchema, GiftFormData } from '../../schema'
-import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import { Textarea } from '@/components/ui/textarea'
-import { useEffect, useState } from 'react'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Textarea } from '@/components/ui/textarea'
+import { queryClient } from '@/lib/query-client'
+import { routes } from '@/lib/routes'
+import { giftsService, pixKeysService } from '@/services'
+import { Gift, PixKey } from '@/types'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useMutation, useQuery } from '@tanstack/react-query'
 import { Eye, X } from 'lucide-react'
 import Image from 'next/image'
-import { useMutation, useQuery } from '@tanstack/react-query'
-import { queryClient } from '@/lib/query-client'
-import { giftsService, pixKeysService } from '@/services'
-import { routes } from '@/lib/routes'
+import { useParams, useRouter } from 'next/navigation'
+import { useEffect, useState } from 'react'
+import { useForm } from 'react-hook-form'
+import { toast } from 'sonner'
+import { GiftFormData, giftSchema } from '../../schema'
+
+// Tipo para a resposta da API que inclui o join com pix-key
+type GiftWithPixKey = {
+  gift: Gift
+  'pix-key': PixKey | null
+}
 
 export default function EditGiftPage() {
   const params = useParams<{ id: string }>()
@@ -34,12 +41,10 @@ export default function EditGiftPage() {
       description: '',
       price: '',
       pixKey: '',
-      selectedPixKeyId: undefined,
+      selectedPixKeyId: '',
       imageUrl: '',
     },
   })
-
-  const watchUseCustomPixKey = form.watch('pixKey')
 
   // Consulta para buscar os dados do presente
   const {
@@ -49,6 +54,7 @@ export default function EditGiftPage() {
   } = useQuery({
     queryKey: ['gift', id],
     queryFn: () => giftsService.getById(id),
+    enabled: !!id, // Só executa a query se tiver o ID
   })
 
   // Consulta para buscar as chaves PIX
@@ -60,27 +66,33 @@ export default function EditGiftPage() {
   // Atualiza o formulário quando os dados são carregados
   useEffect(() => {
     if (gift) {
+      // A API retorna uma estrutura com leftJoin: { gift: {...}, "pix-key": {...} }
+      // Vamos acessar o objeto gift corretamente
+      const giftData = (gift as GiftWithPixKey).gift
+
       // Formata o preço para o formato brasileiro
-      const formattedPrice = gift.price
-        ? gift.price.toLocaleString('pt-BR', {
+      const formattedPrice = giftData.price
+        ? giftData.price.toLocaleString('pt-BR', {
             minimumFractionDigits: 2,
             maximumFractionDigits: 2,
           })
         : ''
 
       // Preenche o formulário com os dados do presente
-      form.reset({
-        name: gift.name || '',
-        description: gift.description || '',
+      const formData = {
+        name: giftData.name || '',
+        description: giftData.description || '',
         price: formattedPrice,
-        pixKey: gift.pixKey || '',
-        selectedPixKeyId: gift.pixKeyId ? String(gift.pixKeyId) : undefined,
-        imageUrl: gift.imageUrl || '',
-      })
+        pixKey: giftData.pixKey || '',
+        selectedPixKeyId: giftData.pixKeyId ? String(giftData.pixKeyId) : '',
+        imageUrl: giftData.imageUrl || '',
+      }
+
+      form.reset(formData)
 
       // Mostra a prévia da imagem se houver uma URL
-      if (gift.imageUrl) {
-        setImagePreview(gift.imageUrl)
+      if (giftData.imageUrl) {
+        setImagePreview(giftData.imageUrl)
       }
     }
   }, [gift, form])
@@ -137,6 +149,9 @@ export default function EditGiftPage() {
           ? formData.selectedPixKeyId
           : null,
     }
+
+    console.log('Dados do formulário antes do processamento:', formData)
+    console.log('Dados processados para envio:', processedData)
 
     updateMutation.mutate(processedData as unknown as GiftFormData)
   }
@@ -271,53 +286,69 @@ export default function EditGiftPage() {
                     render={({ field }) => (
                       <FormItem className="flex items-center gap-2 space-y-0">
                         <FormControl>
-                          <Input placeholder="Informar chave PIX personalizada" {...field} />
+                          <Input
+                            placeholder="Informar chave PIX personalizada"
+                            {...field}
+                            onChange={e => {
+                              field.onChange(e)
+                              // Limpa a seleção de chave PIX quando usar chave personalizada
+                              if (e.target.value) {
+                                form.setValue('selectedPixKeyId', '')
+                              }
+                            }}
+                          />
                         </FormControl>
                       </FormItem>
                     )}
                   />
 
                   {/* Ou selecionar entre chaves cadastradas */}
-                  {!watchUseCustomPixKey && (
-                    <div className="pt-2">
-                      <p className="text-sm text-muted-foreground mb-3">Ou selecione uma chave cadastrada:</p>
+                  <div className="pt-2">
+                    <p className="text-sm text-muted-foreground mb-3">Ou selecione uma chave cadastrada:</p>
 
-                      {isLoadingPixKeys ? (
-                        <p className="text-sm text-muted-foreground">Carregando chaves PIX...</p>
-                      ) : pixKeys.length === 0 ? (
-                        <p className="text-sm text-muted-foreground">
-                          Nenhuma chave PIX cadastrada.{' '}
-                          <a href={routes.frontend.admin.chavesPix.index} className="text-primary hover:underline">
-                            Cadastrar Chaves PIX
-                          </a>
-                        </p>
-                      ) : (
-                        <FormField
-                          control={form.control}
-                          name="selectedPixKeyId"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormControl>
-                                <Select onValueChange={value => field.onChange(value)} value={field.value || undefined}>
-                                  <SelectTrigger className="w-full">
-                                    <SelectValue placeholder="Selecione uma chave PIX" />
-                                  </SelectTrigger>
-                                  <SelectContent>
-                                    {pixKeys.map(pixKey => (
-                                      <SelectItem key={pixKey.id} value={String(pixKey.id)}>
-                                        {pixKey.name} ({pixKey.key})
-                                      </SelectItem>
-                                    ))}
-                                  </SelectContent>
-                                </Select>
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                      )}
-                    </div>
-                  )}
+                    {isLoadingPixKeys ? (
+                      <p className="text-sm text-muted-foreground">Carregando chaves PIX...</p>
+                    ) : pixKeys.length === 0 ? (
+                      <p className="text-sm text-muted-foreground">
+                        Nenhuma chave PIX cadastrada.{' '}
+                        <a href={routes.frontend.admin.chavesPix.index} className="text-primary hover:underline">
+                          Cadastrar Chaves PIX
+                        </a>
+                      </p>
+                    ) : (
+                      <FormField
+                        control={form.control}
+                        name="selectedPixKeyId"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormControl>
+                              <Select
+                                onValueChange={value => {
+                                  field.onChange(value || '')
+                                  // Limpa a chave personalizada quando selecionar uma chave
+                                  if (value) {
+                                    form.setValue('pixKey', '')
+                                  }
+                                }}
+                                value={field.value || ''}>
+                                <SelectTrigger className="w-full">
+                                  <SelectValue placeholder="Selecione uma chave PIX" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  {pixKeys.map(pixKey => (
+                                    <SelectItem key={pixKey.id} value={String(pixKey.id)}>
+                                      {pixKey.name} ({pixKey.key})
+                                    </SelectItem>
+                                  ))}
+                                </SelectContent>
+                              </Select>
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    )}
+                  </div>
                 </div>
 
                 <FormField

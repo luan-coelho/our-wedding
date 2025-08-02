@@ -31,7 +31,7 @@ export const giftSchema = z.object({
   description: z.string().optional(),
   price: z.string().optional(),
   pixKey: z.string().optional(),
-  selectedPixKeyId: z.string().optional().nullable(),
+  selectedPixKeyId: z.string().optional(),
   imageUrl: z
     .string()
     .min(1, 'URL da imagem é obrigatória')

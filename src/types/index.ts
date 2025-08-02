@@ -45,6 +45,12 @@ export interface Gift {
   selectedPixKey?: PixKey | null
 }
 
+// API Response type for gift with join
+export interface GiftApiResponse {
+  gift: Gift
+  'pix-key'?: PixKey | null
+}
+
 // Message Domain Types
 export interface Message {
   id: string
@@ -73,7 +79,7 @@ export interface GiftFormData {
   description?: string
   price?: string
   pixKey?: string
-  selectedPixKeyId?: string | null
+  selectedPixKeyId?: string
   imageUrl: string
 }
 

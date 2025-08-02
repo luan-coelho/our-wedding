@@ -32,9 +32,11 @@ export async function getGifts(): Promise<Gift[]> {
 /**
  * Busca um presente específico por ID
  */
-export async function getGiftById(id: string): Promise<Gift> {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export async function getGiftById(id: string): Promise<any> {
   const response = await fetch(`${BASE_URL}/${id}`)
-  return handleApiResponse<Gift>(response)
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  return handleApiResponse<any>(response)
 }
 
 /**
