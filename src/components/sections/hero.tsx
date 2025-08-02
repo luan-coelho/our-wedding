@@ -68,9 +68,6 @@ export default function Hero({ onScrollToNextAction }: HeroProps) {
           <p className="text-2xl md:text-2xl lg:text-3xl text-wedding-dark font-light leading-relaxed max-w-4xl mx-auto mb-6 tracking-wide wedding-heading">
             &quot;Aliás, sabemos que todas as coisas concorrem para o bem daqueles que amam a Deus.&quot; Rm 8,28
           </p>
-          <p className="text-lg md:text-xl lg:text-xl text-wedding-charcoal/80 font-light max-w-3xl mx-auto leading-relaxed">
-            Celebrando o amor que nos une para sempre
-          </p>
         </div>
 
         {/* CTA Button */}
