@@ -10,7 +10,7 @@ import Navbar from '@/components/sections/navbar'
 
 export default function Home() {
   // Data do casamento (12 de setembro de 2025)
-  const weddingDate = new Date('2025-09-12T10:00:00')
+  const weddingDate = new Date('2025-09-12T09:30:00')
 
   const scrollToSection = (sectionId: string) => {
     const element = document.getElementById(sectionId)

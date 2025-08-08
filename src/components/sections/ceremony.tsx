@@ -142,7 +142,7 @@ export default function Ceremony() {
                   <Calendar className="size-5 text-wedding-primary" />
                   <div>
                     <p className="font-semibold text-wedding-dark">Cerimônia</p>
-                    <p className="text-wedding-accent font-semibold text-xl">10:00 da manhã (sem atraso)</p>
+                    <p className="text-wedding-accent font-semibold text-xl">09:30 da manhã</p>
                   </div>
                 </div>
                 <Separator className="bg-wedding-light/50" />
@@ -171,26 +171,24 @@ export default function Ceremony() {
                     1
                   </div>
                   <p className="text-wedding-accent">
-                    Recomendamos chegar com pelo menos <strong>30 minutos de antecedência</strong> para encontrar um bom
-                    lugar.
+                    <strong>Traje social discreto.</strong> Pedimos, por gentileza, que evitem roupas curtas, justas,
+                    transparentes, com decotes ou fendas.
                   </p>
                 </div>
-                <div className="flex items-start gap-3">
-                  <div className="w-6 h-6 bg-wedding-primary/20 rounded-full flex items-center justify-center text-xs font-semibold text-wedding-primary mt-0.5 flex-shrink-0">
-                    2
-                  </div>
-                  <p className="text-wedding-accent">
-                    Utilize <strong>vestimenta adequada</strong> para a cerimônia religiosa.
-                  </p>
+              </div>
+              <div className="flex items-start gap-3">
+                <div className="w-6 h-6 bg-wedding-primary/20 rounded-full flex items-center justify-center text-xs font-semibold text-wedding-primary mt-0.5 flex-shrink-0">
+                  2
                 </div>
-                <div className="flex items-start gap-3">
-                  <div className="w-6 h-6 bg-wedding-primary/20 rounded-full flex items-center justify-center text-xs font-semibold text-wedding-primary mt-0.5 flex-shrink-0">
-                    3
-                  </div>
-                  <p className="text-wedding-accent">
-                    Após a cerimônia, nos encontraremos para as fotos, cumprimentos dos noivos e o almoço.
-                  </p>
+                <p className="text-wedding-accent">
+                  Após a cerimônia, nos encontraremos para as fotos, cumprimentos dos noivos e o almoço.
+                </p>
+              </div>
+              <div className="flex items-start gap-3">
+                <div className="w-6 h-6 bg-wedding-primary/20 rounded-full flex items-center justify-center text-xs font-semibold text-wedding-primary mt-0.5 flex-shrink-0">
+                  3
                 </div>
+                <p className="text-wedding-accent">Evite atrasos para não perder a celebração do matrimônio.</p>
               </div>
             </AlertDescription>
           </Alert>
